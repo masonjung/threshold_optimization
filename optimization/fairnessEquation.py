@@ -1,6 +1,6 @@
 # Interpreting equaltion
 def equation_fairness(Prob_a,Prob_b):
-    rule = 0.8 # threshold of 0.8 is based on 80% rule.
+    rule = 0.8 # threshold of 0.8 is based on 80% rule. # can be changed
     greater = max(Prob_a, Prob_b)
     smaller = min(Prob_a, Prob_b)
     evaluation = (smaller/greater) > rule # if the ratio exceeds, it is considered fair = True
