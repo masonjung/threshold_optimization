@@ -16,7 +16,8 @@ torch.cuda.is_available()
 
 
 # Load dataset
-dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_MAGE.csv")
+
+dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\test_rl.csv")
 df = dataset.sample(frac=1, random_state=42)  # Sample 10% of the dataset
 df.shape
 df.columns
@@ -44,7 +45,7 @@ df['radar_probability'] = df['essay'].apply(get_ai_generated_probability)
 df.columns
 
 # Save the updated dataset to CSV
-df.to_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_MAGE_with_radar_d2.csv", index=False)
+df.to_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\test_ra_rl.csv", index=False)
 
 
 
