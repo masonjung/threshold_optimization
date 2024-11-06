@@ -10,7 +10,7 @@ df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimizat
 probability_columns = [
     'roberta_base_openai_detector_probability',
     'roberta_large_openai_detector_probability',
-    'radar_probability'
+    # 'radar_probability'
 ]
 
 # Remove the top 1% longest texts
