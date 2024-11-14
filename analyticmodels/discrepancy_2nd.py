@@ -5,7 +5,7 @@ import numpy as np
 import itertools
 from scipy.stats import mannwhitneyu
 
-# Load the dataset
+# Load the dataset_train
 df = pd.read_csv(r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets\Training_dataset\Train_RAID_MAGE_d3.csv")
 
 def calculate_greatest_difference(df, feature_columns, probability_column, quantile_range=(0.25, 0.75)):
