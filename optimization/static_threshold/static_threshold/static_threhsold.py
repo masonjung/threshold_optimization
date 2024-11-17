@@ -1,0 +1,1 @@
+static_threhold = 0.5
