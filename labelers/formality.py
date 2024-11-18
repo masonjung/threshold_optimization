@@ -1,11 +1,18 @@
-import spacy
-# import pandas as pd
-# Load spaCy model
-nlp = spacy.load("en_core_web_sm")
+import pandas as pd
+import nltk
+from nltk.corpus import wordnet as wn
+from nltk import pos_tag, word_tokenize
 
+# Download required NLTK data
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+
+# Function to calculate formality score using NLTK
 def calculate_formality_score(text):
-    # Process the text with spaCy
-    doc = nlp(text)
+    # Tokenize text and initialize counters for each word class
+    words = word_tokenize(text)
+    total_words = len(words)
 
     # Initialize counters for each word class
     noun_count = 0
@@ -16,28 +23,28 @@ def calculate_formality_score(text):
     verb_count = 0
     adverb_count = 0
     interjection_count = 0
-    total_words = 0
 
-    # Count occurrences of each part of speech
-    for token in doc:
-        if token.is_alpha:  # Only consider alphabetical words
-            total_words += 1
-            if token.pos_ == "NOUN":
-                noun_count += 1
-            elif token.pos_ == "ADJ":
-                adjective_count += 1
-            elif token.pos_ == "ADP":  # Prepositions are tagged as "ADP" in spaCy
-                preposition_count += 1
-            elif token.pos_ == "DET" and token.lower_ in {"the", "a", "an"}:
-                article_count += 1
-            elif token.pos_ == "PRON":
-                pronoun_count += 1
-            elif token.pos_ == "VERB":
-                verb_count += 1
-            elif token.pos_ == "ADV":
-                adverb_count += 1
-            elif token.pos_ == "INTJ":
-                interjection_count += 1
+    # POS tagging using NLTK
+    pos_tags = pos_tag(words)
+
+    # Count occurrences of each part of speech using POS tags
+    for word, tag in pos_tags:
+        if tag.startswith('NN'):
+            noun_count += 1
+        elif tag.startswith('JJ'):
+            adjective_count += 1
+        elif tag == 'IN':  # Prepositions
+            preposition_count += 1
+        elif word.lower() in {"the", "a", "an"}:
+            article_count += 1
+        elif tag.startswith('PRP'):
+            pronoun_count += 1
+        elif tag.startswith('VB'):
+            verb_count += 1
+        elif tag.startswith('RB'):
+            adverb_count += 1
+        elif tag == 'UH':
+            interjection_count += 1
 
     # Calculate formal and informal scores
     formal_score = (noun_count + adjective_count + preposition_count + article_count)
@@ -49,9 +56,7 @@ def calculate_formality_score(text):
     else:
         f_score = 50  # Neutral score if text is empty or contains no valid words
 
-    return f_score # 50 is for formal/informal & above 60 is highly formaly
-
-
+    return f_score  # 50 is for formal/informal & above 60 is highly formal
 
 # Create a DataFrame with 20 example essays
 essays = [
