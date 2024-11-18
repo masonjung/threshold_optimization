@@ -12,3 +12,6 @@ OpenAI's use of AUROC and FPR-based optimization highlights the foundational lim
 Our Optimized Approach Using Fairness Metrics and F1 Score:
 
 This project proposes a refined threshold optimization method that integrates fairness metrics with the F1 score to achieve a more balanced and equitable model performance. By assigning different thresholds to different groups, we aim to optimize both fairness and accuracy without disproportionately sacrificing key metrics like TPR. Although our research focuses on text data, this approach is versatile and applicable to various domains, including image, audio, video, and multimodal classification tasks that rely on probabilistic outputs. We anticipate that this technology will be valuable across multiple deployment scenarios, enhancing both the fairness and effectiveness of machine learning models in diverse applications.
+
+
+Add some logos
