@@ -34,13 +34,14 @@ for i, ai_written in enumerate([1, 0]):
     for length_category, color in zip(['short', 'medium', 'long'], ['red', 'green', 'blue']):
         # Filter by AI_written and text length category
         df_subset = df_filtered[(df_filtered['AI_written'] == ai_written) & (df_filtered['text_length_category'] == length_category)]
-        label = f"{length_category.capitalize()} Text"
+        label = f"{length_category.capitalize()} text"
         sns.histplot(df_subset['combined_probability'], ax=ax, kde=False, bins=25, color=color, alpha=0.1, label=label, stat='percent')
-        sns.kdeplot(df_subset['combined_probability'], ax=ax, color=color, linewidth=2, linestyle='-', label=f"{label} (Smoothed)", bw_adjust=0.02, clip=(0, 1))
+        sns.kdeplot(df_subset['combined_probability'], ax=ax, color=color, linewidth=2, linestyle='-', bw_adjust=0.02, clip=(0, 1))
+        # sns.kdeplot(df_subset['combined_probability'], ax=ax, color=color, linewidth=2, linestyle='-', label=f"{label} (Smoothed)", bw_adjust=0.02, clip=(0, 1))
     
     # Draw a static threshold line
     threshold = 0.5
-    ax.axvline(x=threshold, color='black', linestyle='--', linewidth=2, label='Threshold = 0.5')
+    ax.axvline(x=threshold, color='black', linestyle='-', linewidth=3, label='Static threshold')
 
     # Draw adaptive threshold lines for each group
     adaptive_thresholds = {
@@ -50,17 +51,22 @@ for i, ai_written in enumerate([1, 0]):
     }
     for length_category, linestyle, color in zip(['short', 'medium', 'long'], [':', '-.', '--'], ['red', 'green', 'blue']):
         adaptive_threshold = adaptive_thresholds[length_category]
-        ax.axvline(x=adaptive_threshold, color=color, linestyle=linestyle, linewidth=2, label=f'Adaptive Threshold ({length_category.capitalize()}) = {adaptive_threshold:.4f}')
+        ax.axvline(x=adaptive_threshold, color=color, linestyle=linestyle, linewidth=2, label=f'Adaptive threshold for {length_category} text')
+        # ax.axvline(x=adaptive_threshold, color=color, linestyle=linestyle, linewidth=2, label=f'Adaptive Threshold for ({length_category.capitalize()}) = {adaptive_threshold:.4f}')
+
 
     # Set labels and title for each subplot
-    ax.set_ylabel('Percentage')
-    title = 'AI-written Text' if ai_written == 1 else 'Human-written Text'
-    ax.set_title(f'{title}')
+    ax.set_ylabel('Percentage (%)', size = 16)
+    title = 'AI-written text' if ai_written == 1 else 'Human-written text'
+    # ax.set_title(f'{title}')
+
+    # Adjust text position to the left upper side of the box
+    ax.text(0.01, 0.95, title, horizontalalignment='left', verticalalignment='top', transform=ax.transAxes, fontsize=14, bbox=dict(facecolor='white', alpha=0.0))
     ax.legend(loc='upper right')
 
 # Set common x-axis label
-plt.xlabel('Probability of AI-generated Text')
-plt.xticks(np.arange(0.1, 1.1, 0.1))
+plt.xlabel('Probability of AI-generated text', size = 16)
+plt.xticks(np.arange(0.0, 1.1, 0.1))
 
 # Adjust layout and show the plots
 plt.tight_layout()
