@@ -1,26 +1,28 @@
 # this is for the sentiment
-
 import pandas as pd
-
-
 from transformers import pipeline
 from huggingface_hub import login
+import torch
 
 token = "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"
 login(token, add_to_git_credential=True)
 
+class SentimentAnalysis:
+    def __init__(self):
+        # Load a pre-trained sentiment analysis model from Hugging Face
+        #self.device = torch.cuda.is_available() and 0 or -1
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.sentiment_analyzer = pipeline('sentiment-analysis', 
+                                            model = 'distilbert-base-uncased-finetuned-sst-2-english',
+                                            device = self.device)
 
-# Load a pre-trained sentiment analysis model from Hugging Face
-sentiment_analyzer = pipeline('sentiment-analysis', model='distilbert-base-uncased-finetuned-sst-2-english')
-
-
-# Define a function to classify sentiment using the Hugging Face model
-def classify_sentiment_transformers(text):
-    # Truncate the text to fit the model's maximum token length
-    if len(text) > 512:
-        text = text[:512]
-    result = sentiment_analyzer(text)[0]
-    return result['label'], result['score']  # Return both label and confidence score
+    # Define a function to classify sentiment using the Hugging Face model
+    def classify_sentiment_transformers(self, text):
+        # Truncate the text to fit the model's maximum token length
+        if len(text) > 512:
+            text = text[:512]
+        result = self.sentiment_analyzer(text)[0]
+        return result['label'], result['score']  # Return both label and confidence score
 
 
 if __name__ == "__main__":
