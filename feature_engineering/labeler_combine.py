@@ -7,7 +7,7 @@ from tqdm import tqdm
 tqdm.pandas()
 
 # path of the file
-path = '/Users/cynthia/Documents/MIT/'
+path = '/Users/Cynthia/Documents/MIT/'
 load_file = 'roft.csv'
 save_file = 'roft_features.csv'
 
