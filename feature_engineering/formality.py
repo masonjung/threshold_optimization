@@ -9,6 +9,7 @@ nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
 
 # Function to calculate formality score using NLTK
+
 def calculate_formality_score(text):
     # Tokenize text and initialize counters for each word class
     words = word_tokenize(text)
@@ -58,34 +59,37 @@ def calculate_formality_score(text):
 
     return f_score  # 50 is for formal/informal & above 60 is highly formal
 
-# Create a DataFrame with 20 example essays
-essays = [
-    "The quick brown fox jumps over the lazy dog.",
-    "This essay will discuss the significance of sustainable development.",
-    "John went to the store and bought some apples.",
-    "The project was completed on time, with all stakeholders involved.",
-    "In this modern era, technological advancements shape our society.",
-    "The cat sat on the mat, and everyone was happy.",
-    "Global warming is one of the most pressing issues of our time.",
-    "The experiment concluded with fascinating results.",
-    "He is a great friend, always there when you need him.",
-    "Artificial intelligence can revolutionize various industries.",
-    "As the sun set, they walked along the beach.",
-    "The government has introduced new policies to combat climate change.",
-    "Education plays a vital role in personal and professional development.",
-    "After a long day, she enjoyed a peaceful evening at home.",
-    "The conference highlighted key challenges in cybersecurity.",
-    "She was thrilled to receive the award for her hard work.",
-    "The economic implications of the policy were profound.",
-    "He quickly realized the importance of teamwork.",
-    "This analysis aims to uncover trends in social behavior.",
-    "The best way to achieve success is through hard work and dedication."
-]
 
-df = pd.DataFrame(essays, columns=["Essay"])
+if __name__ == "__main__":
+    if __name__ == "__main__":
+        # Create a DataFrame with 20 example essays
+        essays = [
+            "The quick brown fox jumps over the lazy dog.",
+            "This essay will discuss the significance of sustainable development.",
+            "John went to the store and bought some apples.",
+            "The project was completed on time, with all stakeholders involved.",
+            "In this modern era, technological advancements shape our society.",
+            "The cat sat on the mat, and everyone was happy.",
+            "Global warming is one of the most pressing issues of our time.",
+            "The experiment concluded with fascinating results.",
+            "He is a great friend, always there when you need him.",
+            "Artificial intelligence can revolutionize various industries.",
+            "As the sun set, they walked along the beach.",
+            "The government has introduced new policies to combat climate change.",
+            "Education plays a vital role in personal and professional development.",
+            "After a long day, she enjoyed a peaceful evening at home.",
+            "The conference highlighted key challenges in cybersecurity.",
+            "She was thrilled to receive the award for her hard work.",
+            "The economic implications of the policy were profound.",
+            "He quickly realized the importance of teamwork.",
+            "This analysis aims to uncover trends in social behavior.",
+            "The best way to achieve success is through hard work and dedication."
+        ]
 
-# Apply the formality score calculation to each essay
-df["F-score"] = df["Essay"].apply(calculate_formality_score)
+        df = pd.DataFrame(essays, columns=["Essay"])
 
-# Display the DataFrame
-print(df)
+        # Apply the formality score calculation to each essay
+        df["F-score"] = df["Essay"].apply(calculate_formality_score)
+
+        # Display the DataFrame
+        print(df)

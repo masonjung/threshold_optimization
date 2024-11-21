@@ -22,8 +22,10 @@ def classify_sentiment_transformers(text):
     result = sentiment_analyzer(text)[0]
     return result['label'], result['score']  # Return both label and confidence score
 
-# Apply sentiment analysis to each essay in the DataFrame and split into two columns: sentiment_label and sentiment_score
-df[['sentiment_label', 'sentiment_score']] = df['essay'].apply(lambda x: pd.Series(classify_sentiment_transformers(x)))
 
-# Display the DataFrame with the new sentiment columns
-print(df[['essay', 'sentiment_label', 'sentiment_score']])
+if __name__ == "__main__":
+    # Apply sentiment analysis to each essay in the DataFrame and split into two columns: sentiment_label and sentiment_score
+    df[['sentiment_label', 'sentiment_score']] = df['essay'].apply(lambda x: pd.Series(classify_sentiment_transformers(x)))
+
+    # Display the DataFrame with the new sentiment columns
+    print(df[['essay', 'sentiment_label', 'sentiment_score']])
