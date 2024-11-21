@@ -11,7 +11,7 @@ path = '/Users/cynthia/Documents/MIT/'
 load_file = 'roft.csv'
 save_file = 'roft_features.csv'
 
-# pre-processing the fil
+# pre-processing the file
 df = pd.read_csv(path + load_file)
 df['label'] = df['model'].apply(lambda x: 0 if x in ['human', 'baseline'] else 1)
 df.rename(columns={'prompt_body': 'text'}, inplace=True) #change the name of the column
