@@ -1,15 +1,29 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 
 # Read the data from the file
-df = pd.read_csv('C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_MAGE_d3.csv')
-df.shape
+df_train = pd.read_csv('C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv')
+df_test = pd.read_csv('C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_features.csv')
 
-# columns that I neee to have
-columns = ['essay', 'AI_written', 'radar_probability', 'roberta_base_openai_detector_probability', 'roberta_large_openai_detector_probability']
+# check the shape
+print(df_train.shape)
+print(df_test.shape)
 
-# Drop the columns that are not needed
-df = df.drop(columns=[col for col in df.columns if col not in columns])
+# personality
+personality_list = ['extroversion', 'neuroticism', 'agreeableness', 'conscientiousness', 'openness']
+# Create a new column 'personality' with the greatest probability
+df_train['personality'] = df_train[personality_list].idxmax(axis=1)
+df_test['personality'] = df_test[personality_list].idxmax(axis=1)
 
-# save the cleaned data
-df.to_csv('C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_dataset_d3_ready.csv', index=False)
+# Display the first few rows to verify the new column
+print(df_train.head())
+print(df_test.head())
+
+df_test["personality"].value_counts()
+
+# Save the new data to a new file
+# df_train.to_csv('C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv', index=False)
+# df_test.to_csv('C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_features.csv', index=False)
+
+
+
+df_train.columns
