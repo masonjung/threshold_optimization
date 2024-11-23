@@ -279,7 +279,7 @@ class ThresholdOptimizer:
 ######################## RUN
 
 # import df
-dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_Mage_d3.csv")
+dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv")
 
 #split by train and tesxt <- change this later
 df = dataset.sample(frac=0.8, random_state=42)
@@ -287,20 +287,32 @@ df_test = dataset.drop(df.index)
 
 
 
-# Create group labels
+# length
 length_groups = pd.cut(
-    df['num_chars'],
+    df['text_length'],
     bins=[0, 1000, 2500, np.inf],
     labels=['short', 'medium', 'long']
 ).astype(str).values  # Length-based groups
 
-edu_groups = df['educational_level'].astype(str).values  # Educational level groups
-sentiment_groups = df['sentiment_label'].astype(str).values  # Sentiment groups
+# sentiment
+sentiment_groups = df['sentiment_label'].astype(str).values
+
+# formality
+formality_groups = pd.cut(
+    df['formality'],
+    bins=[0, 50, np.inf],
+    labels=['informal', 'formal']
+).astype(str).values 
+
+# personality
+personality_groups = df['personality'].astype(str).values
+
+
 
 # Combine groups into a single group label
 groups = pd.Series([
     f"{length}_{edu}_{sent}"
-    for length, edu, sent in zip(length_groups, edu_groups, sentiment_groups)
+    for length, edu, sent in zip(length_groups, formality_groups, sentiment_groups)
 ]).values
 
 # Prepare true labels and predicted probabilities
