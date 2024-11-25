@@ -73,8 +73,8 @@ class ThresholdOptimizer:
         y_pred_proba,
         groups,
         initial_thresholds,
-        learning_rate=10**-7,   # Adjusted learning rate
-        max_iterations=10**7,
+        learning_rate=10**-2,   # Adjusted learning rate
+        max_iterations=10**5,
         acceptable_fpr_disparity=0.2,
         acceptable_tpr_disparity=0.2,
         min_acc_threshold=0.5,
@@ -446,6 +446,6 @@ for source in unique_sources:
 
 
 
-print(improve_df)
+# print(improve_df)
 
 
