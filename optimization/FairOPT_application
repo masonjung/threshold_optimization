@@ -282,7 +282,7 @@ class ThresholdOptimizer:
 dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv")
 
 #split by train and tesxt <- change this later
-df = dataset.sample(frac=0.1, random_state=42)
+df = dataset.sample(frac=1, random_state=42)
 
 
 
@@ -327,12 +327,14 @@ optimizer = ThresholdOptimizer(
     y_pred_proba,
     groups,
     initial_thresholds,
-    learning_rate=10**-3,
-    max_iterations=10**8,
+    learning_rate=10**-2,
+    max_iterations=10**6,
     acceptable_fpr_disparity=0.2,  # Adjust based on your fairness criteria
     acceptable_tpr_disparity=0.2,  # Adjust accordingly
     min_acc_threshold=0.5,         # Set realistic minimum accuracy
-    min_f1_threshold=0.5           # Set realistic minimum F1 score
+    min_f1_threshold=0.5,           # Set realistic minimum F1 score
+    tolerance=1e-5,  # Decrease tolerance for stricter convergence criteria
+    penalty=20  # Increase penalty to enforce stricter updates
 )
 
 # Optimize thresholds using gradient-based method
@@ -443,6 +445,6 @@ for source in unique_sources:
 
 
 
-
+print(improve_df)
 
 
