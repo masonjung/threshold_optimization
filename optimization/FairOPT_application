@@ -287,25 +287,23 @@ df = dataset.sample(frac=1, random_state=42)
 
 
 
-# length
+# Length-based groups
 length_groups = pd.cut(
-    df['text_length'],
+    df['text_length'].dropna(),
     bins=[0, 1000, 2500, np.inf],
     labels=['short', 'medium', 'long']
-).astype(str).values  # Length-based groups
+).astype(str).values
 
-# sentiment
-sentiment_groups = df['sentiment_label'].astype(str).values
-
-# formality
+# Formality-based groups
 formality_groups = pd.cut(
-    df['formality'],
+    df['formality'].dropna(),
     bins=[0, 50, np.inf],
     labels=['informal', 'formal']
-).astype(str).values 
+).astype(str).values
 
-# personality
-personality_groups = df['personality'].astype(str).values
+# Sentiment and personality groups (ensure no NaN)
+sentiment_groups = df['sentiment_label'].fillna('neutral').astype(str).values
+personality_groups = df['personality'].fillna('unknown').astype(str).values
 
 
 
@@ -317,7 +315,7 @@ groups = pd.Series([
 
 # Prepare true labels and predicted probabilities
 y_true = df['AI_written'].apply(lambda x: 1 if x == 'AI' else 0).values  # True labels
-y_pred_proba = df['roberta_base_openai_detector_probability'].values     # Predicted probabilities the probability is learned from one model
+y_pred_proba = df['roberta_large_openai_detector_probability'].values     # Predicted probabilities the probability is learned from one model
 
 # Initial thresholds (set to 0.5 for all groups)
 initial_thresholds = {group: 0.5 for group in np.unique(groups)}
@@ -329,7 +327,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=10**6,
+    max_iterations=10**4,
     acceptable_fpr_disparity=0.2,  # Adjust based on your fairness criteria
     acceptable_tpr_disparity=0.2,  # Adjust accordingly
     min_acc_threshold=0.5,         # Set realistic minimum accuracy
@@ -435,17 +433,18 @@ for source in unique_sources:
         print(f"Accuracy: {test_accuracy:.4f}")
         print(f"False Positive Rate (FPR): {test_fpr:.4f}")
 
-        # store the output as csv file
-        improve_df = pd.DataFrame({
-            'text': source_dataset['text'],
-            'AI_written': source_dataset['AI_written'],
-            'AI_written_prediction': test_y_pred,
-            'AI_written_probability': test_y_pred_proba
-        })
+        # store the printed things in txt and threshold for each
+        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results.txt", "a") as f:
+            f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
+            f.write(f"Accuracy: {test_accuracy:.4f}\n")
+            f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
+            f.write(f"Thresholds:\n")
+            for group, threshold in thresholds.items():
+                f.write(f"Group: {group}, Threshold: {threshold:.7f}\n")
+
+        
+        
 
 
-
-
-# print(improve_df)
 
 
