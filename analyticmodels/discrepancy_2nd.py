@@ -4,9 +4,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 import itertools
 from scipy.stats import mannwhitneyu
+import os
 
 # Load the dataset_train
-df = pd.read_csv(r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets\Training_dataset\Train_RAID_MAGE_d3.csv")
+df = pd.read_csv(r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets\train_features.csv")
+
+# explore file in Programming
+# List all files in the Programming directory
+# programming_dir = r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets"
+# files_in_programming = os.listdir(programming_dir)
+
+# # Print the list of files
+# print("Files in Programming directory:")
+# for file in files_in_programming:
+#     print(file)
+
+df.columns
+
 
 def calculate_greatest_difference(df, feature_columns, probability_column, quantile_range=(0.25, 0.75)):
     # Define the quantile limits
@@ -53,7 +67,7 @@ def calculate_greatest_difference(df, feature_columns, probability_column, quant
     return best_combination, max_diff, min_p_value
 
 # List of features and probabilities to analyze
-features_to_analyze = ['educational_level', 'sentiment_label']
+features_to_analyze = ['personality', 'sentiment_label', "formality_label", "length_label"]
 probability_columns = [
     'roberta_base_openai_detector_probability',
     'roberta_large_openai_detector_probability',
