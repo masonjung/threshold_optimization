@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import itertools
-from scipy.stats import mannwhitneyu
+from scipy.stats import mannwhitneyu, ks_2samp
 
 class FairThresholdAnalysis:
     def __init__(self, filepath, feature_columns, probability_columns, quantile_range=(0.25, 0.75)):
@@ -22,8 +22,8 @@ class FairThresholdAnalysis:
             # Filter dataset to focus on the "gray zone" (probability values between quantile_range)
             lower_quantile, upper_quantile = self.quantile_range
             df_filtered = self.df[
-                (self.df[prob_col] >= lower_quantile) & 
-                (self.df[prob_col] <= upper_quantile)
+                (self.df[prob_col] > lower_quantile) & 
+                (self.df[prob_col] < upper_quantile)
             ]
 
             # Group by the feature columns
@@ -59,14 +59,17 @@ class FairThresholdAnalysis:
         # Sort results by median difference to determine the biggest, second biggest, and lowest discrepancies
         self.results.sort(key=lambda x: x['median_difference'], reverse=True)
 
+
+
     def plot_individual_kde(self, quantile_range=(0.25, 0.75)):
         # Create a figure with subplots for individual KDE plots
-        fig, axes = plt.subplots(1, 3, figsize=(24, 8), sharey=True)
-        colors = ['#1f77b4', '#ff7f0e', '#2ca02c']  # Colors for different discrepancies
-        contrast_colors = ['#4f79ff', '#ff4f0e', '#2c7f4c']  # Colors to create contrast between groups
-        labels = ['biggest', 'second biggest', 'lowest']
+        fig, axes = plt.subplots(1, 4, figsize=(32, 8), sharey=True)  # Updated to 4 subplots
+        colors = ['#d62728', '#e74c3c', '#90ee90', '#2ca02c']  # Strong red, red-orange, light green, green
+        contrast_colors = ['#ff4c4c', '#ff6347', '#a3e4a3', '#3cb371']  # Contrasting shades for each group
 
-        for idx, result in enumerate(self.results[:3]):
+        labels = ['biggest', 'second biggest', 'second lowest', 'lowest']  # Updated labels
+
+        for idx, result in enumerate(self.results[:4]):
             # Extract information from the result
             prob_col = result['probability_column']
             val1, val2 = result['combination']
@@ -100,18 +103,21 @@ class FairThresholdAnalysis:
                 continue
 
             # Plotting KDE for both groups with contrasting colors
-            sns.kdeplot(group1_data_gray_zone, label='Group 1', color=colors[idx], linestyle='-', fill=True, alpha=0.3, bw_adjust=1, ax=axes[idx])
-            sns.kdeplot(group2_data_gray_zone, label='Group 2', color=contrast_colors[idx], linestyle='--', fill=True, alpha=0.3, bw_adjust=1, ax=axes[idx])
+            sns.kdeplot(group1_data_gray_zone, label='Group 1', color=colors[idx], linestyle='-', fill=True, alpha=0.8, bw_adjust=0.9, ax=axes[idx])
+            sns.kdeplot(group2_data_gray_zone, label='Group 2', color=contrast_colors[idx], linestyle='--', fill=True, alpha=0.8, bw_adjust=0.9, ax=axes[idx])
             axes[idx].set_title(f'{labels[idx].capitalize()} Discrepancy', fontsize=18, weight='bold')
             axes[idx].set_xlabel(f'Probability Score ({quantile_range[0]} - {quantile_range[1]})', fontsize=14)
+            axes[idx].set_xlim(lower_quantile, upper_quantile)  # Set x-axis limit to the quantile range
             axes[idx].text(0.5, 1.1, f'Group 1: {group1_info}\nGroup 2: {group2_info}', ha='center', va='top', transform=axes[idx].transAxes, fontsize=12, bbox=dict(facecolor='white', alpha=0.5, boxstyle='round,pad=0.5'))
             if idx == 0:
                 axes[idx].set_ylabel('Density', fontsize=14)
             axes[idx].legend(fontsize=12)
 
         plt.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.suptitle('KDE Plots for Biggest, Second Biggest, and Lowest Discrepancies', fontsize=22, weight='bold')
+        plt.suptitle('KDE Plots for Biggest, Second Biggest, Second Lowest, and Lowest Discrepancies', fontsize=22, weight='bold')
         plt.show()
+
+
 
     def analyze_and_plot(self, quantile_ranges=[(0.25, 0.75)]):
         # Calculate discrepancies
