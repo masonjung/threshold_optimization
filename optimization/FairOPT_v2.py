@@ -1,7 +1,7 @@
 # Libraries
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, roc_curve, roc_auc_score
 
 
 # Interpreting equaltion
@@ -65,7 +65,52 @@ def Demographic_Disparity(confusion_matrix_df):
             print(f"Fairness between Group {group_a} and Group {group_b}: {fair}")
     return fair
 
+def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_limit=0.1):
+    # Load the dataset
+    df = pd.read_csv(file_path)
 
+    # Extract true labels and predicted probabilities
+    true_labels = df[true_label_column]
+    avg_pred = df[pred_columns].mean(axis=1)
+
+    # Compute the ROC curve and AUROC
+    fpr, tpr, thresholds = roc_curve(true_labels, avg_pred)
+    auroc = roc_auc_score(true_labels, avg_pred)
+
+    # Filter thresholds for FPR < fpr_limit
+    valid_indices = np.where(fpr < fpr_limit)[0]
+
+    # Identify the optimal threshold: highest TPR under FPR constraint
+    optimal_idx = valid_indices[np.argmax(tpr[valid_indices])]
+    optimal_threshold = thresholds[optimal_idx]
+
+    # Compile results
+    results = {
+        "Optimal Threshold": optimal_threshold,
+        "AUROC": auroc,
+        "FPR at Optimal Threshold": fpr[optimal_idx],
+        "TPR at Optimal Threshold": tpr[optimal_idx]
+    }
+
+    return results
+
+
+# Run the optimization method 2
+file_path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_Mage_d3.csv"
+true_label_column = 'AI_written'
+pred_columns = [
+    # 'roberta_base_openai_detector_probability',
+    'roberta_large_openai_detector_probability',
+    # 'radar_probability'
+]
+
+results = calculate_optimal_threshold(file_path, true_label_column, pred_columns)
+print(results)
+
+AUROC_threshold = results["Optimal Threshold"]
+print(AUROC_threshold)
+
+# Threshold Optimizer
 class ThresholdOptimizer:
     def __init__(
         self,
@@ -184,7 +229,6 @@ class ThresholdOptimizer:
 
     # check fairness 
     def check_fairness(self, confusion_matrix_df):        
-        
         # Define acceptable disparity thresholds
         fpr_values = confusion_matrix_df['FPR'].fillna(0).values
         tpr_values = confusion_matrix_df['TPR'].fillna(0).values
@@ -327,7 +371,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=10**4,
+    max_iterations=10**2,
     acceptable_fpr_disparity=0.2,  # Adjust based on your fairness criteria
     acceptable_tpr_disparity=0.2,  # Adjust accordingly
     min_acc_threshold=0.5,         # Set realistic minimum accuracy

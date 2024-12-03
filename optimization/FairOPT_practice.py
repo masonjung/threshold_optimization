@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, roc_curve, roc_auc_score
 
 
 # Interpreting equaltion
@@ -63,7 +63,6 @@ def Demographic_Disparity(confusion_matrix_df):
             fair = equation_fairness(fpr_a, fpr_b)
             print(f"Fairness between Group {group_a} and Group {group_b}: {fair}")
     return fair
-
 
 class ThresholdOptimizer:
     def __init__(
@@ -328,7 +327,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-3,
-    max_iterations=10**8,
+    max_iterations=10**2,
     acceptable_fpr_disparity=0.2,  # Adjust based on your fairness criteria
     acceptable_tpr_disparity=0.2,  # Adjust accordingly
     min_acc_threshold=0.5,         # Set realistic minimum accuracy

@@ -44,6 +44,8 @@ pred_columns = [
 results = calculate_optimal_threshold(file_path, true_label_column, pred_columns)
 print(results)
 
+AUROC_threshold = results["Optimal Threshold"]
+print(AUROC_threshold)
 
 import matplotlib.pyplot as plt
 
