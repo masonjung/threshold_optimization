@@ -18,7 +18,7 @@ model = AutoModelForCausalLM.from_pretrained(
     use_auth_token=True
 )
 
-# Import training dataset
+####################### IMPORT DATASET SHOULD BE CHANGED
 df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_Mage_d3.csv")
 
 # Sample a small fraction of the dataset
