@@ -1,0 +1,32 @@
+
+Discrepancy 1:
+  Detector: roberta_large_openai_detector_probability
+  Group 1: {'personality': 'extroversion', 'sentiment_label': 'POSITIVE', 'formality_label': 'informal', 'length_label': 'short'}
+  Group 2: {'personality': 'openness', 'sentiment_label': 'NEGATIVE', 'formality_label': 'informal', 'length_label': 'mid'}
+  KS Statistic: 0.5385
+  p-value: 3.9014e-02
+  Discrepancy Percentage: 53.85%
+
+Discrepancy 2:
+  Detector: roberta_large_openai_detector_probability
+  Group 1: {'personality': 'extroversion', 'sentiment_label': 'NEGATIVE', 'formality_label': 'formal', 'length_label': 'mid'}
+  Group 2: {'personality': 'openness', 'sentiment_label': 'NEGATIVE', 'formality_label': 'informal', 'length_label': 'long'}
+  KS Statistic: 0.4671
+  p-value: 2.1537e-02
+  Discrepancy Percentage: 46.71%
+
+Discrepancy 3:
+  Detector: roberta_large_openai_detector_probability
+  Group 1: {'personality': 'neuroticism', 'sentiment_label': 'NEGATIVE', 'formality_label': 'formal', 'length_label': 'short'}
+  Group 2: {'personality': 'openness', 'sentiment_label': 'NEGATIVE', 'formality_label': 'formal', 'length_label': 'mid'}
+  KS Statistic: 0.1278
+  p-value: 1.7952e-02
+  Discrepancy Percentage: 12.78%
+
+Discrepancy 4:
+  Detector: roberta_large_openai_detector_probability
+  Group 1: {'personality': 'neuroticism', 'sentiment_label': 'POSITIVE', 'formality_label': 'formal', 'length_label': 'short'}
+  Group 2: {'personality': 'openness', 'sentiment_label': 'NEGATIVE', 'formality_label': 'formal', 'length_label': 'mid'}
+  KS Statistic: 0.1142
+  p-value: 3.5034e-02
+  Discrepancy Percentage: 11.42%

@@ -1,8 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import itertools
 from scipy.stats import ks_2samp
+import numpy as np
 
 class FairThresholdAnalysis:
     def __init__(self, filepath, feature_columns, probability_columns, quantile_range=(0.25, 0.75)):
@@ -67,14 +67,14 @@ class FairThresholdAnalysis:
             print(f"  p-value: {p_value:.4e}")
             print(f"  Discrepancy Percentage: {discrepancy_percentage:.2f}%")
 
-    def plot_individual_kde(self, quantile_range=(0.25, 0.75)):
+    def plot_individual_cdf(self, quantile_range=(0.25, 0.75)):
         top_2 = self.results[:2]
         bottom_2 = self.results[-2:]
         selected_results = top_2 + bottom_2
 
         fig, axes = plt.subplots(2, 2, figsize=(15, 10), sharey=True)
 
-        colors = ['red', 'orangered', 'seagreen', 'green']  # Colors for high to low discrepancies
+        colors = ['red', 'blue']  # Colors for Group 1 and Group 2
 
         for idx, result in enumerate(selected_results):
             prob_col = result['probability_column']
@@ -101,18 +101,26 @@ class FairThresholdAnalysis:
                 print(f"Not enough data points for meaningful plot in discrepancy {idx + 1}.")
                 continue
 
-            sns.kdeplot(group1_data, label='Group 1', fill=True, alpha=0.8, color=colors[idx], ax=axes[idx // 2, idx % 2])
-            sns.kdeplot(group2_data, label='Group 2', fill=True, alpha=0.8, color=colors[idx], linestyle='--', ax=axes[idx // 2, idx % 2])
-            axes[idx // 2, idx % 2].set_title(f'Discrepancy {idx + 1}', fontsize=14)
-            axes[idx // 2, idx % 2].set_xlabel('Probability Score', fontsize=12)
-            axes[idx // 2, idx % 2].set_xlim(lower_quantile, upper_quantile)
+            # Calculate empirical CDFs
+            group1_sorted = np.sort(group1_data)
+            group2_sorted = np.sort(group2_data)
+            group1_cdf = np.arange(1, len(group1_sorted) + 1) / len(group1_sorted)
+            group2_cdf = np.arange(1, len(group2_sorted) + 1) / len(group2_sorted)
+
+            # Plot CDFs
+            ax = axes[idx // 2, idx % 2]
+            ax.step(group1_sorted, group1_cdf, color=colors[0], where='post', label='Group 1')
+            ax.step(group2_sorted, group2_cdf, color=colors[1], where='post', linestyle='--', label='Group 2')
+            ax.set_title(f'Discrepancy {idx + 1}', fontsize=14)
+            ax.set_xlabel('Probability Score', fontsize=12)
+            ax.set_xlim(lower_quantile, upper_quantile)
 
             if idx == 0:
-                axes[idx // 2, idx % 2].set_ylabel('Density', fontsize=12)
+                ax.set_ylabel('Cumulative Probability', fontsize=12)
             else:
-                axes[idx // 2, idx % 2].set_ylabel('')
+                ax.set_ylabel('')
 
-            axes[idx // 2, idx % 2].legend(fontsize=10)
+            ax.legend(fontsize=10)
 
         plt.tight_layout()
         plt.show()
@@ -123,7 +131,7 @@ class FairThresholdAnalysis:
 
         for quantile_range in quantile_ranges:
             print(f"\nVisualizing for quantile range: {quantile_range}")
-            self.plot_individual_kde(quantile_range)
+            self.plot_individual_cdf(quantile_range)
 
         if self.results:
             biggest_discrepancy = self.results[0]
@@ -138,10 +146,10 @@ if __name__ == "__main__":
     filepath = r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets\train_features.csv"
     feature_columns = ['personality', 'sentiment_label', "formality_label", "length_label"]
     probability_columns = [
-        'roberta_base_openai_detector_probability',
+        #'roberta_base_openai_detector_probability',
         'roberta_large_openai_detector_probability',
-        'radar_probability'
+        #'radar_probability'
     ]
 
     analysis = FairThresholdAnalysis(filepath, feature_columns, probability_columns)
-    analysis.analyze_and_plot(quantile_ranges=[(0.1, 0.9)])
+    analysis.analyze_and_plot(quantile_ranges=[(0.00, 1.00)]) # 0.1 to 0.9 is a little misleading
