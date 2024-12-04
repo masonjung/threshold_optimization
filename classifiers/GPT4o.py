@@ -5,14 +5,11 @@ import pandas as pd
 
 
 # Import training dataset
-df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_Mage_d3.csv")
+df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv")
 
 # Sample a small fraction of the dataset
 df = df.sample(frac=0.0001)
 print(df.shape)
-
-
-df.columns
 
 
 # Probability from GPT-4
@@ -26,7 +23,7 @@ def get_ai_probability(text):
             messages=[
             {
                 "role": "system", 
-                "content": "You are an AI text detector that estimates the probability that a given text was written by a language model. Respond with a single probability value between 0 and 1, formatted to 7 decimal points."
+                "content": "You are an AI text detector that estimates the probability that a given text was written by an AI. Respond only with a single numerical probability value between 0 and 1, formatted to 7 decimal points."
             },
             {   
                 "role": "user", 
@@ -34,9 +31,9 @@ def get_ai_probability(text):
             }
             ]
         )
-        probability = response.choices[0].message.content.strip() 
-        return float(probability) 
-        # print(response)
+        # probability = response.choices[0].message.content.strip() 
+        # return float(probability) 
+        print(response)
         # print(response.choices[0]['message']['content'])
         # return float(response.choices[0]['message']['content'].strip())
     except Exception as e:
@@ -45,7 +42,11 @@ def get_ai_probability(text):
         return None
 
 # Apply the function to each row in the dataframe and create a new column
-df['GPT4_probability'] = df['essay'].apply(lambda x: get_ai_probability(x))
+df['GPT4o_probability'] = df['essay'].apply(lambda x: get_ai_probability(x))
 
 # Print the first few rows to verify results
-print(df[['essay', 'GPT4_probability']])
+print(df[['essay', 'GPT4o_probability']])
+
+# Save the dataframe to a new CSV file
+df.to_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features_with_gpt4o.csv", index=False)
+

@@ -6,6 +6,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # Initialize Llama Model
 model_id = "meta-llama/Meta-Llama-3-70B"
+# model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=True)
 
 # Check for CUDA availability
@@ -18,8 +19,9 @@ model = AutoModelForCausalLM.from_pretrained(
     use_auth_token=True
 )
 
-####################### IMPORT DATASET SHOULD BE CHANGED
-df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_Mage_d3.csv")
+
+# Dataset
+df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\training_features.csv")
 
 # Sample a small fraction of the dataset
 df = df.sample(frac=0.0001)
