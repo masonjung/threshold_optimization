@@ -9,7 +9,7 @@ print(df_train.shape)
 print(df_test.shape)
 
 
-df_train.columns
+df_train["AI_written"].value_counts()
 
 
 df_train["formality"].describe()
