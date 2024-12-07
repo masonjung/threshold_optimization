@@ -2,7 +2,7 @@ from sklearn.metrics import roc_curve, roc_auc_score
 import numpy as np
 import pandas as pd
 
-def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_limit=0.1):
+def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_limit=0.1): # change to 0.01 to get FPR < 0.01
     # Load the dataset
     df = pd.read_csv(file_path)
 

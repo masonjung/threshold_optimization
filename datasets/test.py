@@ -5,6 +5,7 @@ dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimi
 
 test_dataset = pd.read_csv(dataset_detectors)
 
+test_dataset.columns
 # test_dataset.shape
 # List of AI probability classifiers
 classifiers = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability']
@@ -51,4 +52,4 @@ print("\nMetrics by Source and Classifier:")
 for source, classifiers_metrics in metrics_by_source.items():
     for classifier, metrics in classifiers_metrics.items():
         for threshold, metric in metrics.items():
-            print(f"{source} & {classifier} & {threshold} & ACC: {metric['ACC']:.2f} & FPR: {metric['FPR']:.2f} \\\\")
+            print(f"{source} & {classifier} & {threshold} & ACC: {metric['ACC']:.3f} & FPR: {metric['FPR']:.3f} \\\\")
