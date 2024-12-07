@@ -1,10 +1,11 @@
 import pandas as pd
 
 # Read datasets
-dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\Test_d3_source.csv"
+dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv"
 
-test_dataset_three_RoBERTa_detectors = pd.read_csv(dataset_detectors)
+test_dataset = pd.read_csv(dataset_detectors)
 
+# test_dataset.shape
 # List of AI probability classifiers
 classifiers = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability']
 
@@ -41,10 +42,10 @@ def calculate_metrics_by_source(thresholds, data):
     return results
 
 # Example usage
-thresholds = [0.5, 0.998441517353058]
+thresholds = [0.5, 0.998441517353058] # we can try 0.9995323419570924 from FPR < 0.01 as well.
 
 # Calculate metrics by source and classifier for the specified thresholds
-metrics_by_source = calculate_metrics_by_source(thresholds, test_dataset_three_RoBERTa_detectors)
+metrics_by_source = calculate_metrics_by_source(thresholds, test_dataset)
 
 print("\nMetrics by Source and Classifier:")
 for source, classifiers_metrics in metrics_by_source.items():
