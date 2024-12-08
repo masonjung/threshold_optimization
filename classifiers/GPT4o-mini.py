@@ -42,10 +42,10 @@ def get_ai_probability(text):
         return None
 
 # Apply the function to each row in the dataframe and create a new column
-df['GPT4o_probability'] = df['essay'].apply(lambda x: get_ai_probability(x))
+df['GPT4o-mini_probability'] = df['essay'].apply(lambda x: get_ai_probability(x))
 
 # Print the first few rows to verify results
-print(df[['essay', 'GPT4o_probability']])
+print(df[['essay', 'GPT4o-mini_probability']])
 
 # Save the dataframe to a new CSV file
 df.to_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features_with_gpt4o.csv", index=False)
