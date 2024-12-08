@@ -43,7 +43,7 @@ def calculate_metrics_by_source(thresholds, data):
     return results
 
 # Example usage
-thresholds = [0.5, 0.998441517353058] # we can try 0.9995323419570924 from FPR < 0.01 as well.
+thresholds = [0.5, 0.998441517353058, 0.0002591597149148] # we can try 0.9995323419570924 from FPR < 0.01 as well.
 
 # Calculate metrics by source and classifier for the specified thresholds
 metrics_by_source = calculate_metrics_by_source(thresholds, test_dataset)

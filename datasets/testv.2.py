@@ -6,7 +6,7 @@ dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimi
 df = pd.read_csv(dataset_detectors)
 
 classifiers = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability']
-thresholds = [0.5, 0.998441517353058]
+thresholds = [0.5, 0.998441517353058, 0.0002591597149148]
 
 # Create feature-based groups
 length_groups = pd.cut(
