@@ -5,8 +5,9 @@ import numpy as np
 dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv"
 df = pd.read_csv(dataset_detectors)
 
+# Classifiers and thresholds
 classifiers = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability']
-thresholds = [0.5, 0.998441517353058, 0.0002591597149148]
+thresholds = [0.5, 0.998441517353058] # add this for Precision-Recall curve 0.0002591597149148
 
 # Create feature-based groups
 length_groups = pd.cut(
@@ -15,12 +16,7 @@ length_groups = pd.cut(
     labels=['short', 'medium', 'long']
 ).astype(str)
 
-formality_groups = pd.cut(
-    df['formality'].fillna(-1),
-    bins=[-1, 50, np.inf],
-    labels=['informal', 'formal']
-).astype(str)
-
+formality_groups = df['formality'].apply(lambda x: 'formal' if x > 50 else 'informal').astype(str)
 sentiment_groups = df['sentiment_label'].fillna('neutral').astype(str)
 personality_groups = df['personality'].fillna('unknown').astype(str)
 
@@ -32,7 +28,7 @@ df['personality_group'] = personality_groups
 def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
     """
     Calculates metrics by a specific group column (e.g., formality_group).
-    Returns: results[group_value][classifier][threshold_key] = {ACC, FPR, TP, TN, FP, FN}
+    Returns: results[group_value][classifier][threshold_key] = {TP, TN, FP, FN, ACC, FPR}
     """
     results = {}
     unique_groups = data[group_col].unique()
@@ -68,53 +64,53 @@ def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
                 FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
                 
                 results[grp][classifier][f'threshold_{i}'] = {
-                    'ACC': ACC,
-                    'FPR': FPR,
                     'TP': TP,
                     'TN': TN,
                     'FP': FP,
-                    'FN': FN
+                    'FN': FN,
+                    'ACC': ACC,
+                    'FPR': FPR
                 }
     return results
 
-def print_subgroup_discrepancies(metrics_dict, feature_name, classifiers, thresholds):
+def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
     """
-    Calculates and prints discrepancies in ACC and FPR between subgroups.
-    For binary subgroups (e.g., informal/formal), it's just the difference.
-    For multiple subgroups, we use max-min difference.
+    Calculates the biggest statistical parity discrepancy for each feature group.
     """
-    print(f"\n=== {feature_name} Subgroup Discrepancies ===")
-    # Extract all groups
+    discrepancies = {}
     groups = list(metrics_dict.keys())
     if len(groups) < 2:
-        print("Not enough subgroups to measure discrepancy.")
-        return
+        return discrepancies  # Not enough subgroups to measure discrepancy
     
     for classifier in classifiers:
         for i, threshold in enumerate(thresholds, 1):
-            threshold_key = f"threshold_{i}"
-            acc_values = []
-            fpr_values = []
+            threshold_key = f'threshold_{i}'
+            positive_rates = []
             
             for grp in groups:
                 clf_data = metrics_dict.get(grp, {}).get(classifier, {})
                 if threshold_key in clf_data:
-                    acc_values.append(clf_data[threshold_key]['ACC'])
-                    fpr_values.append(clf_data[threshold_key]['FPR'])
+                    TP = clf_data[threshold_key]['TP']
+                    FP = clf_data[threshold_key]['FP']
+                    FN = clf_data[threshold_key]['FN']
+                    TN = clf_data[threshold_key]['TN']
+                    
+                    total = TP + FP + FN + TN
+                    positive_rate = (TP + FP) / total if total > 0 else 0
+                    positive_rates.append(positive_rate)
             
-            if len(acc_values) < 2:
-                # Not enough data points across groups
+            if len(positive_rates) < 2:
                 continue
             
-            # Discrepancy as max-min
-            acc_discrepancy = max(acc_values) - min(acc_values)
-            fpr_discrepancy = max(fpr_values) - min(fpr_values)
+            statistical_discrepancy = max(positive_rates) - min(positive_rates)
             
-            print(f"Classifier: {classifier}, Threshold: {thresholds[i-1]:.4f}")
-            print(f"ACC Discrepancy (Max-Min): {acc_discrepancy:.3f}")
-            print(f"FPR Discrepancy (Max-Min): {fpr_discrepancy:.3f}")
+            if classifier not in discrepancies:
+                discrepancies[classifier] = {}
+            discrepancies[classifier][threshold_key] = {
+                'Statistical Discrepancy': statistical_discrepancy
+            }
+    return discrepancies
 
-# Now we loop over each dataset (source) and calculate discrepancies for each feature:
 feature_cols = {
     'Formality': 'formality_group',
     'Length': 'length_group',
@@ -122,9 +118,32 @@ feature_cols = {
     'Personality': 'personality_group'
 }
 
+# Calculate metrics and statistical discrepancies by source
+output_lines = []
 for source in df['source'].unique():
     source_data = df[df['source'] == source]
-    print(f"\n\n=== Dataset (Source): {source} ===")
+    output_lines.append(f"\n\n=== Dataset (Source): {source} ===")
+    
     for feature_name, group_col in feature_cols.items():
+        output_lines.append(f"\n=== Feature: {feature_name} ===")
+        
+        # Calculate metrics for the feature group
         feature_metrics = calculate_metrics_by_group(source_data, group_col, thresholds, classifiers)
-        print_subgroup_discrepancies(feature_metrics, feature_name, classifiers, thresholds)
+        
+        # Calculate discrepancies
+        discrepancies = calculate_statistical_discrepancy(feature_metrics, classifiers, thresholds)
+        
+        # Log discrepancies for each classifier and threshold
+        for classifier, discrepancy_data in discrepancies.items():
+            output_lines.append(f"Classifier: {classifier}")
+            for threshold_key, values in discrepancy_data.items():
+                output_lines.append(f"  {threshold_key}: Greatest Discrepancy = {values['Statistical Discrepancy']:.3f}")
+
+# Save results to a text file
+output_file = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\statistical_discrepancies_with_acc_fpr.txt"
+with open(output_file, "w") as file:
+    file.write("\n".join(output_lines))
+
+print(f"Results saved to {output_file}")
+
+

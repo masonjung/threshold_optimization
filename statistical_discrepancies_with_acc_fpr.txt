@@ -1,0 +1,225 @@
+
+=== Feature: Formality ===
+Classifier: roberta_large_openai_detector_probability
+  threshold_1: Statistical Discrepancy = 0.171
+  threshold_2: Statistical Discrepancy = 0.379
+  threshold_3: Statistical Discrepancy = 0.003
+Classifier: radar_probability
+  threshold_1: Statistical Discrepancy = 0.537
+  threshold_2: Statistical Discrepancy = 0.942
+  threshold_3: Statistical Discrepancy = 0.000
+Classifier: roberta_base_openai_detector_probability
+  threshold_1: Statistical Discrepancy = 0.744
+  threshold_2: Statistical Discrepancy = 0.547
+  threshold_3: Statistical Discrepancy = 0.120
+  Group: formal
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.369, FPR = 0.915
+      threshold_2: ACC = 0.416, FPR = 0.466
+      threshold_3: ACC = 0.446, FPR = 0.999
+    Classifier: radar_probability
+      threshold_1: ACC = 0.621, FPR = 0.357
+      threshold_2: ACC = 0.552, FPR = 0.054
+      threshold_3: ACC = 0.446, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.331, FPR = 0.873
+      threshold_2: ACC = 0.342, FPR = 0.686
+      threshold_3: ACC = 0.368, FPR = 0.962
+  Group: informal
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.406, FPR = 0.840
+      threshold_2: ACC = 0.477, FPR = 0.423
+      threshold_3: ACC = 0.372, FPR = 0.995
+    Classifier: radar_probability
+      threshold_1: ACC = 0.523, FPR = 0.598
+      threshold_2: ACC = 0.656, FPR = 0.136
+      threshold_3: ACC = 0.369, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.384, FPR = 0.758
+      threshold_2: ACC = 0.388, FPR = 0.566
+      threshold_3: ACC = 0.393, FPR = 0.891
+  Group: nan
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.000, FPR = 1.000
+      threshold_2: ACC = 1.000, FPR = 0.000
+      threshold_3: ACC = 0.000, FPR = 1.000
+    Classifier: radar_probability
+      threshold_1: ACC = 0.000, FPR = 1.000
+      threshold_2: ACC = 0.000, FPR = 1.000
+      threshold_3: ACC = 0.000, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 1.000, FPR = 0.000
+      threshold_2: ACC = 1.000, FPR = 0.000
+      threshold_3: ACC = 0.000, FPR = 1.000
+
+=== Feature: Length ===
+Classifier: roberta_large_openai_detector_probability
+  threshold_1: Statistical Discrepancy = 0.098
+  threshold_2: Statistical Discrepancy = 0.301
+  threshold_3: Statistical Discrepancy = 0.001
+Classifier: radar_probability
+  threshold_1: Statistical Discrepancy = 0.407
+  threshold_2: Statistical Discrepancy = 0.345
+  threshold_3: Statistical Discrepancy = 0.000
+Classifier: roberta_base_openai_detector_probability
+  threshold_1: Statistical Discrepancy = 0.160
+  threshold_2: Statistical Discrepancy = 0.430
+  threshold_3: Statistical Discrepancy = 0.102
+  Group: long
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.291, FPR = 0.932
+      threshold_2: ACC = 0.406, FPR = 0.549
+      threshold_3: ACC = 0.315, FPR = 0.998
+    Classifier: radar_probability
+      threshold_1: ACC = 0.669, FPR = 0.287
+      threshold_2: ACC = 0.686, FPR = 0.001
+      threshold_3: ACC = 0.313, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.251, FPR = 0.915
+      threshold_2: ACC = 0.286, FPR = 0.776
+      threshold_3: ACC = 0.285, FPR = 0.949
+  Group: short
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.577, FPR = 0.726
+      threshold_2: ACC = 0.511, FPR = 0.136
+      threshold_3: ACC = 0.536, FPR = 0.999
+    Classifier: radar_probability
+      threshold_1: ACC = 0.450, FPR = 0.860
+      threshold_2: ACC = 0.462, FPR = 0.374
+      threshold_3: ACC = 0.536, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.558, FPR = 0.611
+      threshold_2: ACC = 0.522, FPR = 0.191
+      threshold_3: ACC = 0.535, FPR = 0.946
+  Group: medium
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.338, FPR = 0.951
+      threshold_2: ACC = 0.395, FPR = 0.509
+      threshold_3: ACC = 0.466, FPR = 1.000
+    Classifier: radar_probability
+      threshold_1: ACC = 0.646, FPR = 0.285
+      threshold_2: ACC = 0.533, FPR = 0.002
+      threshold_3: ACC = 0.467, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.296, FPR = 0.909
+      threshold_2: ACC = 0.311, FPR = 0.764
+      threshold_3: ACC = 0.351, FPR = 0.964
+
+=== Feature: Sentiment ===
+Classifier: roberta_large_openai_detector_probability
+  threshold_1: Statistical Discrepancy = 0.112
+  threshold_2: Statistical Discrepancy = 0.168
+  threshold_3: Statistical Discrepancy = 0.001
+Classifier: radar_probability
+  threshold_1: Statistical Discrepancy = 0.159
+  threshold_2: Statistical Discrepancy = 0.017
+  threshold_3: Statistical Discrepancy = 0.000
+Classifier: roberta_base_openai_detector_probability
+  threshold_1: Statistical Discrepancy = 0.127
+  threshold_2: Statistical Discrepancy = 0.143
+  threshold_3: Statistical Discrepancy = 0.080
+  Group: NEGATIVE
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.325, FPR = 0.924
+      threshold_2: ACC = 0.424, FPR = 0.518
+      threshold_3: ACC = 0.350, FPR = 0.999
+    Classifier: radar_probability
+      threshold_1: ACC = 0.618, FPR = 0.341
+      threshold_2: ACC = 0.645, FPR = 0.051
+      threshold_3: ACC = 0.350, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.299, FPR = 0.881
+      threshold_2: ACC = 0.332, FPR = 0.707
+      threshold_3: ACC = 0.314, FPR = 0.961
+  Group: POSITIVE
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.437, FPR = 0.878
+      threshold_2: ACC = 0.415, FPR = 0.344
+      threshold_3: ACC = 0.566, FPR = 0.999
+    Classifier: radar_probability
+      threshold_1: ACC = 0.608, FPR = 0.456
+      threshold_2: ACC = 0.440, FPR = 0.082
+      threshold_3: ACC = 0.567, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.386, FPR = 0.825
+      threshold_2: ACC = 0.364, FPR = 0.609
+      threshold_3: ACC = 0.447, FPR = 0.946
+
+=== Feature: Personality ===
+Classifier: roberta_large_openai_detector_probability
+  threshold_1: Statistical Discrepancy = 0.116
+  threshold_2: Statistical Discrepancy = 0.337
+  threshold_3: Statistical Discrepancy = 0.002
+Classifier: radar_probability
+  threshold_1: Statistical Discrepancy = 0.402
+  threshold_2: Statistical Discrepancy = 0.417
+  threshold_3: Statistical Discrepancy = 0.000
+Classifier: roberta_base_openai_detector_probability
+  threshold_1: Statistical Discrepancy = 0.189
+  threshold_2: Statistical Discrepancy = 0.418
+  threshold_3: Statistical Discrepancy = 0.101
+  Group: openness
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.389, FPR = 0.923
+      threshold_2: ACC = 0.392, FPR = 0.524
+      threshold_3: ACC = 0.479, FPR = 1.000
+    Classifier: radar_probability
+      threshold_1: ACC = 0.626, FPR = 0.393
+      threshold_2: ACC = 0.513, FPR = 0.042
+      threshold_3: ACC = 0.479, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.345, FPR = 0.877
+      threshold_2: ACC = 0.345, FPR = 0.708
+      threshold_3: ACC = 0.389, FPR = 0.954
+  Group: conscientiousness
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.293, FPR = 0.929
+      threshold_2: ACC = 0.445, FPR = 0.453
+      threshold_3: ACC = 0.344, FPR = 0.997
+    Classifier: radar_probability
+      threshold_1: ACC = 0.621, FPR = 0.266
+      threshold_2: ACC = 0.654, FPR = 0.013
+      threshold_3: ACC = 0.343, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.265, FPR = 0.903
+      threshold_2: ACC = 0.313, FPR = 0.721
+      threshold_3: ACC = 0.292, FPR = 0.968
+  Group: extroversion
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.301, FPR = 0.936
+      threshold_2: ACC = 0.407, FPR = 0.512
+      threshold_3: ACC = 0.419, FPR = 1.000
+    Classifier: radar_probability
+      threshold_1: ACC = 0.641, FPR = 0.454
+      threshold_2: ACC = 0.561, FPR = 0.076
+      threshold_3: ACC = 0.419, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.292, FPR = 0.872
+      threshold_2: ACC = 0.331, FPR = 0.692
+      threshold_3: ACC = 0.319, FPR = 0.942
+  Group: agreeableness
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.374, FPR = 0.867
+      threshold_2: ACC = 0.507, FPR = 0.374
+      threshold_3: ACC = 0.362, FPR = 0.998
+    Classifier: radar_probability
+      threshold_1: ACC = 0.576, FPR = 0.344
+      threshold_2: ACC = 0.641, FPR = 0.068
+      threshold_3: ACC = 0.360, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.347, FPR = 0.826
+      threshold_2: ACC = 0.368, FPR = 0.646
+      threshold_3: ACC = 0.342, FPR = 0.951
+  Group: neuroticism
+    Classifier: roberta_large_openai_detector_probability
+      threshold_1: ACC = 0.535, FPR = 0.739
+      threshold_2: ACC = 0.451, FPR = 0.074
+      threshold_3: ACC = 0.569, FPR = 1.000
+    Classifier: radar_probability
+      threshold_1: ACC = 0.529, FPR = 0.716
+      threshold_2: ACC = 0.503, FPR = 0.416
+      threshold_3: ACC = 0.569, FPR = 1.000
+    Classifier: roberta_base_openai_detector_probability
+      threshold_1: ACC = 0.493, FPR = 0.630
+      threshold_2: ACC = 0.423, FPR = 0.226
+      threshold_3: ACC = 0.542, FPR = 0.953
