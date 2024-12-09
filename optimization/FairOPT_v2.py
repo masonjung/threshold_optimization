@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score, f1_score, roc_curve, roc_auc_score
 
 # Interpreting equaltion
 def equation_fairness(Prob_a,Prob_b):
-    rule = 0.8 # threshold of 0.8 is based on 80% rule. # can be changed
+    rule = 0.8 # 0.8 for relaxed fairness; 1.0 is strict fairness
     greater = max(Prob_a, Prob_b)
     smaller = min(Prob_a, Prob_b)
     evaluation = (smaller/greater) > rule # if the ratio exceeds, it is considered fair = True
@@ -86,7 +86,7 @@ def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_
 
     # Compile results
     results = {
-        "Optimal Threshold": optimal_threshold,
+        "Optimal AUROC Threshold": optimal_threshold,
         "AUROC": auroc,
         "FPR at Optimal Threshold": fpr[optimal_idx],
         "TPR at Optimal Threshold": tpr[optimal_idx]
@@ -96,7 +96,7 @@ def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_
 
 
 # Run the optimization method 2
-file_path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_Mage_d3.csv"
+file_path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv"
 true_label_column = 'AI_written'
 pred_columns = [
     # 'roberta_base_openai_detector_probability',
@@ -107,7 +107,7 @@ pred_columns = [
 results = calculate_optimal_threshold(file_path, true_label_column, pred_columns)
 print(results)
 
-AUROC_threshold = results["Optimal Threshold"]
+AUROC_threshold = results["Optimal AUROC Threshold"]
 print(AUROC_threshold)
 
 # Threshold Optimizer
@@ -135,6 +135,7 @@ class ThresholdOptimizer:
         self.max_iterations = max_iterations
         self.acceptable_fpr_disparity = acceptable_fpr_disparity
         self.acceptable_tpr_disparity = acceptable_tpr_disparity
+
         self.min_acc_threshold = min_acc_threshold
         self.min_f1_threshold = min_f1_threshold
         self.tolerance = tolerance
