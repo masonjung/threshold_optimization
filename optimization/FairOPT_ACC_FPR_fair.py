@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, roc_curve, roc_auc_score
 
-
 # Interpreting equaltion
 def equation_fairness(Prob_a,Prob_b):
     rule = 0.8 # 0.8 for relaxed fairness; 1.0 is strict fairness
@@ -49,20 +48,20 @@ def Equalized_Odds(confusion_matrix_df, group_a_list, group_b_list):
     return fair
 
 # Demographic Parity
-def Demographic_Disparity(confusion_matrix_df):
-    # Assuming confusion_matrix_df has a 'Group' index and a column 'FPR' for False Positive Rate
+def Demographic_Parity(confusion_matrix_df):
+    # Assuming confusion_matrix_df has a 'Group' index and a column 'PPR' for Positive Prediction Rate
 
-    # Iterate through pairs of groups to compare their FPRs
+    # Iterate through pairs of groups to compare their PPRs
     groups = confusion_matrix_df.index
     for i in range(len(groups)):
         for j in range(i + 1, len(groups)):
             group_a, group_b = groups[i], groups[j]
-            fpr_a = confusion_matrix_df.loc[group_a, 'FPR']
-            fpr_b = confusion_matrix_df.loc[group_b, 'FPR']
+            ppr_a = confusion_matrix_df.loc[group_a, 'PPR']
+            ppr_b = confusion_matrix_df.loc[group_b, 'PPR']
 
             # Evaluate fairness between each pair of groups
-            fair = equation_fairness(fpr_a, fpr_b)
-            print(f"Fairness between Group {group_a} and Group {group_b}: {fair}")
+            fair = equation_fairness(ppr_a, ppr_b)
+            print(f"Fairness between Group {group_a} and Group {group_b}: {'Fair' if fair else 'Unfair'}")
     return fair
 
 def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_limit=0.1):
@@ -95,6 +94,96 @@ def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_
     return results
 
 
+
+
+def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
+    """
+    Calculates metrics by a specific group column (e.g., formality_group).
+    Returns: results[group_value][classifier][threshold_key] = {TP, TN, FP, FN, ACC, FPR}
+    """
+    results = {}
+    unique_groups = data[group_col].unique()
+    for grp in unique_groups:
+        grp_data = data[data[group_col] == grp].copy()
+        
+        if grp_data.empty:
+            continue
+        
+        for classifier in classifiers:
+            if classifier not in grp_data.columns:
+                continue
+            
+            if grp not in results:
+                results[grp] = {}
+            if classifier not in results[grp]:
+                results[grp][classifier] = {}
+            
+            for i, threshold in enumerate(thresholds, 1):
+                pred_col = f'pred_{i}'
+                actual_col = f'actual_{i}'
+                
+                grp_data[pred_col] = grp_data[classifier].apply(lambda x: 1 if x >= threshold else 0)
+                grp_data[actual_col] = grp_data['AI_written'].apply(lambda x: 1 if x == 1 else 0)
+                
+                TP = len(grp_data[(grp_data[pred_col] == 1) & (grp_data[actual_col] == 1)])
+                TN = len(grp_data[(grp_data[pred_col] == 0) & (grp_data[actual_col] == 0)])
+                FP = len(grp_data[(grp_data[pred_col] == 1) & (grp_data[actual_col] == 0)])
+                FN = len(grp_data[(grp_data[pred_col] == 0) & (grp_data[actual_col] == 1)])
+                
+                denom = TP + TN + FP + FN
+                ACC = (TP + TN) / denom if denom > 0 else 0
+                FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
+                
+                results[grp][classifier][f'threshold_{i}'] = {
+                    'TP': TP,
+                    'TN': TN,
+                    'FP': FP,
+                    'FN': FN,
+                    'ACC': ACC,
+                    'FPR': FPR
+                }
+    return results
+
+def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
+    """
+    Calculates the biggest statistical parity discrepancy for each feature group.
+    """
+    discrepancies = {}
+    groups = list(metrics_dict.keys())
+    if len(groups) < 2:
+        return discrepancies  # Not enough subgroups to measure discrepancy
+    
+    for classifier in classifiers:
+        for i, threshold in enumerate(thresholds, 1):
+            threshold_key = f'threshold_{i}'
+            positive_rates = []
+            
+            for grp in groups:
+                clf_data = metrics_dict.get(grp, {}).get(classifier, {})
+                if threshold_key in clf_data:
+                    TP = clf_data[threshold_key]['TP']
+                    FP = clf_data[threshold_key]['FP']
+                    FN = clf_data[threshold_key]['FN']
+                    TN = clf_data[threshold_key]['TN']
+                    
+                    total = TP + FP + FN + TN
+                    positive_rate = (TP + FP) / total if total > 0 else 0
+                    positive_rates.append(positive_rate)
+            
+            if len(positive_rates) < 2:
+                continue
+            
+            statistical_discrepancy = max(positive_rates) - min(positive_rates)
+            
+            if classifier not in discrepancies:
+                discrepancies[classifier] = {}
+            discrepancies[classifier][threshold_key] = {
+                'Statistical Discrepancy': statistical_discrepancy
+            }
+    return discrepancies
+
+
+
 # Run the optimization method 2
 file_path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv"
 true_label_column = 'AI_written'
@@ -110,7 +199,8 @@ print(results)
 AUROC_threshold = results["Optimal AUROC Threshold"]
 print(AUROC_threshold)
 
-# Threshold Optimizer
+
+######## Threshold Optimizer
 class ThresholdOptimizer:
     def __init__(
         self,
@@ -120,10 +210,11 @@ class ThresholdOptimizer:
         initial_thresholds,
         learning_rate=10**-2,   # Adjusted learning rate
         max_iterations=10**5,
-        acceptable_fpr_disparity=0.2,
-        acceptable_tpr_disparity=0.2,
-        min_acc_threshold=0.5,
-        min_f1_threshold=0.5,  # F1 is for stable performance
+
+        relaxation_disparity=0.2, # relaxation standard
+
+        min_acc_threshold=0.5, # do we need this?
+        min_f1_threshold=0.5,  # do we need this?
         tolerance=1e-4,
         penalty=10            # Penalty term for F1 score below threshold
     ):
@@ -133,8 +224,8 @@ class ThresholdOptimizer:
         self.initial_thresholds = initial_thresholds.copy()
         self.learning_rate = learning_rate
         self.max_iterations = max_iterations
-        self.acceptable_fpr_disparity = acceptable_fpr_disparity
-        self.acceptable_tpr_disparity = acceptable_tpr_disparity
+
+        self.relaxation_disparity = relaxation_disparity
 
         self.min_acc_threshold = min_acc_threshold
         self.min_f1_threshold = min_f1_threshold
@@ -218,6 +309,9 @@ class ThresholdOptimizer:
         tn = np.sum((y_true == 0) & (y_pred == 0))
         fp = np.sum((y_true == 0) & (y_pred == 1))
         fn = np.sum((y_true == 1) & (y_pred == 0))
+        
+        total_instances = len(y_true)
+        ppr = (tp + fp) / total_instances if total_instances > 0 else 0
 
         confusion_matrix_df.loc[group, 'True Positives'] = tp
         confusion_matrix_df.loc[group, 'True Negatives'] = tn
@@ -226,21 +320,28 @@ class ThresholdOptimizer:
 
         confusion_matrix_df.loc[group, 'FPR'] = fp / (fp + tn) if (fp + tn) > 0 else 0
         confusion_matrix_df.loc[group, 'TPR'] = tp / (tp + fn) if (tp + fn) > 0 else 0
+        confusion_matrix_df.loc[group, 'PPR'] = ppr
         return confusion_matrix_df
-
-    # check fairness 
-    def check_fairness(self, confusion_matrix_df):        
-        # Define acceptable disparity thresholds
+    
+    # Check Demographic Parity and Equalized Odds
+    def check_fairness(self, confusion_matrix_df):
+        relaxation = self.relaxation_disparity
         fpr_values = confusion_matrix_df['FPR'].fillna(0).values
         tpr_values = confusion_matrix_df['TPR'].fillna(0).values
+        ppr_values = confusion_matrix_df['PPR'].fillna(0).values
 
         fpr_disparity = fpr_values.max() - fpr_values.min()
         tpr_disparity = tpr_values.max() - tpr_values.min()
-
-        if fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity:
+        ppr_disparity = ppr_values.max() - ppr_values.min()
+        
+        dp_condition = ppr_disparity <= relaxation
+        eo_condition = (fpr_disparity <= relaxation) and (tpr_disparity <= relaxation)
+        
+        if dp_condition and eo_condition:
             return True
         else:
             return False
+
         
     def check_performance_criteria(self, acc_dict, f1_dict):
         # Ensure performance criteria is met for both accuracy and F1 score across groups
@@ -296,7 +397,7 @@ class ThresholdOptimizer:
         preds_minus = group_y_pred_minus
         changes_plus = np.sum(preds != preds_plus)
         changes_minus = np.sum(preds != preds_minus)
-        print(f"Group Threshold: {threshold:.2f}, Delta: {delta}, Changes +delta: {changes_plus}, Changes -delta: {changes_minus}")
+        print(f"Group Threshold: {threshold:.8f}, Delta: {delta}, Changes +delta: {changes_plus}, Changes -delta: {changes_minus}")
 
         return gradient
 
@@ -324,13 +425,9 @@ class ThresholdOptimizer:
 
 ######################## RUN
 
-# import df
+# df
 dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv")
-
-#split by train and tesxt <- change this later
 df = dataset.sample(frac=1, random_state=42)
-
-
 
 # Length-based groups
 length_groups = pd.cut(
@@ -373,8 +470,7 @@ optimizer = ThresholdOptimizer(
     initial_thresholds,
     learning_rate=10**-2,
     max_iterations=10**2,
-    acceptable_fpr_disparity=0.2,  # Adjust based on your fairness criteria
-    acceptable_tpr_disparity=0.2,  # Adjust accordingly
+    relaxation_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.5,         # Set realistic minimum accuracy
     min_f1_threshold=0.5,           # Set realistic minimum F1 score
     tolerance=1e-5,  # Decrease tolerance for stricter convergence criteria
@@ -389,26 +485,10 @@ if all(threshold == 0.5 for threshold in thresholds.values()):
     print("Thresholds did not change using gradient descent. Switching to grid search.")
     thresholds = optimizer.grid_search_thresholds()
 
-# # View optimized thresholds
-# print("\nOptimized Thresholds:")
-# for group, threshold in thresholds.items():
-#     print(f"Group: {group}, Threshold: {threshold:.4f}")
-
-
 # Move the results to the list
 optimized_thresholds_list = []
 for group, threshold in thresholds.items():
     optimized_thresholds_list.append({'group': group, 'threshold': threshold})
-
-# # Print the list of optimized thresholds
-# print("\nOptimized Thresholds List:")
-# for item in optimized_thresholds_list:
-#     print(f"Group: {item['group']}, Threshold: {item['threshold']:.7f}")
-
-# # Print all optimized thresholds with the groups that belong to each threshold
-# print("\nAll Optimized Thresholds with Groups:")
-# for group, threshold in thresholds.items():
-#     print(f"Threshold: {threshold:.7f}, Groups: {group}")
 
 # Print the list of optimized thresholds
 print("\nOptimized Thresholds:")
@@ -417,11 +497,13 @@ for group, threshold in thresholds.items():
 
 
 
+
+
 ##################################TEST
 
 # need to apply the generated thresold to the test dataset
 # Load test dataset
-test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_features.csv")
+test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv")
 
 # Split test dataset by 'source'
 unique_sources = test_dataset['source'].unique()
@@ -475,17 +557,38 @@ for source in unique_sources:
         test_fpr = np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0) if np.sum(test_y_true == 0) > 0 else 0
 
         print(f"\nPerformance for Source: {source}, Detector: {detector}")
-        print(f"Accuracy: {test_accuracy:.4f}")
-        print(f"False Positive Rate (FPR): {test_fpr:.4f}")
+        print(f"Accuracy: {test_accuracy:.3f}")
+        print(f"False Positive Rate (FPR): {test_fpr:.3f}")
 
         # store the printed things in txt and threshold for each
         with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results.txt", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
-            f.write(f"Accuracy: {test_accuracy:.4f}\n")
-            f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
+            f.write(f"Accuracy: {test_accuracy:.3f}\n")
+            f.write(f"False Positive Rate (FPR): {test_fpr:.3f}\n")
             f.write(f"Thresholds:\n")
             for group, threshold in thresholds.items():
                 f.write(f"Group: {group}, Threshold: {threshold:.7f}\n")
+                
+                # Calculate and print statistical parity discrepancies for each feature
+                features = ['text_length', 'sentiment_label', 'formality', 'personality']
+                for feature in features:
+                    feature_groups = test_dataset[feature].astype(str).values
+                    metrics_by_feature = calculate_metrics_by_group(
+                        test_dataset, feature, thresholds.values(), detector_probabilities
+                    )
+                    discrepancies = calculate_statistical_discrepancy(metrics_by_feature, detector_probabilities, thresholds.values())
+                    
+                    print(f"\nStatistical Parity Discrepancies for Feature: {feature}")
+                    for classifier, discrepancy_data in discrepancies.items():
+                        for threshold_key, discrepancy in discrepancy_data.items():
+                            print(f"Classifier: {classifier}, {threshold_key}: {discrepancy['Statistical Discrepancy']:.3f}")
+                            
+                        # Store the discrepancies in the results file
+                        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results.txt", "a") as f:
+                            f.write(f"\nStatistical Parity Discrepancies for Feature: {feature}\n")
+                            for classifier, discrepancy_data in discrepancies.items():
+                                for threshold_key, discrepancy in discrepancy_data.items():
+                                    f.write(f"Classifier: {classifier}, {threshold_key}: {discrepancy['Statistical Discrepancy']:.3f}\n")
 
         
         
