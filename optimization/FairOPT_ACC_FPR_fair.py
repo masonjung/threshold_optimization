@@ -285,7 +285,7 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] = np.clip(self.thresholds[group], 0, 1)
+                self.thresholds[group] = np.clip(self.thresholds[group], 1e-7, 1 - 1e-7) # 7 decimal points
 
                 # Monitor gradient and threshold updates
                 print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
@@ -469,7 +469,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=10**4,
+    max_iterations=3000,
     relaxation_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.5,         # Set realistic minimum accuracy
     min_f1_threshold=0.5,           # Set realistic minimum F1 score
