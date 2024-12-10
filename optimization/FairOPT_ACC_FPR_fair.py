@@ -471,8 +471,8 @@ optimizer = ThresholdOptimizer(
     learning_rate=10**-2,
     max_iterations=3000,
     relaxation_disparity=0.2,  # Adjust based on your fairness criteria
-    min_acc_threshold=0.5,         # Set realistic minimum accuracy
-    min_f1_threshold=0.5,           # Set realistic minimum F1 score
+    min_acc_threshold=0.0,         # Set realistic minimum accuracy
+    min_f1_threshold=0.0,           # Set realistic minimum F1 score
     tolerance=1e-5,  # Decrease tolerance for stricter convergence criteria
     penalty=20  # Increase penalty to enforce stricter updates
 )
@@ -588,11 +588,12 @@ for source in unique_sources:
         biggest_discrepancy_value = feature_discrepancies.get(biggest_discrepancy_feature, 0)
 
         # Write discrepancies to the results file
-        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated.txt", "a") as f:
+        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated2.txt", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.3f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.3f}\n")
             f.write(f"Discrepancies by Feature:\n")
+            # f.write(f"threshold: {threshold}\n")
             for feature_name, discrepancy in feature_discrepancies.items():
                 f.write(f"{feature_name.capitalize()} Discrepancy: {discrepancy:.3f}\n")
             f.write(f"Biggest Discrepancy: {biggest_discrepancy_feature.capitalize()} ({biggest_discrepancy_value:.3f})\n")
