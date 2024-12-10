@@ -486,7 +486,7 @@ if all(threshold == 0.5 for threshold in thresholds.values()):
     thresholds = optimizer.grid_search_thresholds()
 
 # Move the results to the list
-optimized_thresholds_list = []
+optimized_thresholds_list = [] ##### This is the list of thresholds that will be used in the test dataset
 for group, threshold in thresholds.items():
     optimized_thresholds_list.append({'group': group, 'threshold': threshold})
 
@@ -497,9 +497,8 @@ for group, threshold in thresholds.items():
 
 
 
-
-
 ##################################TEST
+
 
 # need to apply the generated thresold to the test dataset
 # Load test dataset
@@ -568,31 +567,107 @@ for source in unique_sources:
             f.write(f"Thresholds:\n")
             for group, threshold in thresholds.items():
                 f.write(f"Group: {group}, Threshold: {threshold:.7f}\n")
-                
-                # Calculate and print statistical parity discrepancies for each feature
-                features = ['text_length', 'sentiment_label', 'formality', 'personality']
-                for feature in features:
-                    feature_groups = test_dataset[feature].astype(str).values
-                    metrics_by_feature = calculate_metrics_by_group(
-                        test_dataset, feature, thresholds.values(), detector_probabilities
-                    )
-                    discrepancies = calculate_statistical_discrepancy(metrics_by_feature, detector_probabilities, thresholds.values())
-                    
-                    print(f"\nStatistical Parity Discrepancies for Feature: {feature}")
-                    for classifier, discrepancy_data in discrepancies.items():
-                        for threshold_key, discrepancy in discrepancy_data.items():
-                            print(f"Classifier: {classifier}, {threshold_key}: {discrepancy['Statistical Discrepancy']:.3f}")
-                            
-                        # Store the discrepancies in the results file
-                        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results.txt", "a") as f:
-                            f.write(f"\nStatistical Parity Discrepancies for Feature: {feature}\n")
-                            for classifier, discrepancy_data in discrepancies.items():
-                                for threshold_key, discrepancy in discrepancy_data.items():
-                                    f.write(f"Classifier: {classifier}, {threshold_key}: {discrepancy['Statistical Discrepancy']:.3f}\n")
 
-        
-        
 
+
+
+# Load test dataset
+test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv")
+
+# Split test dataset by 'source'
+unique_sources = test_dataset['source'].unique()
+
+# Use the optimized thresholds
+thresholds = {group['group']: group['threshold'] for group in optimized_thresholds_list}
+
+# Results storage
+results_lines = []
+
+for source in unique_sources:
+    source_dataset = test_dataset[test_dataset['source'] == source]
+
+    detector_probabilities = [
+        'roberta_large_openai_detector_probability', 
+        'radar_probability', 
+        'roberta_base_openai_detector_probability'
+    ]
+
+    for detector in detector_probabilities:
+        if detector not in source_dataset.columns:
+            continue
+
+        # Prepare groups
+        test_length_groups = pd.cut(
+            source_dataset['text_length'].fillna(-1),
+            bins=[-1, 1000, 2500, np.inf],
+            labels=['short', 'medium', 'long']
+        ).astype(str).values
+        test_sentiment_groups = source_dataset['sentiment_label'].fillna('neutral').astype(str).values
+        test_formality_groups = pd.cut(
+            source_dataset['formality'].fillna(0),
+            bins=[0, 50, np.inf],
+            labels=['informal', 'formal']
+        ).astype(str).values
+        test_personality_groups = source_dataset['personality'].fillna('unknown').astype(str).values
+
+        # Combine groups
+        test_groups = pd.Series([
+            f"{length}_{formality}_{sentiment}_{personality}"
+            for length, formality, sentiment, personality in zip(
+                test_length_groups, test_formality_groups, test_sentiment_groups, test_personality_groups
+            )
+        ]).values
+
+        # True labels and predictions
+        test_y_true = source_dataset['AI_written'].apply(lambda x: 1 if x == 1 else 0).values
+        test_y_pred_proba = source_dataset[detector].values
+
+        # Apply thresholds
+        test_y_pred = np.zeros_like(test_y_true)
+        for group in np.unique(test_groups):
+            group_indices = (test_groups == group)
+            threshold = thresholds.get(group, 0.5)  # Default to 0.5 if no threshold is found
+            test_y_pred[group_indices] = test_y_pred_proba[group_indices] >= threshold
+
+        # Calculate performance
+        test_accuracy = accuracy_score(test_y_true, test_y_pred)
+        test_fpr = (
+            np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0)
+            if np.sum(test_y_true == 0) > 0
+            else 0
+        )
+
+        # Log performance
+        results_lines.append(f"\n--- Source: {source}, Detector: {detector} ---")
+        results_lines.append(f"Accuracy: {test_accuracy:.3f}")
+        results_lines.append(f"False Positive Rate (FPR): {test_fpr:.3f}")
+
+        # Statistical parity discrepancies
+        features = ['text_length', 'sentiment_label', 'formality', 'personality']
+        for feature in features:
+            if feature not in source_dataset.columns:
+                continue
+
+            # Metrics by feature group
+            metrics_by_feature = calculate_metrics_by_group(
+                source_dataset, feature, list(thresholds.values()), [detector]
+            )
+            discrepancies = calculate_statistical_discrepancy(
+                metrics_by_feature, [detector], list(thresholds.values())
+            )
+
+            # Find the biggest discrepancy
+            biggest_discrepancy = 0
+            for classifier, discrepancy_data in discrepancies.items():
+                for threshold_key, values in discrepancy_data.items():
+                    if values['Statistical Discrepancy'] > biggest_discrepancy:
+                        biggest_discrepancy = values['Statistical Discrepancy']
+
+            results_lines.append(f"Biggest Discrepancy for Feature: {feature}: {biggest_discrepancy:.3f}")
+
+# Write results to file (overwrite)
+with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results.txt", "w") as f:
+    f.write("\n".join(results_lines))
 
 
 
