@@ -5,10 +5,10 @@ import pandas as pd
 
 
 # Import training dataset
-df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv")
+df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv")
 
 # Sample a small fraction of the dataset
-df = df.sample(frac=0.0001)
+df = df.sample(frac=1)
 print(df.shape)
 
 
@@ -33,16 +33,21 @@ def get_ai_probability(text):
         )
         # probability = response.choices[0].message.content.strip() 
         # return float(probability) 
-        print(response)
-        # print(response.choices[0]['message']['content'])
-        # return float(response.choices[0]['message']['content'].strip())
+        
+        # print(response)
+
+        # reutrning the probability
+        probability = response.choices[0].message.content.strip()
+        return float(probability)
     except Exception as e:
         print("except")
         print(f"Error: {e}")
         return None
 
+
 # Apply the function to each row in the dataframe and create a new column
 df['GPT4o-mini_probability'] = df['essay'].apply(lambda x: get_ai_probability(x))
+
 
 # Print the first few rows to verify results
 print(df[['essay', 'GPT4o-mini_probability']])
