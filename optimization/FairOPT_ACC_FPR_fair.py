@@ -323,7 +323,7 @@ class ThresholdOptimizer:
         confusion_matrix_df.loc[group, 'PPR'] = ppr
         return confusion_matrix_df
     
-    # Check Demographic Parity and Equalized Odds
+    # Fairness metrics
     def check_fairness(self, confusion_matrix_df):
         relaxation = self.relaxation_disparity
         fpr_values = confusion_matrix_df['FPR'].fillna(0).values
@@ -334,8 +334,8 @@ class ThresholdOptimizer:
         tpr_disparity = tpr_values.max() - tpr_values.min()
         ppr_disparity = ppr_values.max() - ppr_values.min()
         
-        dp_condition = ppr_disparity <= relaxation
-        eo_condition = (fpr_disparity <= relaxation) and (tpr_disparity <= relaxation)
+        dp_condition = ppr_disparity <= relaxation # demographic parity or statistical parity
+        eo_condition = (fpr_disparity <= relaxation) and (tpr_disparity <= relaxation) # euqalized odds
         
         if dp_condition and eo_condition:
             return True

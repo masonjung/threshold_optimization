@@ -1,14 +1,14 @@
 import pandas as pd
 
 # Read datasets
-dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv"
+dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv"
 
 test_dataset = pd.read_csv(dataset_detectors)
 
 test_dataset.columns
 # test_dataset.shape
 # List of AI probability classifiers
-classifiers = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability']
+classifiers = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability', "GPT4o-mini_probability"]
 
 def calculate_metrics_by_source(thresholds, data):
     results = {}

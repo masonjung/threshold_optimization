@@ -2,11 +2,12 @@ import pandas as pd
 import numpy as np
 
 # Load dataset
-dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv"
+dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv"
 df = pd.read_csv(dataset_detectors)
 
+
 # Classifiers and thresholds
-classifiers = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability']
+classifiers = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability', "GPT4o-mini_probability"]
 thresholds = [0.5, 0.998441517353058] # add this for Precision-Recall curve 0.0002591597149148
 
 # Create feature-based groups
