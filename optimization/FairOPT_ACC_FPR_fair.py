@@ -96,10 +96,96 @@ def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_
 
 
 
+# def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
+#     """
+#     Calculates metrics by a specific group column (e.g., formality_group).
+#     Returns: results[group_value][classifier][threshold_key] = {TP, TN, FP, FN, ACC, FPR}
+#     """
+#     results = {}
+#     unique_groups = data[group_col].unique()
+#     for grp in unique_groups:
+#         grp_data = data[data[group_col] == grp].copy()
+        
+#         if grp_data.empty:
+#             continue
+        
+#         for classifier in classifiers:
+#             if classifier not in grp_data.columns:
+#                 continue
+            
+#             if grp not in results:
+#                 results[grp] = {}
+#             if classifier not in results[grp]:
+#                 results[grp][classifier] = {}
+            
+#             for i, threshold in enumerate(thresholds, 1):
+#                 pred_col = f'pred_{i}'
+#                 actual_col = f'actual_{i}'
+                
+#                 grp_data[pred_col] = grp_data[classifier].apply(lambda x: 1 if x >= threshold else 0)
+#                 grp_data[actual_col] = grp_data['AI_written'].apply(lambda x: 1 if x == 1 else 0)
+                
+#                 TP = len(grp_data[(grp_data[pred_col] == 1) & (grp_data[actual_col] == 1)])
+#                 TN = len(grp_data[(grp_data[pred_col] == 0) & (grp_data[actual_col] == 0)])
+#                 FP = len(grp_data[(grp_data[pred_col] == 1) & (grp_data[actual_col] == 0)])
+#                 FN = len(grp_data[(grp_data[pred_col] == 0) & (grp_data[actual_col] == 1)])
+                
+#                 denom = TP + TN + FP + FN
+#                 ACC = (TP + TN) / denom if denom > 0 else 0
+#                 FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
+                
+#                 results[grp][classifier][f'threshold_{i}'] = {
+#                     'TP': TP,
+#                     'TN': TN,
+#                     'FP': FP,
+#                     'FN': FN,
+#                     'ACC': ACC,
+#                     'FPR': FPR
+#                 }
+#     return results
+
+# def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
+#     """
+#     Calculates the biggest statistical parity discrepancy for each feature group.
+#     """
+#     discrepancies = {}
+#     groups = list(metrics_dict.keys())
+#     if len(groups) < 2:
+#         return discrepancies  # Not enough subgroups to measure discrepancy
+    
+#     for classifier in classifiers:
+#         for i, threshold in enumerate(thresholds, 1):
+#             threshold_key = f'threshold_{i}'
+#             positive_rates = []
+            
+#             for grp in groups:
+#                 clf_data = metrics_dict.get(grp, {}).get(classifier, {})
+#                 if threshold_key in clf_data:
+#                     TP = clf_data[threshold_key]['TP']
+#                     FP = clf_data[threshold_key]['FP']
+#                     FN = clf_data[threshold_key]['FN']
+#                     TN = clf_data[threshold_key]['TN']
+                    
+#                     total = TP + FP + FN + TN
+#                     positive_rate = (TP + FP) / total if total > 0 else 0
+#                     positive_rates.append(positive_rate)
+            
+#             if len(positive_rates) < 2:
+#                 continue
+            
+#             statistical_discrepancy = max(positive_rates) - min(positive_rates)
+            
+#             if classifier not in discrepancies:
+#                 discrepancies[classifier] = {}
+#             discrepancies[classifier][threshold_key] = {
+#                 'Statistical Discrepancy': statistical_discrepancy
+#             }
+#     return discrepancies
+
 def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
     """
     Calculates metrics by a specific group column (e.g., formality_group).
-    Returns: results[group_value][classifier][threshold_key] = {TP, TN, FP, FN, ACC, FPR}
+    Returns: results[group_value][classifier][threshold_key] = {TP, TN, FP, FN, etc.}
     """
     results = {}
     unique_groups = data[group_col].unique()
@@ -133,6 +219,9 @@ def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
                 denom = TP + TN + FP + FN
                 ACC = (TP + TN) / denom if denom > 0 else 0
                 FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
+                FNR = FN / (FN + TP) if (FN + TP) > 0 else 0
+                PPV = TP / (TP + FP) if (TP + FP) > 0 else 0
+                NPV = TN / (TN + FN) if (TN + FN) > 0 else 0
                 
                 results[grp][classifier][f'threshold_{i}'] = {
                     'TP': TP,
@@ -140,14 +229,19 @@ def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
                     'FP': FP,
                     'FN': FN,
                     'ACC': ACC,
-                    'FPR': FPR
+                    'FPR': FPR,
+                    'FNR': FNR,
+                    'PPV': PPV,
+                    'NPV': NPV
                 }
     return results
 
-def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
+def calculate_fairness_discrepancy(metrics_dict, classifiers, thresholds):
     """
-    Calculates the biggest statistical parity discrepancy for each feature group.
+    Calculates fairness metrics (TPR, FPR, TNR, FNR) for the given classifiers and thresholds.
+    Returns the metric with the greatest disparity for each classifier and threshold.
     """
+    fairness_metrics = ['TPR', 'FPR', 'TNR', 'FNR']
     discrepancies = {}
     groups = list(metrics_dict.keys())
     if len(groups) < 2:
@@ -156,7 +250,7 @@ def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
     for classifier in classifiers:
         for i, threshold in enumerate(thresholds, 1):
             threshold_key = f'threshold_{i}'
-            positive_rates = []
+            metric_discrepancies = {metric: [] for metric in fairness_metrics}
             
             for grp in groups:
                 clf_data = metrics_dict.get(grp, {}).get(classifier, {})
@@ -166,23 +260,71 @@ def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
                     FN = clf_data[threshold_key]['FN']
                     TN = clf_data[threshold_key]['TN']
                     
-                    total = TP + FP + FN + TN
-                    positive_rate = (TP + FP) / total if total > 0 else 0
-                    positive_rates.append(positive_rate)
+                    TPR = TP / (TP + FN) if (TP + FN) > 0 else 0
+                    FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
+                    TNR = TN / (TN + FP) if (TN + FP) > 0 else 0
+                    FNR = FN / (FN + TP) if (FN + TP) > 0 else 0
+                    
+                    metric_discrepancies['TPR'].append(TPR)
+                    metric_discrepancies['FPR'].append(FPR)
+                    metric_discrepancies['TNR'].append(TNR)
+                    metric_discrepancies['FNR'].append(FNR)
             
-            if len(positive_rates) < 2:
-                continue
+            # Calculate discrepancies for each metric
+            metric_disparities = {metric: (max(values) - min(values)) if values else 0 
+                                  for metric, values in metric_discrepancies.items()}
             
-            statistical_discrepancy = max(positive_rates) - min(positive_rates)
+            # Find the greatest discrepancy
+            max_discrepancy_metric = max(metric_disparities, key=metric_disparities.get)
+            max_discrepancy_value = metric_disparities[max_discrepancy_metric]
             
             if classifier not in discrepancies:
                 discrepancies[classifier] = {}
             discrepancies[classifier][threshold_key] = {
-                'Statistical Discrepancy': statistical_discrepancy
+                'Greatest Discrepancy': max_discrepancy_value,
+                'Metric': max_discrepancy_metric
             }
     return discrepancies
 
-
+# second method
+def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
+    discrepancies = {}
+    groups = list(metrics_dict.keys())
+    if len(groups) < 2:
+        return discrepancies  # Not enough subgroups to measure discrepancy
+    
+    for classifier in classifiers:
+        for i, threshold in enumerate(thresholds, 1):
+            threshold_key = f'threshold_{i}'
+            TPRs = []
+            FPRs = []
+            
+            for grp in groups:
+                clf_data = metrics_dict.get(grp, {}).get(classifier, {})
+                if threshold_key in clf_data:
+                    TP = clf_data[threshold_key]['TP']
+                    FP = clf_data[threshold_key]['FP']
+                    FN = clf_data[threshold_key]['FN']
+                    TN = clf_data[threshold_key]['TN']
+                    
+                    TPR = TP / (TP + FN) if (TP + FN) > 0 else 0
+                    FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
+                    TPRs.append(TPR)
+                    FPRs.append(FPR)
+            
+            if len(TPRs) < 2 or len(FPRs) < 2:
+                continue
+            
+            TPR_discrepancy = max(TPRs) - min(TPRs)
+            FPR_discrepancy = max(FPRs) - min(FPRs)
+            greatest_discrepancy = max(TPR_discrepancy, FPR_discrepancy)
+            
+            if classifier not in discrepancies:
+                discrepancies[classifier] = {}
+            discrepancies[classifier][threshold_key] = {
+                'Statistical Discrepancy': greatest_discrepancy
+            }
+    return discrepancies
 
 # Run the optimization method 2
 file_path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv"
@@ -469,7 +611,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=3000,
+    max_iterations=10**2,
     relaxation_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.0,         # Set realistic minimum accuracy
     min_f1_threshold=0.0,           # Set realistic minimum F1 score

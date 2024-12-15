@@ -26,10 +26,11 @@ df['formality_group'] = formality_groups
 df['sentiment_group'] = sentiment_groups
 df['personality_group'] = personality_groups
 
+
 def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
     """
     Calculates metrics by a specific group column (e.g., formality_group).
-    Returns: results[group_value][classifier][threshold_key] = {TP, TN, FP, FN, ACC, FPR}
+    Returns: results[group_value][classifier][threshold_key] = {TP, TN, FP, FN, etc.}
     """
     results = {}
     unique_groups = data[group_col].unique()
@@ -64,6 +65,9 @@ def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
                 ACC = (TP + TN) / denom if denom > 0 else 0
                 FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
                 FNR = FN / (FN + TP) if (FN + TP) > 0 else 0
+                PPV = TP / (TP + FP) if (TP + FP) > 0 else 0
+                NPV = TN / (TN + FN) if (TN + FN) > 0 else 0
+                
                 results[grp][classifier][f'threshold_{i}'] = {
                     'TP': TP,
                     'TN': TN,
@@ -71,12 +75,18 @@ def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
                     'FN': FN,
                     'ACC': ACC,
                     'FPR': FPR,
-                    'FNR': FNR
+                    'FNR': FNR,
+                    'PPV': PPV,
+                    'NPV': NPV
                 }
     return results
 
-def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
-
+def calculate_fairness_discrepancy(metrics_dict, classifiers, thresholds):
+    """
+    Calculates fairness metrics (TPR, FPR, TNR, FNR) for the given classifiers and thresholds.
+    Returns the metric with the greatest disparity for each classifier and threshold.
+    """
+    fairness_metrics = ['TPR', 'FPR', 'TNR', 'FNR']
     discrepancies = {}
     groups = list(metrics_dict.keys())
     if len(groups) < 2:
@@ -85,7 +95,7 @@ def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
     for classifier in classifiers:
         for i, threshold in enumerate(thresholds, 1):
             threshold_key = f'threshold_{i}'
-            positive_rates = []
+            metric_discrepancies = {metric: [] for metric in fairness_metrics}
             
             for grp in groups:
                 clf_data = metrics_dict.get(grp, {}).get(classifier, {})
@@ -95,74 +105,33 @@ def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
                     FN = clf_data[threshold_key]['FN']
                     TN = clf_data[threshold_key]['TN']
                     
-                    total = TP + FP + FN + TN
-                    positive_rate = (TP + FP) / total if total > 0 else 0
-                    positive_rates.append(positive_rate)
+                    TPR = TP / (TP + FN) if (TP + FN) > 0 else 0
+                    FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
+                    TNR = TN / (TN + FP) if (TN + FP) > 0 else 0
+                    FNR = FN / (FN + TP) if (FN + TP) > 0 else 0
+                    
+                    metric_discrepancies['TPR'].append(TPR)
+                    metric_discrepancies['FPR'].append(FPR)
+                    metric_discrepancies['TNR'].append(TNR)
+                    metric_discrepancies['FNR'].append(FNR)
             
-            if len(positive_rates) < 2:
-                continue
+            # Calculate discrepancies for each metric
+            metric_disparities = {metric: (max(values) - min(values)) if values else 0 
+                                  for metric, values in metric_discrepancies.items()}
             
-            statistical_discrepancy = max(positive_rates) - min(positive_rates) # adjust this part for metrics
+            # Find the greatest discrepancy
+            max_discrepancy_metric = max(metric_disparities, key=metric_disparities.get)
+            max_discrepancy_value = metric_disparities[max_discrepancy_metric]
             
             if classifier not in discrepancies:
                 discrepancies[classifier] = {}
             discrepancies[classifier][threshold_key] = {
-                'Statistical Discrepancy': statistical_discrepancy
+                'Greatest Discrepancy': max_discrepancy_value,
+                'Metric': max_discrepancy_metric
             }
     return discrepancies
 
-
-
-# def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
-#     discrepancies = {}
-#     groups = list(metrics_dict.keys())
-#     if len(groups) < 2:
-#         return discrepancies  # Not enough subgroups to measure discrepancy
-    
-#     for classifier in classifiers:
-#         for i, threshold in enumerate(thresholds, 1):
-#             threshold_key = f'threshold_{i}'
-#             TPRs = []
-#             FPRs = []
-#             error_rates = []  # To store error rates for all subgroups
-#             for grp in groups:
-#                 clf_data = metrics_dict.get(grp, {}).get(classifier, {})
-#                 if threshold_key in clf_data:
-#                     TP = clf_data[threshold_key]['TP']
-#                     FP = clf_data[threshold_key]['FP']
-#                     FN = clf_data[threshold_key]['FN']
-#                     TN = clf_data[threshold_key]['TN']
-                    
-#                     TPR = TP / (TP + FN) if (TP + FN) > 0 else 0
-#                     FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
-#                     FNR = FN / (FN + TP) if (FN + TP) > 0 else 0
-#                     TPRs.append(TPR)
-#                     FPRs.append(FPR)
-#                     # Overall error rate for this subgroup
-#                     error_rate = (FPR + FNR) / 2
-#                     error_rates.append(error_rate)
-
-#             if len(TPRs) < 2 or len(FPRs) < 2:
-#                 continue
-            
-#             TPR_discrepancy = max(TPRs) - min(TPRs)
-#             FPR_discrepancy = max(FPRs) - min(FPRs)
-#             greatest_discrepancy = max(TPR_discrepancy, FPR_discrepancy)
-            
-#             # FGERB (max-min discrepancy of error rates)
-#             max_error_rate = max(error_rates)
-#             min_error_rate = min(error_rates)
-#             gferb_discrepancy = max_error_rate - min_error_rate
-
-#             if classifier not in discrepancies:
-#                 discrepancies[classifier] = {}
-#             discrepancies[classifier][threshold_key] = {
-#                 'Statistical Discrepancy':  greatest_discrepancy
-#             }
-#     return discrepancies
-
-
-
+# Calculate fairness metrics and statistical discrepancies
 feature_cols = {
     'Formality': 'formality_group',
     'Length': 'length_group',
@@ -170,7 +139,6 @@ feature_cols = {
     'Personality': 'personality_group'
 }
 
-# Calculate metrics and statistical discrepancies by source
 output_lines = []
 for source in df['source'].unique():
     source_data = df[df['source'] == source]
@@ -182,20 +150,18 @@ for source in df['source'].unique():
         # Calculate metrics for the feature group
         feature_metrics = calculate_metrics_by_group(source_data, group_col, thresholds, classifiers)
         
-        # Calculate discrepancies
-        discrepancies = calculate_statistical_discrepancy(feature_metrics, classifiers, thresholds)
+        # Calculate fairness discrepancies
+        discrepancies = calculate_fairness_discrepancy(feature_metrics, classifiers, thresholds)
         
         # Log discrepancies for each classifier and threshold
         for classifier, discrepancy_data in discrepancies.items():
             output_lines.append(f"Classifier: {classifier}")
             for threshold_key, values in discrepancy_data.items():
-                output_lines.append(f"  {threshold_key}: Greatest Discrepancy = {values['Statistical Discrepancy']:.3f}")
+                output_lines.append(f"  {threshold_key}: Greatest Discrepancy = {values['Greatest Discrepancy']:.3f} (Metric: {values['Metric']})")
 
 # Save results to a text file
-output_file = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\statistical_discrepancies_with_acc_fpr.txt"
+output_file = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\fairness_discrepancies.txt"
 with open(output_file, "w") as file:
     file.write("\n".join(output_lines))
 
 print(f"Results saved to {output_file}")
-
-
