@@ -75,92 +75,64 @@ def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
                 }
     return results
 
-def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
 
+
+def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
     discrepancies = {}
     groups = list(metrics_dict.keys())
+    
     if len(groups) < 2:
         return discrepancies  # Not enough subgroups to measure discrepancy
-    
+
     for classifier in classifiers:
         for i, threshold in enumerate(thresholds, 1):
             threshold_key = f'threshold_{i}'
-            positive_rates = []
+            
+            # Initialize lists to store rates for each group
+            tp_rates, tn_rates, fp_rates, fn_rates = [], [], [], []
             
             for grp in groups:
                 clf_data = metrics_dict.get(grp, {}).get(classifier, {})
                 if threshold_key in clf_data:
                     TP = clf_data[threshold_key]['TP']
+                    TN = clf_data[threshold_key]['TN']
                     FP = clf_data[threshold_key]['FP']
                     FN = clf_data[threshold_key]['FN']
-                    TN = clf_data[threshold_key]['TN']
+                    total = TP + TN + FP + FN
                     
-                    total = TP + FP + FN + TN
-                    positive_rate = (TP + FP) / total if total > 0 else 0
-                    positive_rates.append(positive_rate)
+                    if total > 0:
+                        tp_rates.append(TP / total)
+                        tn_rates.append(TN / total)
+                        fp_rates.append(FP / total)
+                        fn_rates.append(FN / total)
             
-            if len(positive_rates) < 2:
-                continue
-            
-            statistical_discrepancy = max(positive_rates) - min(positive_rates) # adjust this part for metrics
-            
+            # Calculate maximal disparities for each metric as rates
+            tp_discrepancy = max(tp_rates) - min(tp_rates) if tp_rates else 0
+            tn_discrepancy = max(tn_rates) - min(tn_rates) if tn_rates else 0
+            fp_discrepancy = max(fp_rates) - min(fp_rates) if fp_rates else 0
+            fn_discrepancy = max(fn_rates) - min(fn_rates) if fn_rates else 0
+
+            # Average of maximal disparities
+            average_discrepancy = np.mean([tp_discrepancy, tn_discrepancy, fp_discrepancy, fn_discrepancy])
+            maximum_discrepancy = max(tp_discrepancy, tn_discrepancy, fp_discrepancy, fn_discrepancy)
+
+            # Store results
             if classifier not in discrepancies:
                 discrepancies[classifier] = {}
             discrepancies[classifier][threshold_key] = {
-                'Statistical Discrepancy': statistical_discrepancy
+                'TP Discrepancy': tp_discrepancy,
+                'TN Discrepancy': tn_discrepancy,
+                'FP Discrepancy': fp_discrepancy,
+                'FN Discrepancy': fn_discrepancy,
+                'Statistical Discrepancy': average_discrepancy,
+                'Max Discrepancy': maximum_discrepancy,
+                'Max TP Discrepancy': tp_discrepancy,
+                'Max TN Discrepancy': tn_discrepancy,
+                'Max FP Discrepancy': fp_discrepancy,
+                'Max FN Discrepancy': fn_discrepancy
+
             }
     return discrepancies
-
-
-
-# def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
-#     discrepancies = {}
-#     groups = list(metrics_dict.keys())
-#     if len(groups) < 2:
-#         return discrepancies  # Not enough subgroups to measure discrepancy
-    
-#     for classifier in classifiers:
-#         for i, threshold in enumerate(thresholds, 1):
-#             threshold_key = f'threshold_{i}'
-#             TPRs = []
-#             FPRs = []
-#             error_rates = []  # To store error rates for all subgroups
-#             for grp in groups:
-#                 clf_data = metrics_dict.get(grp, {}).get(classifier, {})
-#                 if threshold_key in clf_data:
-#                     TP = clf_data[threshold_key]['TP']
-#                     FP = clf_data[threshold_key]['FP']
-#                     FN = clf_data[threshold_key]['FN']
-#                     TN = clf_data[threshold_key]['TN']
-                    
-#                     TPR = TP / (TP + FN) if (TP + FN) > 0 else 0
-#                     FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
-#                     FNR = FN / (FN + TP) if (FN + TP) > 0 else 0
-#                     TPRs.append(TPR)
-#                     FPRs.append(FPR)
-#                     # Overall error rate for this subgroup
-#                     error_rate = (FPR + FNR) / 2
-#                     error_rates.append(error_rate)
-
-#             if len(TPRs) < 2 or len(FPRs) < 2:
-#                 continue
-            
-#             TPR_discrepancy = max(TPRs) - min(TPRs)
-#             FPR_discrepancy = max(FPRs) - min(FPRs)
-#             greatest_discrepancy = max(TPR_discrepancy, FPR_discrepancy)
-            
-#             # FGERB (max-min discrepancy of error rates)
-#             max_error_rate = max(error_rates)
-#             min_error_rate = min(error_rates)
-#             gferb_discrepancy = max_error_rate - min_error_rate
-
-#             if classifier not in discrepancies:
-#                 discrepancies[classifier] = {}
-#             discrepancies[classifier][threshold_key] = {
-#                 'Statistical Discrepancy':  greatest_discrepancy
-#             }
-#     return discrepancies
-
 
 
 feature_cols = {
@@ -189,7 +161,13 @@ for source in df['source'].unique():
         for classifier, discrepancy_data in discrepancies.items():
             output_lines.append(f"Classifier: {classifier}")
             for threshold_key, values in discrepancy_data.items():
-                output_lines.append(f"  {threshold_key}: Greatest Discrepancy = {values['Statistical Discrepancy']:.3f}")
+                output_lines.append(f"  {threshold_key}: Greatest Discrepancy = {values['Max Discrepancy']:.4f}")
+                # add max TP, TN, FP, FN
+                output_lines.append(f"  {threshold_key}: Max TP Discrepancy = {values['Max TP Discrepancy']:.4f}")
+                output_lines.append(f"  {threshold_key}: Max TN Discrepancy = {values['Max TN Discrepancy']:.4f}")
+                output_lines.append(f"  {threshold_key}: Max FP Discrepancy = {values['Max FP Discrepancy']:.4f}")
+                output_lines.append(f"  {threshold_key}: Max FN Discrepancy = {values['Max FN Discrepancy']:.4f}")
+
 
 # Save results to a text file
 output_file = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\statistical_discrepancies_with_acc_fpr.txt"
