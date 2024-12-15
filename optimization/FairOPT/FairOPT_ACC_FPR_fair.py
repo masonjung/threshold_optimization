@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, roc_curve, roc_auc_score
 
+from optimization.FairOPT.fairness_pac.fairnessEquation import *
+
 # Interpreting equaltion
 def equation_fairness(Prob_a,Prob_b):
     rule = 0.8 # 0.8 for relaxed fairness; 1.0 is strict fairness
@@ -611,7 +613,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=10**2,
+    max_iterations=10**3,
     relaxation_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.0,         # Set realistic minimum accuracy
     min_f1_threshold=0.0,           # Set realistic minimum F1 score
@@ -718,6 +720,7 @@ for source in unique_sources:
                 group_indices = (feature_values == feature_value)
                 total = np.sum(group_indices)
                 positive_rate = np.sum(test_y_pred[group_indices]) / total if total > 0 else 0
+                negative_rate = np.sum(test_y_pred[group_indices] == 0) / total if total > 0 else 0
                 positive_rates.append(positive_rate)
             
             # Measure discrepancy as the difference between max and min positive rates
