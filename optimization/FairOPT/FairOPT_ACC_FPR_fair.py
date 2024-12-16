@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, roc_curve, roc_auc_score
 
-from optimization.FairOPT.fairness_pac.fairnessEquation import *
-
 # Interpreting equaltion
 def equation_fairness(Prob_a,Prob_b):
     rule = 0.8 # 0.8 for relaxed fairness; 1.0 is strict fairness
@@ -613,7 +611,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=10**3,
+    max_iterations=10**4,
     relaxation_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.0,         # Set realistic minimum accuracy
     min_f1_threshold=0.0,           # Set realistic minimum F1 score
@@ -646,7 +644,7 @@ print(optimized_thresholds_list)
 
 # need to apply the generated thresold to the test dataset
 # Load test dataset
-test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv")
+test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv")
 
 # Split test dataset by 'source'
 unique_sources = test_dataset['source'].unique()
@@ -655,7 +653,7 @@ for source in unique_sources:
     source_dataset = test_dataset[test_dataset['source'] == source]
 
     # Split by different detector probabilities
-    detector_probabilities = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability']
+    detector_probabilities = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability', "GPT4o-mini_probability"]
 
     for detector in detector_probabilities:
         if detector not in source_dataset.columns:
@@ -679,6 +677,7 @@ for source in unique_sources:
         test_personality_groups = source_dataset['personality'].astype(str).values
 
         feature_groups = [test_length_groups, test_formality_groups, test_sentiment_groups, test_personality_groups]
+
         # Combine groups into a single group label for test dataset
         test_groups = pd.Series([
             f"{length}_{formality}_{sentiment}_{personality}"
@@ -699,8 +698,8 @@ for source in unique_sources:
         # Calculate and print performance metrics for the current source and detector
         test_accuracy = accuracy_score(test_y_true, test_y_pred)
         test_fpr = np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0) if np.sum(test_y_true == 0) > 0 else 0
-
-        # Initialize discrepancy tracking
+ 
+        # Initialize discrepancy tracking for EACH FEATURE
         feature_discrepancies = {}
 
         # Iterate over individual features to calculate discrepancies
@@ -713,33 +712,118 @@ for source in unique_sources:
 
         for feature_name, feature_values in features.items():
             unique_feature_values = np.unique(feature_values)
-            positive_rates = []
-            
-            # Calculate positive rates for each feature group
+            tpr_values, tnr_values, fpr_values, fnr_values = [], [], [], []
+
+            # Calculate rates for each feature group
             for feature_value in unique_feature_values:
                 group_indices = (feature_values == feature_value)
-                total = np.sum(group_indices)
-                positive_rate = np.sum(test_y_pred[group_indices]) / total if total > 0 else 0
-                negative_rate = np.sum(test_y_pred[group_indices] == 0) / total if total > 0 else 0
-                positive_rates.append(positive_rate)
-            
-            # Measure discrepancy as the difference between max and min positive rates
-            if len(positive_rates) >= 2:  # Ensure at least two groups to measure discrepancy
-                discrepancy = max(positive_rates) - min(positive_rates)
-                feature_discrepancies[feature_name] = discrepancy
+                TP = np.sum((test_y_pred[group_indices] == 1) & (test_y_true[group_indices] == 1))
+                TN = np.sum((test_y_pred[group_indices] == 0) & (test_y_true[group_indices] == 0))
+                FP = np.sum((test_y_pred[group_indices] == 1) & (test_y_true[group_indices] == 0))
+                FN = np.sum((test_y_pred[group_indices] == 0) & (test_y_true[group_indices] == 1))
 
-        # Find the feature with the biggest discrepancy
-        biggest_discrepancy_feature = max(feature_discrepancies, key=feature_discrepancies.get, default=None)
-        biggest_discrepancy_value = feature_discrepancies.get(biggest_discrepancy_feature, 0)
+                # Calculate TPR, TNR, FPR, and FNR
+                TPR = TP / (TP + FN) if (TP + FN) > 0 else 0  # True Positive Rate
+                TNR = TN / (TN + FP) if (TN + FP) > 0 else 0  # True Negative Rate
+                FPR = FP / (FP + TN) if (FP + TN) > 0 else 0  # False Positive Rate
+                FNR = FN / (FN + TP) if (FN + TP) > 0 else 0  # False Negative Rate
+                
+                tpr_values.append(TPR)
+                tnr_values.append(TNR)
+                fpr_values.append(FPR)
+                fnr_values.append(FNR)
+
+            # Calculate discrepancies for each rate
+            tpr_discrepancy = max(tpr_values) - min(tpr_values) if tpr_values else 0
+            tnr_discrepancy = max(tnr_values) - min(tnr_values) if tnr_values else 0
+            fpr_discrepancy = max(fpr_values) - min(fpr_values) if fpr_values else 0
+            fnr_discrepancy = max(fnr_values) - min(fnr_values) if fnr_values else 0
+
+            # Store discrepancies
+            feature_discrepancies[feature_name] = {
+                "TPR": tpr_discrepancy,
+                "TNR": tnr_discrepancy,
+                "FPR": fpr_discrepancy,
+                "FNR": fnr_discrepancy
+            }
 
         # Write discrepancies to the results file
         with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated2.txt", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
-            f.write(f"Accuracy: {test_accuracy:.3f}\n")
-            f.write(f"False Positive Rate (FPR): {test_fpr:.3f}\n")
+            f.write(f"Accuracy: {test_accuracy:.4f}\n")
+            f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
             f.write(f"Discrepancies by Feature:\n")
-            # f.write(f"threshold: {threshold}\n")
-            for feature_name, discrepancy in feature_discrepancies.items():
-                f.write(f"{feature_name.capitalize()} Discrepancy: {discrepancy:.3f}\n")
-            f.write(f"Biggest Discrepancy: {biggest_discrepancy_feature.capitalize()} ({biggest_discrepancy_value:.3f})\n")
+            for feature_name, discrepancies in feature_discrepancies.items():
+                f.write(f"  Feature: {feature_name.capitalize()}\n")
+                f.write(f"    TPR Discrepancy: {discrepancies['TPR']:.4f}\n")
+                f.write(f"    TNR Discrepancy: {discrepancies['TNR']:.4f}\n")
+                f.write(f"    FPR Discrepancy: {discrepancies['FPR']:.4f}\n")
+                f.write(f"    FNR Discrepancy: {discrepancies['FNR']:.4f}\n")
+
+
+
+        # # Initialize discrepancy tracking
+        # feature_discrepancies = {}
+
+        # # Iterate over individual features to calculate discrepancies
+        # features = {
+        #     'length': test_length_groups,
+        #     'sentiment': test_sentiment_groups,
+        #     'formality': test_formality_groups,
+        #     'personality': test_personality_groups
+        # }
+
+        # for feature_name, feature_values in features.items():
+        #     unique_feature_values = np.unique(feature_values)
+        #     fpr_values, fnr_values, tpr_values, tnr_values = [], [], [], []
+            
+        #     # Calculate rates for each feature group
+        #     for feature_value in unique_feature_values:
+        #         group_indices = (feature_values == feature_value)
+        #         TP = np.sum((test_y_pred[group_indices] == 1) & (test_y_true[group_indices] == 1))
+        #         TN = np.sum((test_y_pred[group_indices] == 0) & (test_y_true[group_indices] == 0))
+        #         FP = np.sum((test_y_pred[group_indices] == 1) & (test_y_true[group_indices] == 0))
+        #         FN = np.sum((test_y_pred[group_indices] == 0) & (test_y_true[group_indices] == 1))
+                
+        #         FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
+        #         FNR = FN / (FN + TP) if (FN + TP) > 0 else 0
+        #         TPR = TP / (TP + FN) if (TP + FN) > 0 else 0
+        #         TNR = TN / (TN + FP) if (TN + FP) > 0 else 0
+                
+        #         fpr_values.append(FPR)
+        #         fnr_values.append(FNR)
+        #         tpr_values.append(TPR)
+        #         tnr_values.append(TNR)
+                
+    
+        #         fpr_discrepancy = max(fpr_values) - min(fpr_values)
+        #         fnr_discrepancy = max(fnr_values) - min(fnr_values)
+        #         tpr_discrepancy = max(tpr_values) - min(tpr_values)
+        #         tnr_discrepancy = max(tnr_values) - min(tnr_values)
+                
+        #         max_discrepancy = max(fpr_discrepancy, fnr_discrepancy, tpr_discrepancy, tnr_discrepancy)
+        #         feature_discrepancies[feature_name] = max_discrepancy
+
+        # # Find the feature with the biggest discrepancy
+        # biggest_discrepancy_feature = max(feature_discrepancies, key=feature_discrepancies.get, default=None)
+        # biggest_discrepancy_value = feature_discrepancies.get(biggest_discrepancy_feature, 0)
+
+        # # Write discrepancies to the results file
+        # with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated2.txt", "a") as f:
+        #     f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
+        #     f.write(f"Accuracy: {test_accuracy:.4f}\n")
+        #     f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
+        #     f.write(f"Discrepancies by Feature:\n")
+        #     for feature_name, discrepancy in feature_discrepancies.items():
+        #         f.write(f"{feature_name.capitalize()} Discrepancy: {discrepancy:.4f}\n")
+        #         f.write(f"Biggest Discrepancy: {biggest_discrepancy_feature.capitalize()} ({biggest_discrepancy_value:.4f})\n")
+        #         f.write(f"Discrepancy Metric: {max(fpr_discrepancy, fnr_discrepancy, tpr_discrepancy, tnr_discrepancy):.4f}\n")
+            
+            
+            
+            
+            
+            # for feature_name, discrepancy in feature_discrepancies.items():
+            #         f.write(f"{feature_name.capitalize()} Discrepancy: {discrepancy:.3f}\n")
+            # f.write(f"Biggest Discrepancy: {biggest_discrepancy_feature.capitalize()} ({biggest_discrepancy_value:.3f})\n")
 
