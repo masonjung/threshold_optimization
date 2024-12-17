@@ -358,7 +358,7 @@ class ThresholdOptimizer:
         min_acc_threshold=0.5, # do we need this?
         min_f1_threshold=0.5,  # do we need this?
         tolerance=1e-4,
-        penalty=10            # Penalty term for F1 score below threshold
+        penalty=0            # Penalty term for F1 score below threshold
     ):
         self.y_true = y_true
         self.y_pred_proba = y_pred_proba
@@ -427,7 +427,7 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] = np.clip(self.thresholds[group], 1e-7, 1 - 1e-7) # 7 decimal points
+                self.thresholds[group] = np.clip(self.thresholds[group], 0.05 + 1e-7, 0.95 - 1e-7) # 7 decimal points
 
                 # Monitor gradient and threshold updates
                 print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
@@ -591,10 +591,16 @@ personality_groups = df['personality'].fillna('unknown').astype(str).values
 
 
 
-# Combine groups into a single group label
+# Combine groups into a single group label 1
 groups = pd.Series([
     f"{length}_{formality}_{sentiment}_{personality}"
     for length, formality, sentiment, personality in zip(length_groups, formality_groups, sentiment_groups, personality_groups)
+]).values
+
+# Combine groups into a single group label 2
+groups = pd.Series([
+    f"{length}_{personality}"
+    for length, personality in zip(length_groups, personality_groups)
 ]).values
 
 # Prepare true labels and predicted probabilities
@@ -611,10 +617,10 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=10**4,
+    max_iterations=3000,
     relaxation_disparity=0.2,  # Adjust based on your fairness criteria
-    min_acc_threshold=0.0,         # Set realistic minimum accuracy
-    min_f1_threshold=0.0,           # Set realistic minimum F1 score
+    min_acc_threshold=0.5,         # Set realistic minimum accuracy
+    min_f1_threshold=0.5,           # Set realistic minimum F1 score
     tolerance=1e-5,  # Decrease tolerance for stricter convergence criteria
     penalty=20  # Increase penalty to enforce stricter updates
 )
