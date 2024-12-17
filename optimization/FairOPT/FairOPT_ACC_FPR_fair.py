@@ -597,12 +597,6 @@ groups = pd.Series([
     for length, formality, sentiment, personality in zip(length_groups, formality_groups, sentiment_groups, personality_groups)
 ]).values
 
-# Combine groups into a single group label 2
-groups = pd.Series([
-    f"{length}_{personality}"
-    for length, personality in zip(length_groups, personality_groups)
-]).values
-
 # Prepare true labels and predicted probabilities
 y_true = df['AI_written'].apply(lambda x: 1 if x == 'AI' else 0).values  # True labels
 y_pred_proba = df['roberta_large_openai_detector_probability'].values     # Predicted probabilities the probability is learned from one model
@@ -617,10 +611,10 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=3000,
-    relaxation_disparity=0.2,  # Adjust based on your fairness criteria
-    min_acc_threshold=0.5,         # Set realistic minimum accuracy
-    min_f1_threshold=0.5,           # Set realistic minimum F1 score
+    max_iterations=1000,
+    relaxation_disparity=0.2,  # relaxation <- 0.2 or 0 <- this can be used for the figure drawing
+    min_acc_threshold=0.5,         # accuracy
+    min_f1_threshold=0.5,           # f1
     tolerance=1e-5,  # Decrease tolerance for stricter convergence criteria
     penalty=20  # Increase penalty to enforce stricter updates
 )
