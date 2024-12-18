@@ -148,7 +148,7 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] = np.clip(self.thresholds[group], 0, 1)
+                self.thresholds[group] = np.clip(self.thresholds[group], 0.00, 1.00) # range
 
                 # Monitor gradient and threshold updates
                 print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
@@ -255,26 +255,6 @@ class ThresholdOptimizer:
 
         return gradient
 
-    # def grid_search_thresholds(self):
-    #     possible_thresholds = np.linspace(0, 1, num=100)
-    #     best_thresholds = {}
-    #     for group in self.group_indices.keys():
-    #         best_acc = -np.inf
-    #         best_threshold = 0.5
-    #         group_indices = self.group_indices[group]
-    #         group_y_true = self.y_true[group_indices]
-    #         group_y_pred_proba = self.y_pred_proba[group_indices]
-    #         for threshold in possible_thresholds:
-    #             group_y_pred = group_y_pred_proba >= threshold
-    #             acc = accuracy_score(group_y_true, group_y_pred)
-    #             f1 = f1_score(group_y_true, group_y_pred, zero_division=1)
-    #             if f1 >= self.min_f1_threshold and acc > best_acc:
-    #                 best_acc = acc
-    #                 best_threshold = threshold
-    #         best_thresholds[group] = best_threshold
-    #         print(f"Group: {group}, Best Threshold: {best_threshold:.4f}, Best Accuracy: {best_acc:.4f}")
-    #     return best_thresholds
-
 
 
 ######################## RUN
@@ -338,16 +318,6 @@ optimizer = ThresholdOptimizer(
 
 # Optimize thresholds using gradient-based method
 thresholds, history = optimizer.optimize()
-
-# If thresholds still do not change, use grid search as an alternative
-# if all(threshold == 0.5 for threshold in thresholds.values()):
-#     print("Thresholds did not change using gradient descent. Switching to grid search.")
-#     thresholds = optimizer.grid_search_thresholds()
-
-# # View optimized thresholds
-# print("\nOptimized Thresholds:")
-# for group, threshold in thresholds.items():
-#     print(f"Group: {group}, Threshold: {threshold:.4f}")
 
 
 # Move the results to the list
