@@ -38,7 +38,8 @@ for i, ai_written in enumerate([1, 0]):
         sns.histplot(df_subset['combined_probability'], ax=ax, kde=False, bins=25, color=color, alpha=0.1, label=label, stat='percent')
         sns.kdeplot(df_subset['combined_probability'], ax=ax, color=color, linewidth=2, linestyle='-', bw_adjust=0.02, clip=(0, 1))
         # sns.kdeplot(df_subset['combined_probability'], ax=ax, color=color, linewidth=2, linestyle='-', label=f"{label} (Smoothed)", bw_adjust=0.02, clip=(0, 1))
-    
+    # Force x-axis limits
+    ax.set_xlim(0, 1)
     # Draw a static threshold line
     threshold = 0.5
     ax.axvline(x=threshold, color='black', linestyle='-', linewidth=3, label='Static threshold')
