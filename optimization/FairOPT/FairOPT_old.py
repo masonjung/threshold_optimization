@@ -148,7 +148,7 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] = np.clip(self.thresholds[group], 0.00, 1.00) # range
+                self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995) # range
 
                 # Monitor gradient and threshold updates
                 print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
@@ -397,7 +397,8 @@ for source in unique_sources:
 
         # Calculate and print performance metrics for the current source and detector
         test_accuracy = accuracy_score(test_y_true, test_y_pred)
-        test_fpr = np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0) if np.sum(test_y_true == 0) > 0 else 0
+        test_fpr = np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0)
+        test_fnr = np.sum((test_y_pred == 0) & (test_y_true == 1)) / np.sum(test_y_true == 1)
 
         print(f"\nPerformance for Source: {source}, Detector: {detector}")
         print(f"Accuracy: {test_accuracy:.4f}")
@@ -408,9 +409,10 @@ for source in unique_sources:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.4f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
-            f.write(f"Thresholds:\n")
-            for group, threshold in thresholds.items():
-                f.write(f"Group: {group}, Threshold: {threshold:.7f}\n")
+            f.write(f"False Negative Rate (FNR): {test_fnr:.9f}\n")
+            # f.write(f"Thresholds:\n")
+            # for group, threshold in thresholds.items():
+            #     f.write(f"Group: {group}, Threshold: {threshold:.7f}\n")
 
         
         

@@ -755,9 +755,9 @@ for source in unique_sources:
             f.write(f"Discrepancies by Feature:\n")
             for feature_name, discrepancies in feature_discrepancies.items():
                 f.write(f"  Feature: {feature_name.capitalize()}\n")
-                f.write(f"    TPR Discrepancy: {discrepancies['TPR']:.4f}\n")
-                f.write(f"    TNR Discrepancy: {discrepancies['TNR']:.4f}\n")
-                f.write(f"    FPR Discrepancy: {discrepancies['FPR']:.4f}\n")
+                # f.write(f"    TPR Discrepancy: {discrepancies['TPR']:.4f}\n")
+                # f.write(f"    TNR Discrepancy: {discrepancies['TNR']:.4f}\n")
+                # f.write(f"    FPR Discrepancy: {discrepancies['FPR']:.4f}\n")
                 f.write(f"    FNR Discrepancy: {discrepancies['FNR']:.4f}\n")
 
 
