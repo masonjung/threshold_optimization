@@ -2,10 +2,11 @@ import sys
 import os
 print(sys.path)
 
-# # Add the project root directory to sys.path
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+# Manually specify the path to the project root
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 from src import utils
+
 
 
 

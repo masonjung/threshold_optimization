@@ -52,5 +52,5 @@ print("\nMetrics by Source and Classifier:")
 for source, classifiers_metrics in metrics_by_source.items():
     for classifier, metrics in classifiers_metrics.items():
         for threshold, metric in metrics.items():
-            print(f"{source} & {classifier} & {threshold} & ACC: {metric['ACC']:.3f} & FPR: {metric['FPR']:.3f} \\\\")
+            print(f"{source} & {classifier} & {threshold} & ACC: {metric['ACC']:.4f} & FPR: {metric['FPR']:.4f} \\\\")
 

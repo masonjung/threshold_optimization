@@ -3,6 +3,14 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, roc_curve, roc_auc_score
 
+
+import math
+
+# Adjust the accuracy and FPR to round down to four decimal places
+def truncate_to_decimal(value, decimals):
+    factor = 10 ** decimals
+    return math.floor(value * factor) / factor
+
 # Interpreting equaltion
 def equation_fairness(Prob_a,Prob_b):
     rule = 0.8 # 0.8 for relaxed fairness; 1.0 is strict fairness
@@ -358,7 +366,7 @@ class ThresholdOptimizer:
         min_acc_threshold=0.5, # do we need this?
         min_f1_threshold=0.5,  # do we need this?
         tolerance=1e-4,
-        penalty=0            # Penalty term for F1 score below threshold
+        penalty=20            # Penalty term for F1 score below threshold
     ):
         self.y_true = y_true
         self.y_pred_proba = y_pred_proba
@@ -427,7 +435,7 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] = np.clip(self.thresholds[group], 0.05 + 1e-7, 0.95 - 1e-7) # 7 decimal points
+                self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995) # 7 decimal points
 
                 # Monitor gradient and threshold updates
                 print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
@@ -611,7 +619,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=1000,
+    max_iterations=5000,
     relaxation_disparity=0.2,  # relaxation <- 0.2 or 0 <- this can be used for the figure drawing
     min_acc_threshold=0.5,         # accuracy
     min_f1_threshold=0.5,           # f1
@@ -698,6 +706,8 @@ for source in unique_sources:
         # Calculate and print performance metrics for the current source and detector
         test_accuracy = accuracy_score(test_y_true, test_y_pred)
         test_fpr = np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0) if np.sum(test_y_true == 0) > 0 else 0
+        test_fnr = np.sum((test_y_pred == 0) & (test_y_true == 1)) / np.sum(test_y_true == 1) if np.sum(test_y_true == 1) > 0 else 0
+        test_ber = (test_fpr + test_fnr) / 2
  
         # Initialize discrepancy tracking for EACH FEATURE
         feature_discrepancies = {}
@@ -744,21 +754,33 @@ for source in unique_sources:
                 "TPR": tpr_discrepancy,
                 "TNR": tnr_discrepancy,
                 "FPR": fpr_discrepancy,
-                "FNR": fnr_discrepancy
+                "FNR": fnr_discrepancy,
+                "BER": (fpr_discrepancy + fnr_discrepancy) / 2
             }
 
+        
         # Write discrepancies to the results file
         with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated2.txt", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
-            f.write(f"Accuracy: {test_accuracy:.4f}\n")
-            f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
+            # Apply truncation to ACC and FPR
+            f.write(f"Accuracy: {truncate_to_decimal(test_accuracy, 4):.4f}\n")
+            f.write(f"False Positive Rate (FPR): {truncate_to_decimal(test_fpr, 4):.4f}\n")
+            f.write(f"Balanced Error Rate (NER): {truncate_to_decimal(test_fpr, 4):.4f}\n")
             f.write(f"Discrepancies by Feature:\n")
             for feature_name, discrepancies in feature_discrepancies.items():
                 f.write(f"  Feature: {feature_name.capitalize()}\n")
-                # f.write(f"    TPR Discrepancy: {discrepancies['TPR']:.4f}\n")
-                # f.write(f"    TNR Discrepancy: {discrepancies['TNR']:.4f}\n")
-                # f.write(f"    FPR Discrepancy: {discrepancies['FPR']:.4f}\n")
-                f.write(f"    FNR Discrepancy: {discrepancies['FNR']:.4f}\n")
+                # Write BER discrepancy with truncation
+                f.write(f" BER Discrepancy: {truncate_to_decimal(discrepancies['BER'], 4):.4f}\n")
+
+        # # Write discrepancies to the results file
+        # with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated2.txt", "a") as f:
+        #     f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
+        #     f.write(f"Accuracy: {test_accuracy:.4f}\n")
+        #     f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
+        #     f.write(f"Discrepancies by Feature:\n")
+        #     for feature_name, discrepancies in feature_discrepancies.items():
+        #         f.write(f"  Feature: {feature_name.capitalize()}\n")
+        #         f.write(f" BER Discrepancy: {discrepancies['BER']:.4f}\n")
 
 
 

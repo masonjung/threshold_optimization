@@ -2,7 +2,17 @@
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
+import math
 
+# Define a custom rounder function
+def custom_round(value, mode="nearest", decimals=4):
+    factor = 10 ** decimals
+    if mode == "up":
+        return math.ceil(value * factor) / factor  # Round up
+    elif mode == "down":
+        return math.floor(value * factor) / factor  # Round down
+    else:  # Default to nearest
+        return round(value, decimals)  # Python's built-in rounding
 
 # Interpreting equaltion
 def equation_fairness(Prob_a,Prob_b):
@@ -399,6 +409,7 @@ for source in unique_sources:
         test_accuracy = accuracy_score(test_y_true, test_y_pred)
         test_fpr = np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0)
         test_fnr = np.sum((test_y_pred == 0) & (test_y_true == 1)) / np.sum(test_y_true == 1)
+        balanced_error = (test_fpr + test_fnr) / 2 # BER = ((FN/TP+FN) + (FP/TN+FP)) / 2
 
         print(f"\nPerformance for Source: {source}, Detector: {detector}")
         print(f"Accuracy: {test_accuracy:.4f}")
@@ -409,7 +420,7 @@ for source in unique_sources:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.4f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
-            f.write(f"False Negative Rate (FNR): {test_fnr:.9f}\n")
+            f.write(f"Balanced Error (BER): {balanced_error:.4f}\n")
             # f.write(f"Thresholds:\n")
             # for group, threshold in thresholds.items():
             #     f.write(f"Group: {group}, Threshold: {threshold:.7f}\n")

@@ -60,7 +60,8 @@ def calculate_metrics_by_group(data, group_col, thresholds, classifiers):
                     'FN': FN,
                     'ACC': (TP + TN) / denom if denom > 0 else 0,
                     'FPR': FP / (FP + TN) if (FP + TN) > 0 else 0,
-                    'FNR': FN / (FN + TP) if (FN + TP) > 0 else 0
+                    'FNR': FN / (FN + TP) if (FN + TP) > 0 else 0,
+                    "BER": ((FP / (FP + TN)) + (FN / (FN + TP))) / 2
                 }
     return results
 
@@ -77,7 +78,7 @@ def calculate_statistical_discrepancy(metrics_dict, classifiers, thresholds):
     for classifier in classifiers:
         for i, threshold in enumerate(thresholds, 1):
             threshold_key = f'threshold_{i}'
-            metric_rates = {'FNR': []}
+            metric_rates = {'BER': []}
 
             for grp in groups:
                 group_metrics = metrics_dict.get(grp, {}).get(classifier, {}).get(threshold_key, {})
@@ -125,7 +126,7 @@ for source in df['source'].unique():
             output_lines.append(f"Classifier: {classifier}")
             for threshold_key, values in discrepancy_data.items():
                 output_lines.append(f"  {threshold_key}: Max Discrepancy = {values['Max Discrepancy']:.4f}")
-                output_lines.append(f"  {threshold_key}: FNR Discrepancy = {values['FNR']:.4f}")
+                output_lines.append(f"  {threshold_key}: BER Discrepancy = {values['BER']:.4f}")
                 for metric, value in values.items():
                     if metric != 'Max Discrepancy':
                         output_lines.append(f"    {metric}: {value:.4f}")
