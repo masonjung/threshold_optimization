@@ -4,17 +4,6 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
 import math
 
-# Define a custom rounder function
-def custom_round(value, mode="nearest", decimals=4):
-    factor = 10 ** decimals
-    if mode == "up":
-        return math.ceil(value * factor) / factor  # Round up
-    elif mode == "down":
-        return math.floor(value * factor) / factor  # Round down
-    else:  # Default to nearest
-        return round(value, decimals)  # Python's built-in rounding
-
-
 
 class ThresholdOptimizer:
     def __init__(
@@ -277,16 +266,6 @@ thresholds, history = optimizer.optimize()
 optimized_thresholds_list = []
 for group, threshold in thresholds.items():
     optimized_thresholds_list.append({'group': group, 'threshold': threshold})
-
-# # Print the list of optimized thresholds
-# print("\nOptimized Thresholds List:")
-# for item in optimized_thresholds_list:
-#     print(f"Group: {item['group']}, Threshold: {item['threshold']:.7f}")
-
-# # Print all optimized thresholds with the groups that belong to each threshold
-# print("\nAll Optimized Thresholds with Groups:")
-# for group, threshold in thresholds.items():
-#     print(f"Threshold: {threshold:.7f}, Groups: {group}")
 
 # Print the list of optimized thresholds
 print("\nOptimized Thresholds:")
