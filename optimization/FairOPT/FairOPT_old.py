@@ -87,7 +87,7 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995) # range
+                self.thresholds[group] = np.clip(self.thresholds[group], 0.01, 0.99) # range
 
                 # Monitor gradient and threshold updates
                 print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
@@ -117,7 +117,7 @@ class ThresholdOptimizer:
         confusion_matrix_df.loc[group, 'False Positives'] = fp
         confusion_matrix_df.loc[group, 'False Negatives'] = fn
 
-        confusion_matrix_df.loc[group, 'PPR'] = tp + fp / (tp + fp + tn + fn) if (tp + fp + tn + fn) > 0 else 0
+        confusion_matrix_df.loc[group, 'PPR'] = (tp + fp) / (tp + fp + tn + fn) if (tp + fp + tn + fn) > 0 else 0
         confusion_matrix_df.loc[group, 'FPR'] = fp / (fp + tn) if (fp + tn) > 0 else 0
         confusion_matrix_df.loc[group, 'TPR'] = tp / (tp + fn) if (tp + fn) > 0 else 0
         return confusion_matrix_df
@@ -237,7 +237,7 @@ groups = pd.Series([
 ]).values
 
 # Prepare true labels and predicted probabilities
-y_true = df['AI_written'].apply(lambda x: 1 if x == 'AI' else 0).values  # True labels
+y_true = df['AI_written']  # True labels
 y_pred_proba = df['roberta_large_openai_detector_probability'].values     # Predicted probabilities the probability is learned from one model
 
 # Initial thresholds (set to 0.5 for all groups)
@@ -250,7 +250,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=10**3,
+    max_iterations=10**10,
     acceptable_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.5,         # Set realistic minimum accuracy
     min_f1_threshold=0.5,           # Set realistic minimum F1 score
@@ -278,7 +278,7 @@ for group, threshold in thresholds.items():
 
 # need to apply the generated thresold to the test dataset
 # Load test dataset
-test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_features.csv")
+test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv")
 
 # Split test dataset by 'source'
 unique_sources = test_dataset['source'].unique()
@@ -287,7 +287,7 @@ for source in unique_sources:
     source_dataset = test_dataset[test_dataset['source'] == source]
 
     # Split by different detector probabilities
-    detector_probabilities = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability']
+    detector_probabilities = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability', 'GPT4o-mini_probability']
 
     for detector in detector_probabilities:
         if detector not in source_dataset.columns:
@@ -317,7 +317,7 @@ for source in unique_sources:
         ]).values
 
         # Prepare true labels and predicted probabilities for test dataset
-        test_y_true = source_dataset['AI_written'].apply(lambda x: 1 if x == 'AI' else 0).values
+        test_y_true = source_dataset['AI_written']
         test_y_pred_proba = source_dataset[detector].values
 
         # Apply optimized thresholds to test dataset
