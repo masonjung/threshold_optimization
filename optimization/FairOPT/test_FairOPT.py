@@ -86,7 +86,7 @@ def test_thresholds(test_dataset, source, thresholds, acceptable_disparity):
             #     f.write(f"Group: {group}, Threshold: {threshold:.7f}\n")            
 
 
-acceptable_disparities =  [1, 0.2, 0.1, 0.01, 0.01, 0.001]
+acceptable_disparities =  [1, 0.2, 0.1, 0.01, 0.001]
 
 for acceptable_disparity in acceptable_disparities:
     results_path = path+f"//results_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
