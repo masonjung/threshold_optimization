@@ -77,8 +77,8 @@ def optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, accept
     return optimized_thresholds_list
 
 
-acceptable_disparities =  [1, 0.2, 0.1, 0.01, 0.01, 0.001]
-max_iterations = 10**1#3
+acceptable_disparities =  [1, 0.2, 0.1, 0.01, 0.001]
+max_iterations = 10**3
 
 for acceptable_disparity in acceptable_disparities:
     print("\n"+"="*100)
