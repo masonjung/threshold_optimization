@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
@@ -43,7 +44,7 @@ y_pred_proba = df['roberta_large_openai_detector_probability'].values     # Pred
 initial_thresholds = {group: 0.5 for group in np.unique(groups)}
 
 
-def optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, acceptable_disparity, max_iterations):
+def optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, acceptable_disparity, max_iterations, tolerance):
     # Create an instance of ThresholdOptimizer
     optimizer = FairOPT.ThresholdOptimizer(
         y_true = y_true,
@@ -53,14 +54,14 @@ def optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, accept
         learning_rate=10**-2,
         max_iterations=max_iterations,
         acceptable_disparity=acceptable_disparity,  # Adjust based on your fairness criteria
-        min_acc_threshold=0.5,         # Set realistic minimum accuracy
-        min_f1_threshold=0.5,           # Set realistic minimum F1 score
-        tolerance=1e-5,  # Decrease tolerance for stricter convergence criteria
+        min_acc_threshold=0.5,  # Set realistic minimum accuracy
+        min_f1_threshold=0.5,   # Set realistic minimum F1 score
+        tolerance=tolerance,    # Decrease tolerance for stricter convergence criteria
         penalty=20  # Increase penalty to enforce stricter updates
     )
 
     # Optimize thresholds using gradient-based method
-    thresholds, history = optimizer.optimize()
+    thresholds, history, iteration = optimizer.optimize()
     
     # Save thresholds to a file
     file_path = path+f"//thresholds_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
@@ -74,16 +75,32 @@ def optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, accept
     for group, threshold in thresholds.items():
         optimized_thresholds_list.append({'group': group, 'threshold': threshold})
 
-    return optimized_thresholds_list
+    return optimized_thresholds_list, iteration
 
 
 acceptable_disparities =  [1, 0.2, 0.1, 0.01, 0.001]
-max_iterations = 10**3
+max_iterations = 10**1
+tolerance = 1e-4 #10**-5
 
+results_path = path+f"//convergence_per_disparity.txt"
+if os.path.exists(results_path):
+    os.remove(results_path)
+        
 for acceptable_disparity in acceptable_disparities:
     print("\n"+"="*100)
     print(f"Optimized Thresholds for acceptable_disparity = {acceptable_disparity}:\n")
-    optimized_thresholds = optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, acceptable_disparity, max_iterations)
-    print("\n")
+    optimized_thresholds, iterations = optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, acceptable_disparity, max_iterations, tolerance)
+    
+    if iterations == max_iterations:
+        is_convergence = False
+    else:
+        is_convergence = True
+    
+    logout_convergence = f"Acceptable disparity: {acceptable_disparity}, Convergence: {is_convergence}, Number of iterations: {iterations}, Maximum iterations: {max_iterations}, Tolerance: {tolerance}"
+    print(logout_convergence+'\n')
+    with open(results_path, "a") as f:        
+        f.write(logout_convergence+'\n\n')
+        
+    #print("\n")
     for item in optimized_thresholds:
         print(f"Group: {item['group']}, Threshold: {item['threshold']:.7f}")

@@ -40,14 +40,14 @@ class ThresholdOptimizer:
 
     # Optimizing thresholds to maximize metrics while maintaining fairness.
     def optimize(self):
-        iteration = 0
+        iterations = 0
         previous_thresholds = self.thresholds.copy()
         
         #Create a progress bar
         print(f"Optimization progress until convergence or maximum iterations reached ({self.max_iterations:,} iterations).")
         progress_bar = tqdm(total=self.max_iterations, desc="Progress (to max iterations)")
 
-        while iteration < self.max_iterations:  # Loop until convergence or maximum iterations reached
+        while iterations < self.max_iterations:  # Loop until convergence or maximum iterations reached
             confusion_matrix_df = pd.DataFrame()
             acc_dict, f1_dict = {}, {}
 
@@ -99,23 +99,23 @@ class ThresholdOptimizer:
                 # Monitor gradient and threshold updates
                 #print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
 
-            # Check convergence
-            max_threshold_change = max(
-                abs(self.thresholds[group] - previous_thresholds[group]) for group in self.thresholds
-            )
+            # Check convergence            
+            threshold_changes = [abs(self.thresholds[group] - previous_thresholds[group]) for group in self.thresholds]
+            max_threshold_change = max(threshold_changes)
+            
             if max_threshold_change < self.tolerance:
                 if self.check_fairness(confusion_matrix_df) and self.check_performance_criteria(acc_dict, f1_dict):
                     #print(f"Converged after {iteration} iterations.")
                     break
 
             previous_thresholds = self.thresholds.copy()
-            iteration += 1
+            iterations += 1
             
             progress_bar.update(1)
                         
         progress_bar.close()
 
-        return self.thresholds, self.history
+        return self.thresholds, self.history, (iterations+1)
 
 
     def update_confusion_matrix(self, group, y_true, y_pred, confusion_matrix_df):
@@ -158,6 +158,8 @@ class ThresholdOptimizer:
 
         # Demographic Parity (DP): ppr_disparity <= self.acceptable_ppr_disparity 
         # Equalized Odds (EO): fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity
+        print(f"ppr_disparity: {ppr_disparity}")
+        print(f"self.acceptable_ppr_disparity: {self.acceptable_ppr_disparity}")
         if ppr_disparity <= self.acceptable_ppr_disparity and fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity:
             return True
         else:
