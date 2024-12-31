@@ -115,7 +115,7 @@ class ThresholdOptimizer:
                         
         progress_bar.close()
 
-        return self.thresholds, self.history, (iterations+1)
+        return self.thresholds, self.history, iterations
 
 
     def update_confusion_matrix(self, group, y_true, y_pred, confusion_matrix_df):
