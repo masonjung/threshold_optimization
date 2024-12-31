@@ -87,7 +87,7 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] = np.clip(self.thresholds[group], 0.01, 0.99) # range
+                self.thresholds[group] = np.clip(self.thresholds[group], 0.49, 0.51) # range
 
                 # Monitor gradient and threshold updates
                 print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
@@ -231,6 +231,7 @@ personality_groups = df['personality'].fillna('unknown').astype(str).values
 
 
 # Combine groups into a single group label
+
 groups = pd.Series([
     f"{length}_{formality}_{sentiment}_{personality}"
     for length, formality, sentiment, personality in zip(length_groups, formality_groups, sentiment_groups, personality_groups)
@@ -250,11 +251,11 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-2,
-    max_iterations=10**10,
+    max_iterations=10**2,
     acceptable_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.5,         # Set realistic minimum accuracy
     min_f1_threshold=0.5,           # Set realistic minimum F1 score
-    tolerance=1e-5,  # Decrease tolerance for stricter convergence criteria
+    tolerance=1e-4,  # Decrease tolerance for stricter convergence criteria
     penalty=20  # Increase penalty to enforce stricter updates
 )
 
@@ -311,10 +312,12 @@ for source in unique_sources:
         test_personality_groups = source_dataset['personality'].astype(str).values
 
         # Combine groups into a single group label for test dataset
+
         test_groups = pd.Series([
             f"{length}_{formality}_{sentiment}_{personality}"
             for length, formality, sentiment, personality in zip(test_length_groups, test_formality_groups, test_sentiment_groups, test_personality_groups)
         ]).values
+
 
         # Prepare true labels and predicted probabilities for test dataset
         test_y_true = source_dataset['AI_written']
