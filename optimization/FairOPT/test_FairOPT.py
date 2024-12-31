@@ -14,7 +14,7 @@ test_dataset = pd.read_csv(test_path)
 
 # Split test dataset by 'source'
 unique_sources = test_dataset['source'].unique()
-detector_probabilities = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability','GPT4o-mini_probability']
+detector_probabilities = ['radar_probability', 'roberta_base_openai_detector_probability', 'roberta_large_openai_detector_probability', 'GPT4o-mini_probability']
 
 
 def test_thresholds(test_dataset, source, thresholds, acceptable_disparity):
