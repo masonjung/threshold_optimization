@@ -657,6 +657,7 @@ test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThreshol
 # Split test dataset by 'source'
 unique_sources = test_dataset['source'].unique()
 
+
 for source in unique_sources:
     source_dataset = test_dataset[test_dataset['source'] == source]
 
@@ -693,7 +694,7 @@ for source in unique_sources:
         ]).values
 
         # Prepare true labels and predicted probabilities for test dataset
-        test_y_true = source_dataset['AI_written'].apply(lambda x: 1 if x == 'AI' else 0).values
+        test_y_true = source_dataset['AI_written']
         test_y_pred_proba = source_dataset[detector].values
 
         # Apply optimized thresholds to test dataset
