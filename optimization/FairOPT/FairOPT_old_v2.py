@@ -11,7 +11,6 @@ class ThresholdOptimizer:
         y_pred_proba,               # Probabilities predicted by the model (​​between 0 and 1).
         groups,                     # Identifies the data groups to assess fairness.
         initial_thresholds,         # For each group, which will convert probabilities into binary predictions.
-        group_indices,             # Dictionary mapping each group to a boolean vector indicating which samples belong to that group.
         learning_rate=10**-2,       # Adjusted learning rate. For threshold adjustment.
         max_iterations=10**5,       # Maximum number of iterations.
         acceptable_disparity=0.2,   # Acceptable disparity between groups. Maximum allowed level of disparity between group metrics.
@@ -33,7 +32,7 @@ class ThresholdOptimizer:
         self.min_f1_threshold = min_f1_threshold
         self.tolerance = tolerance
         self.penalty = penalty
-        self.group_indices = group_indices#{group: (groups == group) for group in np.unique(groups)}  # Dictionary mapping each group to a boolean vector indicating which samples belong to that group.
+        self.group_indices = {group: (groups == group) for group in np.unique(groups)}  # Dictionary mapping each group to a boolean vector indicating which samples belong to that group.
         self.history = {group: {'accuracy': [], 'f1': [], 'threshold': []} for group in np.unique(groups)}  # Dictionary to store the history of accuracy, F1 score, and thresholds for each group.
         self.thresholds = self.initial_thresholds.copy()
         self.initial_learning_rate = learning_rate  # Store initial learning rate
@@ -45,7 +44,7 @@ class ThresholdOptimizer:
         previous_thresholds = self.thresholds.copy()
         
         #Create a progress bar
-        print(f"Optimization progress until convergence or maximum iterations reached ({self.max_iterations:,} iterations). Tolerance: {self.tolerance}")
+        print(f"Optimization progress until convergence or maximum iterations reached ({self.max_iterations:,} iterations).")
         progress_bar = tqdm(total=self.max_iterations, desc="Progress (to max iterations)")
 
         while iterations < self.max_iterations:  # Loop until convergence or maximum iterations reached
@@ -55,12 +54,11 @@ class ThresholdOptimizer:
             # Calculate metrics for each group
             # E.g.: group:   long_formal_NEGATIVE_extroversion
             #       indices: [False False False ... False False  True]
-            
             for group, indices in self.group_indices.items():
                 group_y_true = self.y_true[indices]
                 group_y_pred_proba = self.y_pred_proba[indices]
                 threshold = self.thresholds[group]
-                
+
                 # Calculate current predictions
                 group_y_pred = group_y_pred_proba >= threshold
 
@@ -98,6 +96,9 @@ class ThresholdOptimizer:
                 self.thresholds[group] = threshold - self.learning_rate * gradient
                 self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995) # Ensures the group's thresholds stay within the range
 
+                # Monitor gradient and threshold updates
+                #print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
+
             # Check convergence            
             threshold_changes = [abs(self.thresholds[group] - previous_thresholds[group]) for group in self.thresholds]
             max_threshold_change = max(threshold_changes)
@@ -128,6 +129,15 @@ class ThresholdOptimizer:
         confusion_matrix_df.loc[group, 'False Positives'] = fp
         confusion_matrix_df.loc[group, 'False Negatives'] = fn
 
+        # PPR (Positive Prediction Rate):
+        #   The proportion of all samples predicted as positive out of the total samples.
+        #   It measures how often the model predicts "positive".
+        # FPR (False Positive Rate):
+        #   The fraction of negative samples incorrectly classified as positive out of all actual negatives.
+        #   It indicates the rate of "false alarms".
+        # TPR (True Positive Rate):
+        #   The fraction of positive samples correctly identified as positive out of all actual positives.
+        #   It shows how well the model captures positive cases.
         confusion_matrix_df.loc[group, 'PPR'] = (tp + fp) / (tp + fp + tn + fn) if (tp + fp + tn + fn) > 0 else 0
         confusion_matrix_df.loc[group, 'FPR'] = fp / (fp + tn) if (fp + tn) > 0 else 0
         confusion_matrix_df.loc[group, 'TPR'] = tp / (tp + fn) if (tp + fn) > 0 else 0
@@ -145,9 +155,11 @@ class ThresholdOptimizer:
         ppr_disparity = ppr_values.max() - ppr_values.min()
         fpr_disparity = fpr_values.max() - fpr_values.min()
         tpr_disparity = tpr_values.max() - tpr_values.min()
-        
+
         # Demographic Parity (DP): ppr_disparity <= self.acceptable_ppr_disparity 
         # Equalized Odds (EO): fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity
+        print(f"ppr_disparity: {ppr_disparity}")
+        print(f"self.acceptable_ppr_disparity: {self.acceptable_ppr_disparity}")
         if ppr_disparity <= self.acceptable_ppr_disparity and fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity:
             return True
         else:
@@ -155,6 +167,7 @@ class ThresholdOptimizer:
         
         
     def check_performance_criteria(self, acc_dict, f1_dict):
+        # Ensure performance criteria is met for both accuracy and F1 score across groups
         if all(acc >= self.min_acc_threshold for acc in acc_dict.values()) and all(f1 >= self.min_f1_threshold for f1 in f1_dict.values()):
             return True
         else:
@@ -201,4 +214,11 @@ class ThresholdOptimizer:
         # Compute numerical gradient
         gradient = (loss_plus - loss_minus) / (2 * delta)
 
+        # Diagnostic prints to check if predictions are changing
+        #preds = group_y_pred
+        #preds_plus = group_y_pred_plus
+        #preds_minus = group_y_pred_minus
+        #changes_plus = np.sum(preds != preds_plus)
+        #changes_minus = np.sum(preds != preds_minus)
+        # print(f"Group Threshold: {threshold:.2f}, Delta: {delta}, Changes +delta: {changes_plus}, Changes -delta: {changes_minus}")
         return gradient
