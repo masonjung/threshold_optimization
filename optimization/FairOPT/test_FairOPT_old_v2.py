@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
-import FairOPT
+import FairOPT_old_v2 as FairOPT
 
 path = 'C://Users//Cynthia//Documents//MIT//datasets'
 test_path = path+'//test_t4_features.csv'
@@ -17,73 +17,37 @@ unique_sources = test_dataset['source'].unique()
 detector_probabilities = ['radar_probability', 'roberta_base_openai_detector_probability', 'roberta_large_openai_detector_probability', 'GPT4o-mini_probability']
 
 
-# Length-based groups
-length_groups = pd.cut(
-    test_dataset['text_length'].dropna(),
-    bins=[0, 1000, 2500, np.inf],
-    labels=['short', 'medium', 'long']
-).astype(str).values
-
-test_dataset['length_feature'] = pd.cut(
-    test_dataset['text_length'].dropna(),
-    bins=[0, 1000, 2500, np.inf],
-    labels=['short', 'medium', 'long']
-).astype(str).values
-
-
-# Formality-based groups
-formality_groups = pd.cut(
-    test_dataset['formality'].dropna(),
-    bins=[0, 50, np.inf],
-    labels=['informal', 'formal']
-).astype(str).values
-formality_groups = [x for x in formality_groups if x != 'nan']
-
-test_dataset['formality_feature'] = pd.cut(
-    test_dataset['formality'].dropna(),
-    bins=[0, 50, np.inf],
-    labels=['informal', 'formal']
-).astype(str).values
-
-
-# Sentiment and personality groups (ensure no NaN)
-sentiment_groups = test_dataset['sentiment_label'].fillna('neutral').astype(str).values
-personality_groups = test_dataset['personality'].fillna('unknown').astype(str).values
-
-uni_length_groups = np.unique(length_groups).tolist()
-uni_formality_groups = np.unique(formality_groups).tolist()
-uni_sentiment_groups = np.unique(sentiment_groups).tolist()
-uni_personality_groups = np.unique(personality_groups).tolist()
-
-
-
-def generate_groups(group_words, df):
-    # Check which group each word belongs to and identify the corresponding columns
-    columns_to_include = []
-    if any(word in uni_length_groups for word in group_words):
-        columns_to_include.append('length_feature')
-    if any(word in uni_formality_groups for word in group_words):
-        columns_to_include.append('formality_feature')
-    if any(word in uni_sentiment_groups for word in group_words):
-        columns_to_include.append('sentiment_label')
-    if any(word in uni_personality_groups for word in group_words):
-        columns_to_include.append('personality')
-
-    # Combine the values of the identified columns, separated by "_"
-    return df[columns_to_include].apply(lambda row: '_'.join(row.astype(str)), axis=1)
-
-
-
-
-def test_thresholds(test_dataset, source, thresholds, acceptable_disparity, count_group, test_groups_unique, groups_column):
+def test_thresholds(test_dataset, source, thresholds, acceptable_disparity, count_group):
 #for source in unique_sources:
     source_dataset = test_dataset[test_dataset['source'] == source]
-    source_groups_column = groups_column[test_dataset['source'] == source]
 
     # Split by different detector probabilities    
     for detector in detector_probabilities:
         if detector not in source_dataset.columns:
             continue
+
+        # Prepare test dataset groups
+        test_length_groups = pd.cut(
+            source_dataset['text_length'],
+            bins=[0, 1000, 2500, np.inf],
+            labels=['short', 'medium', 'long']
+        ).astype(str).values
+
+        test_sentiment_groups = source_dataset['sentiment_label'].astype(str).values
+
+        test_formality_groups = pd.cut(
+            source_dataset['formality'],
+            bins=[0, 50, np.inf],
+            labels=['informal', 'formal']
+        ).astype(str).values
+
+        test_personality_groups = source_dataset['personality'].astype(str).values
+
+        # Combine groups into a single group label for test dataset
+        test_groups = pd.Series([
+            f"{length}_{formality}_{sentiment}_{personality}"
+            for length, formality, sentiment, personality in zip(test_length_groups, test_formality_groups, test_sentiment_groups, test_personality_groups)
+        ]).values
 
         # Prepare true labels and predicted probabilities for test dataset
         test_y_true = source_dataset['AI_written']        
@@ -91,8 +55,8 @@ def test_thresholds(test_dataset, source, thresholds, acceptable_disparity, coun
 
         # Apply optimized thresholds to test dataset
         test_y_pred = np.zeros_like(test_y_true)
-        for group in test_groups_unique:
-            group_indices = (source_groups_column == group)
+        for group in np.unique(test_groups):
+            group_indices = (test_groups == group)
             threshold = thresholds.get(group, 0.5)  # Default to 0.5 if group not found
             test_y_pred[group_indices] = test_y_pred_proba[group_indices] >= threshold
 
@@ -122,8 +86,7 @@ def test_thresholds(test_dataset, source, thresholds, acceptable_disparity, coun
 
 acceptable_disparities =  [1, 0.2, 0.1] #[1, 0.2, 0.1, 0.01, 0.001]
 num_groups = 10
-count_groups = [str(i).zfill(2) for i in range(8, num_groups+1)]
-
+count_groups = [str(i).zfill(2) for i in range(1, num_groups+1)]
 
 for count_group in count_groups:
     for acceptable_disparity in acceptable_disparities:
@@ -138,20 +101,16 @@ for count_group in count_groups:
         file_path = path+f"//thresholds_group_{str(count_group).zfill(2)}_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
         with open(file_path, 'r') as file:
             thresholds = {}
-            test_groups_unique = []
             for line in file:
                 group, threshold = line.strip().split(", ")
                 group = group.split(": ")[1]
                 threshold = float(threshold.split(": ")[1])
                 thresholds[group] = threshold
-                test_groups_unique.append(group)
-        
-        groups_column = generate_groups(test_groups_unique[0].split("_"), test_dataset)
 
+        #print(thresholds)
         # Apply thresholds to test dataset
         for source in unique_sources:
-            test_thresholds(test_dataset, source, thresholds, acceptable_disparity, count_group, test_groups_unique, groups_column)
+            test_thresholds(test_dataset, source, thresholds, acceptable_disparity, count_group)
             
-        #results_path = path+f"//results_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
-        results_path = path+f"//results_group_{str(count_group).zfill(2)}_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
-        print(f"Results for group: {str(count_group).zfill(2)} and disparity: {acceptable_disparity:.4f} have been saved to:", results_path)
+        results_path = path+f"//results_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
+        print(f"Results for disparity: {acceptable_disparity:.4f} have been saved to:", results_path)

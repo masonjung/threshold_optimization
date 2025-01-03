@@ -6,7 +6,7 @@ from itertools import combinations
 from itertools import product
 import FairOPT
 
-path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
+path = 'C://Users//Cynthia//Documents//MIT//datasets'
 train_path = path+'//train_features.csv'
 
 train_dataset = pd.read_csv(train_path)
