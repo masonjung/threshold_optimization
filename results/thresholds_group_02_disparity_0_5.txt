@@ -1,0 +1,2 @@
+Group: formal, Threshold: 0.4914669
+Group: informal, Threshold: 0.5289591
