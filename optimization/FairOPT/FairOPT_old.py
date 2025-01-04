@@ -98,7 +98,7 @@ class ThresholdOptimizer:
             )
             if max_threshold_change < self.tolerance:
                 # convergence criteria
-                if self.check_fairness(confusion_matrix_df) and self.check_performance_criteria(acc_dict, f1_dict):
+                if  self.check_performance_criteria(acc_dict, f1_dict) and self.check_fairness(confusion_matrix_df):
                     print(f"Converged after {iteration} iterations.")
                     break
 
@@ -259,7 +259,7 @@ optimizer = ThresholdOptimizer(
     initial_thresholds,
     learning_rate=10**-2,
     max_iterations=10**3,
-    acceptable_disparity=0.2,  # Adjust based on your fairness criteria
+    acceptable_disparity=0.1,  # Adjust based on your fairness criteria
     min_acc_threshold=0.5,         # Set realistic minimum accuracy
     min_f1_threshold=0.5,           # Set realistic minimum F1 score
     tolerance=1e-4,  # Decrease tolerance for stricter convergence criteria
@@ -365,7 +365,7 @@ for source in unique_sources:
 
         feature_discrepancies = calculate_discrepancies(test_y_true, test_y_pred, features)
 
-        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated_0.2.txt", "a") as f:
+        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated_0.1_rv.txt", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.4f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
