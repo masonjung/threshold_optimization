@@ -6,10 +6,19 @@ from itertools import combinations
 from itertools import product
 import FairOPT
 
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
-train_path = path+'//train_features.csv'
+# Minseok's path
+path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets"
+train_path = path+"\\train_features.csv"
+
+
+
+# Cyntia's path
+# path = 'C://Users//Cynthia//Documents//MIT//datasets'
+# train_path = path+'//train_features.csv'
 
 train_dataset = pd.read_csv(train_path)
+train_dataset.shape
+
 
 #split by train and tesxt <- change this later
 #df = train_dataset.sample(frac=0.1, random_state=42)
@@ -30,7 +39,6 @@ df['length_feature'] = pd.cut(
     bins=[0, 1000, 2500, np.inf],
     labels=['short', 'medium', 'long']
 ).astype(str).values
-
 
 
 # Formality-based groups
@@ -135,13 +143,13 @@ def optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, group_
 
     return optimized_thresholds_list, iteration
 
-
-acceptable_disparities =  [1, 0.2, 0.1] #[1, 0.2, 0.1, 0.01, 0.001]
-max_iterations = 10**3
+# hyperparameters
+acceptable_disparities =  [1, 0.5, 0.2, 0.1, 0.01, 0.001] #[1, 0.5, 0.2, 0.1, 0.01, 0.001]
+max_iterations = 10**2
 tolerance = 1e-3 #10**-5
-min_acc_threshold = 0.4 #0.5
-min_f1_threshold = 0.4 #0.5
-num_features = [1,2] #[1, 2, 3, 4]
+min_acc_threshold = 0.5 #0.5
+min_f1_threshold = 0.5 #0.5
+num_features = [1,4] #[1, 2, 3, 4]
 
 uni_length_groups = np.unique(length_groups).tolist()
 uni_formality_groups = np.unique(formality_groups).tolist()
@@ -152,7 +160,7 @@ features = [uni_length_groups, uni_formality_groups, uni_sentiment_groups, uni_p
 feature_combinations = [list(combo) for r in num_features for combo in combinations(features, r)]
 
 # Define the columns to check
-columns_to_check = ['length_feature', 'formality_feature', 'sentiment_label', 'personality']
+columns_to_check = ['length_feature','formality_feature', 'sentiment_label', 'personality'] #
 results_path = path+f"//convergence_per_group_disparity.txt"
 #group_labels_path = path+f"//group_labels.txt"
 if os.path.exists(results_path):

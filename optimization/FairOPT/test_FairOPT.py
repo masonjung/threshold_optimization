@@ -4,8 +4,15 @@ import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
 import FairOPT
 
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
-test_path = path+'//test_t4_features.csv'
+
+# Minseok's path
+path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets"
+test_path = path+"\\test_t4_features.csv"
+
+
+# Ctynia's path
+# path = 'C://Users//Cynthia//Documents//MIT//datasets'
+# test_path = path+'//test_t4_features.csv'
 
 test_dataset = pd.read_csv(test_path)
 
@@ -72,9 +79,6 @@ def generate_groups(group_words, df):
     # Combine the values of the identified columns, separated by "_"
     return df[columns_to_include].apply(lambda row: '_'.join(row.astype(str)), axis=1)
 
-
-
-
 def test_thresholds(test_dataset, source, thresholds, acceptable_disparity, count_group, test_groups_unique, groups_column):
 #for source in unique_sources:
     source_dataset = test_dataset[test_dataset['source'] == source]
@@ -120,14 +124,14 @@ def test_thresholds(test_dataset, source, thresholds, acceptable_disparity, coun
             #     f.write(f"Group: {group}, Threshold: {threshold:.7f}\n")            
 
 
-acceptable_disparities =  [1, 0.2, 0.1] #[1, 0.2, 0.1, 0.01, 0.001]
+acceptable_disparities =  [1, 0.5, 0.2, 0.1, 0.01, 0.001] # [1, 0.5, 0.2, 0.1, 0.01, 0.001]
 num_groups = 10
 count_groups = [str(i).zfill(2) for i in range(8, num_groups+1)]
 
 
 for count_group in count_groups:
     for acceptable_disparity in acceptable_disparities:
-        results_path = path+f"//results_group_{str(count_group).zfill(2)}_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
+        results_path = path+f"\\results_group_{str(count_group).zfill(2)}_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
         if os.path.exists(results_path):
             os.remove(results_path)
             
@@ -135,7 +139,7 @@ for count_group in count_groups:
         print(f"Results for acceptable_disparity = {acceptable_disparity}:\n")
         # Load optimized thresholds
         #file_path = path+f"//thresholds_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
-        file_path = path+f"//thresholds_group_{str(count_group).zfill(2)}_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
+        file_path = path+f"\\thresholds_group_{str(count_group).zfill(2)}_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
         with open(file_path, 'r') as file:
             thresholds = {}
             test_groups_unique = []
@@ -153,5 +157,5 @@ for count_group in count_groups:
             test_thresholds(test_dataset, source, thresholds, acceptable_disparity, count_group, test_groups_unique, groups_column)
             
         #results_path = path+f"//results_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
-        results_path = path+f"//results_group_{str(count_group).zfill(2)}_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
+        results_path = path+f"\\results_group_{str(count_group).zfill(2)}_disparity_{str(acceptable_disparity).replace('.', '_')}.txt"
         print(f"Results for group: {str(count_group).zfill(2)} and disparity: {acceptable_disparity:.4f} have been saved to:", results_path)
