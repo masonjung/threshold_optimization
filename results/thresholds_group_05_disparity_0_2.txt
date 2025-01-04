@@ -1,0 +1,6 @@
+Group: long_formal, Threshold: 0.5103964
+Group: long_informal, Threshold: 0.8174308
+Group: medium_formal, Threshold: 0.0000500
+Group: medium_informal, Threshold: 0.4992997
+Group: short_formal, Threshold: 0.5017699
+Group: short_informal, Threshold: 0.5264242

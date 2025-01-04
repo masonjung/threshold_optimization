@@ -1,0 +1,6 @@
+Group: long_NEGATIVE, Threshold: 0.5126582
+Group: long_POSITIVE, Threshold: 0.5078261
+Group: medium_NEGATIVE, Threshold: 0.4995407
+Group: medium_POSITIVE, Threshold: 0.0000500
+Group: short_NEGATIVE, Threshold: 0.2708112
+Group: short_POSITIVE, Threshold: 0.4927277

@@ -1,0 +1,160 @@
+======================================================================
+Group 01: [['long', 'medium', 'short']]
+
+
+Acceptable disparity: 1, Convergence: True, Number of iterations: 264, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 02: [['formal', 'informal']]
+
+
+Acceptable disparity: 1, Convergence: True, Number of iterations: 43, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: True, Number of iterations: 43, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: True, Number of iterations: 43, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: True, Number of iterations: 43, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 03: [['NEGATIVE', 'POSITIVE']]
+
+
+Acceptable disparity: 1, Convergence: True, Number of iterations: 56, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: True, Number of iterations: 56, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: True, Number of iterations: 56, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: True, Number of iterations: 56, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 04: [['agreeableness', 'conscientiousness', 'extroversion', 'neuroticism', 'openness']]
+
+
+Acceptable disparity: 1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 05: [['long', 'medium', 'short'], ['formal', 'informal']]
+
+
+Acceptable disparity: 1, Convergence: True, Number of iterations: 252, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 06: [['long', 'medium', 'short'], ['NEGATIVE', 'POSITIVE']]
+
+
+Acceptable disparity: 1, Convergence: True, Number of iterations: 671, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 07: [['long', 'medium', 'short'], ['agreeableness', 'conscientiousness', 'extroversion', 'neuroticism', 'openness']]
+
+
+Acceptable disparity: 1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 08: [['formal', 'informal'], ['NEGATIVE', 'POSITIVE']]
+
+
+Acceptable disparity: 1, Convergence: True, Number of iterations: 92, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: True, Number of iterations: 92, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: True, Number of iterations: 92, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 09: [['formal', 'informal'], ['agreeableness', 'conscientiousness', 'extroversion', 'neuroticism', 'openness']]
+
+
+Acceptable disparity: 1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+======================================================================
+Group 10: [['NEGATIVE', 'POSITIVE'], ['agreeableness', 'conscientiousness', 'extroversion', 'neuroticism', 'openness']]
+
+
+Acceptable disparity: 1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.5, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.2, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.1, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.01, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
+Acceptable disparity: 0.001, Convergence: False, Number of iterations: 1000, Maximum iterations: 1000, Tolerance: 0.0001, Min ACC threshold: 0.5, Min F1 threshold: 0.5.
+
