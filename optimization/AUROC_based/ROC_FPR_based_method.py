@@ -84,7 +84,7 @@ def plot_roc_curve_with_threshold(file_path, true_label_column, pred_columns, fp
     plt.axvline(x=fpr_limit, color='red', linestyle='--', label=f"FPR = {fpr_limit:.2f}")
 
     # Add labels and legend
-    plt.title("Optimizing Threshold using AUROC with the FPR constraint")
+    plt.title("Optimizing Threshold using AUROC under the FPR constraint")
     plt.xlabel("FPR")
     plt.ylabel("TPR")
     plt.legend(loc="lower right")

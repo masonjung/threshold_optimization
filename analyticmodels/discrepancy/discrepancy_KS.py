@@ -164,7 +164,13 @@ class FairThresholdAnalysis:
             sns.kdeplot(group2_data, label=f'Group 2 features: {val2_lower}', fill=True, alpha=0.8, color=colors[idx], linestyle='--', ax=axes[idx // 2, idx % 2])
 
             # Add plot title with specific details about the probability column
-            title_labels = ['Biggest discrepancy', 'Second biggest discrepancy', 'Second smallest discrepancy', 'Smallest discrepancy']
+            name_detector = "RoBERTa_large"
+            title_labels = [
+                f'Biggest discrepancy ({name_detector})', 
+                f'Second biggest discrepancy ({name_detector})', 
+                f'Second smallest discrepancy ({name_detector})', 
+                f'Smallest discrepancy ({name_detector})'
+            ]
             axes[idx // 2, idx % 2].set_title(f"{title_labels[idx]}", fontsize=12)
             axes[idx // 2, idx % 2].set_xlabel('Probability Score', fontsize=12)
             axes[idx // 2, idx % 2].set_xlim(lower_quantile, upper_quantile)
@@ -197,12 +203,13 @@ class FairThresholdAnalysis:
 
 # Usage example
 if __name__ == "__main__":
-    filepath = r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets\train_features.csv"
-    feature_columns = ['personality',"length_label" ] # "formality_label",  "length_label" 'sentiment_label'
+    filepath = r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets\train_features.csv" # test_t4_features.csv
+    feature_columns = ['personality', 'sentiment_label', "formality_label", "length_label" ] # "formality_label",  "length_label" 'sentiment_label'
     probability_columns = [
-        #'roberta_base_openai_detector_probability',
+        # 'roberta_base_openai_detector_probability',
         'roberta_large_openai_detector_probability',
-        #'radar_probability'
+        # 'radar_probability'
+        # "GPT4o-mini_probability"
     ]
 
     analysis = FairThresholdAnalysis(filepath, feature_columns, probability_columns)
