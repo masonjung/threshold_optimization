@@ -12,7 +12,7 @@ class ThresholdOptimizer:
         groups,                     # Identifies the data groups to assess fairness.
         initial_thresholds,         # For each group, which will convert probabilities into binary predictions.
         group_indices,             # Dictionary mapping each group to a boolean vector indicating which samples belong to that group.
-        learning_rate=10**-3,       # Adjusted learning rate. For threshold adjustment.
+        learning_rate=10**-2,       # Adjusted learning rate. For threshold adjustment.
         max_iterations=10**5,       # Maximum number of iterations.
         acceptable_disparity=0.2,   # Acceptable disparity between groups. Maximum allowed level of disparity between group metrics.
         min_acc_threshold=0.5,      # Minimum required levels of Accuracy for each group.
@@ -85,12 +85,19 @@ class ThresholdOptimizer:
                 f1_dict[group] = f1
 
                 # Record the metrics and update confusion matrix
-                #self.history[group]['accuracy'].append(acc)
-                #self.history[group]['f1'].append(f1)
-                #self.history[group]['threshold'].append(threshold)
+                self.history[group]['accuracy'].append(acc)
+                self.history[group]['f1'].append(f1)
+                self.history[group]['threshold'].append(threshold)
                 confusion_matrix_df = self.update_confusion_matrix(
                     group, group_y_true, group_y_pred, confusion_matrix_df
                 )
+
+            # Adjust thresholds using the new gradient computation
+            for group in self.group_indices.keys():
+                indices = self.group_indices[group]
+                group_y_true = self.y_true[indices]
+                group_y_pred_proba = self.y_pred_proba[indices]
+                threshold = self.thresholds[group]
 
                 gradient = self.compute_gradient(
                     group_y_true, group_y_pred_proba, threshold
@@ -102,27 +109,12 @@ class ThresholdOptimizer:
                     # Optionally increase delta or adjust learning rate here if needed
 
                 # Update threshold
-                #self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] -= self.learning_rate * gradient
+                self.thresholds[group] = threshold - self.learning_rate * gradient
                 self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995) # Ensures the group's thresholds stay within the range
-                
-            
-                if iterations % 50 == 0:# and group == "medium":                    
-                    print(f"\nGroup <{group}>:")
-                    print(f"#1s: {np.sum(group_y_pred):,}, #0s: {len(group_y_pred) - np.sum(group_y_pred):,}")
-                    print(f"ACC: {acc}, F1: {f1}")
-                    print(f"Gradient = {gradient:.5f}, threshold = {threshold}, [t] = {self.thresholds[group]}")
-                    print(f"Confusion_matrix_df: \n{confusion_matrix_df}")
-                    self.check_fairness(confusion_matrix_df, True)
-                    self.check_performance_criteria(acc_dict, f1_dict, True)
-                    pass   
-                    
+
             # Check convergence            
             threshold_changes = [abs(self.thresholds[group] - previous_thresholds[group]) for group in self.thresholds]
             max_threshold_change = max(threshold_changes)
-            
-            if iterations % 50 == 0:
-                print(f"Current thresholds: {self.thresholds}, Previous thresholds: {previous_thresholds}")
             
             #print(f"\nMax threshold change: {max_threshold_change}, Tolerance: {self.tolerance}")
                 
@@ -130,15 +122,18 @@ class ThresholdOptimizer:
                 if self.check_fairness(confusion_matrix_df) and self.check_performance_criteria(acc_dict, f1_dict):
                     print(f"\nConverged after {iterations + 1} iterations.\n")
                     break
+            
+            if iterations % 50 == 0:
+                print(f"\nTolerance: {self.tolerance:.5f}, Max threshold change: {max_threshold_change:.5f}")
+                print("?? previous gradient?",gradient)
+                for group in self.group_indices.keys():
+                    indices = self.group_indices[group]
+                    group_y_true = self.y_true[indices]
+                    group_y_pred_proba = self.y_pred_proba[indices]
+                    threshold = self.thresholds[group]
+                    gradient = self.compute_gradient(group_y_true, group_y_pred_proba, threshold)
+                    print(f"Group {group}: Gradient = {gradient:.5f}")
 
-            # in case there is no change of the threshold
-            #for group in self.thresholds:
-                #if abs(self.thresholds[group] - previous_thresholds[group]) < self.tolerance:
-                    #random_number = np.random.uniform(0, 1)
-                    #self.thresholds[group] -= self.learning_rate * gradient * random_number
-                    #self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995)
-                    #self.thresholds[group] = self.initial_thresholds[group]
-                    
             previous_thresholds = self.thresholds.copy()
             iterations += 1
             
@@ -146,7 +141,7 @@ class ThresholdOptimizer:
                         
         progress_bar.close()
 
-        return self.thresholds, (iterations+1) # add 1 because it started at 0.
+        return self.thresholds, self.history, (iterations+1) # add 1 because it started at 0.
 
 
     def update_confusion_matrix(self, group, y_true, y_pred, confusion_matrix_df):
@@ -167,7 +162,7 @@ class ThresholdOptimizer:
 
 
     # check fairness 
-    def check_fairness(self, confusion_matrix_df, imprimir = False):        
+    def check_fairness(self, confusion_matrix_df):        
         
         # Define acceptable disparity thresholds
         ppr_values = confusion_matrix_df['PPR'].fillna(0).values
@@ -178,28 +173,25 @@ class ThresholdOptimizer:
         fpr_disparity = fpr_values.max() - fpr_values.min()
         tpr_disparity = tpr_values.max() - tpr_values.min()
         
-        if imprimir:
-            print(f"PPR Disparity: {ppr_disparity} (<= {self.acceptable_ppr_disparity})")
-            print(f"FPR Disparity: {fpr_disparity} (<= {self.acceptable_fpr_disparity})")
-            print(f"TPR Disparity: {tpr_disparity} (<= {self.acceptable_tpr_disparity})")
-                
         # Demographic Parity (DP): ppr_disparity <= self.acceptable_ppr_disparity 
         # Equalized Odds (EO): fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity
         if ppr_disparity <= self.acceptable_ppr_disparity and fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity:
+            print(f"PPR Disparity: {ppr_disparity} (<= {self.acceptable_ppr_disparity})")
+            print(f"FPR Disparity: {fpr_disparity} (<= {self.acceptable_fpr_disparity})")
+            print(f"TPR Disparity: {tpr_disparity} (<= {self.acceptable_tpr_disparity})")
             return True
         else:
             return False
         
         
-    def check_performance_criteria(self, acc_dict, f1_dict, imprimir = False):
-        if imprimir:
-            print("\nPerformance criteria met:")
-            print("Accuracy thresholds:")
-            for group, acc in acc_dict.items():
-                print(f"Group {group}: Accuracy = {acc:.4f} (>= min Threshold = {self.min_acc_threshold})")
-            print("F1 score thresholds:")
-            for group, f1 in f1_dict.items():
-                print(f"Group {group}: F1 Score = {f1:.4f} (>= min Threshold = {self.min_f1_threshold})")
+    def check_performance_criteria(self, acc_dict, f1_dict):
+        #print("\nPerformance criteria met:")
+        #print("Accuracy thresholds:")
+        #for group, acc in acc_dict.items():
+        #    print(f"Group {group}: Accuracy = {acc:.4f} (>= min Threshold = {self.min_acc_threshold})")
+        #print("F1 score thresholds:")
+        #for group, f1 in f1_dict.items():
+        #    print(f"Group {group}: F1 Score = {f1:.4f} (>= min Threshold = {self.min_f1_threshold})")
  
         if all(acc >= self.min_acc_threshold for acc in acc_dict.values()) and all(f1 >= self.min_f1_threshold for f1 in f1_dict.values()):
             return True
@@ -223,28 +215,10 @@ class ThresholdOptimizer:
             loss += self.penalty * (self.min_f1_threshold - f1)
 
         # Adjust delta
-        delta = 0.01 #0.01  # Increased delta
+        delta = 0.01  # Increased delta
 
         threshold_plus = min(threshold + delta, 1)
         threshold_minus = max(threshold - delta, 0)
-        
-        #print(f"threshold: {threshold}, threshold_plus: {threshold_plus}, threshold_minus: {threshold_minus}")
-
-        # Loss at threshold_minus and threshold_plus
-        #group_y_pred_minus_plus = (group_y_pred_proba >= threshold_minus) & (group_y_pred_proba <= threshold_plus)
-        
-        # Count the number of 1s and 0s in group_y_pred_minus_plus
-        #num_ones = np.sum(group_y_pred_minus_plus)
-        #num_zeros = len(group_y_pred_minus_plus) - num_ones
-        #print(f"group_y_pred_minus_plus - # 1s: {num_ones}")
-        #print(f"group_y_pred_minus_plus - # 0s: {num_zeros}")
-        #print(f"group_y_true - min: {np.min(group_y_true)}, max: {np.max(group_y_true)}")
-        
-        #acc_minus_plus = accuracy_score(group_y_true, group_y_pred_minus_plus)
-        #f1_minus_plus = f1_score(group_y_true, group_y_pred_minus_plus, zero_division=1)
-        #loss_minus_plus = -acc_minus_plus
-        #if f1_minus_plus < self.min_f1_threshold:
-        #    loss_minus_plus += self.penalty * (self.min_f1_threshold - f1_minus_plus)
 
         # Loss at threshold_plus
         group_y_pred_plus = group_y_pred_proba >= threshold_plus
@@ -253,16 +227,16 @@ class ThresholdOptimizer:
         loss_plus = -acc_plus
         if f1_plus < self.min_f1_threshold:
             loss_plus += self.penalty * (self.min_f1_threshold - f1_plus)
-        #print(f"group_y_pred_plus - # 1s: {num_ones}")
-        #print(f"group_y_pred_plus - # 0s: {num_zeros}\n")
-            
-        #print(f"Acc: {acc}, acc_plus {acc_plus}")   
+
+        # Loss at threshold_minus
+        group_y_pred_minus = group_y_pred_proba >= threshold_minus
+        acc_minus = accuracy_score(group_y_true, group_y_pred_minus)
+        f1_minus = f1_score(group_y_true, group_y_pred_minus, zero_division=1)
+        loss_minus = -acc_minus
+        if f1_minus < self.min_f1_threshold:
+            loss_minus += self.penalty * (self.min_f1_threshold - f1_minus)
+
         # Compute numerical gradient
-        #gradient = (loss_minus_plus) / (2 * delta)
-        ##gradient = loss_plus # / delta
-        gradient = loss_plus
-        #print(f"Gradient: {gradient}, Loss: {loss}, Loss_minus_plus: {loss_minus_plus}, Delta: {delta}")
-        #print(f"Accuracy: {acc}, F1 Score: {f1}")
-        #print(f"Accuracy (minus/plus): {acc_minus_plus}, F1 Score (minus/plus): {f1_minus_plus}\n")
+        gradient = (loss_plus - loss_minus) / (2 * delta)
 
         return gradient
