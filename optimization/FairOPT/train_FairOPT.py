@@ -12,19 +12,21 @@ import FairOPT
 
 
 # Cyntia's path
-path = 'C://Users//Cynthia//Documents///MIT//datasets'
+path = 'C://Users//Cynthia//Documents//MIT//datasets'
 train_path = path+'//train_features.csv'
 
 
 
 # hyperparameters
-acceptable_disparities =  [1, 0.5, 0.2] #[1, 0.5, 0.25, 0.24, 0.239, 0.238, 0.237, 0.236, 0.235, 0.234, 0.233, 0.232, 0.231, 0.23, 0.229, 0.228, 0.227, 0.226, 0.225, 0.223, 0.22, 0.21, 0.2] # [1, 0.5, 0.2, 0.1, 0.01, 0.001]
-max_iterations = 2*10**3
+acceptable_disparities =  [1, 0.5, 0.2, 0.1] #[1, 0.5, 0.25, 0.24, 0.239, 0.238, 0.237, 0.236, 0.235, 0.234, 0.233, 0.232, 0.231, 0.23, 0.229, 0.228, 0.227, 0.226, 0.225, 0.223, 0.22, 0.21, 0.2] # [1, 0.5, 0.2, 0.1, 0.01, 0.001]
+max_iterations = 5*10**3
 learning_rate = 10**-3
 tolerance = 1e-3 #10**-5
 min_acc_threshold = 0.5 #0.5
 min_f1_threshold = 0.5 #0.5
+columns_to_check = ['length_feature']#['length_feature','formality_feature', 'sentiment_label', 'personality'] #
 num_features = [1] #[1, 2, 3, 4]
+frac = 0.1 # sample fraction of dataset
 
 
 
@@ -34,7 +36,6 @@ train_dataset.shape
 
 #split by train and tesxt <- change this later
 #df = train_dataset.sample(frac=0.1, random_state=42)
-frac = 1.0 # sample fraction
 df = train_dataset.groupby(['AI_written'], group_keys=False).apply(lambda x: x.sample(frac=frac, random_state=42))
 df.reset_index(drop=True, inplace=True)
 
@@ -166,7 +167,6 @@ features = [uni_length_groups, uni_formality_groups, uni_sentiment_groups, uni_p
 feature_combinations = [list(combo) for r in num_features for combo in combinations(features, r)]
 
 # Define the columns to check
-columns_to_check = ['length_feature','formality_feature', 'sentiment_label', 'personality'] #
 results_path = path+f"//convergence_per_group_disparity.txt"
 #group_labels_path = path+f"//group_labels.txt"
 if os.path.exists(results_path):

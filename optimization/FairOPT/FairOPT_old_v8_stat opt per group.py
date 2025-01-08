@@ -37,6 +37,9 @@ class ThresholdOptimizer:
         self.history = {group: {'accuracy': [], 'f1': [], 'threshold': []} for group in np.unique(groups)}  # Dictionary to store the history of accuracy, F1 score, and thresholds for each group.
         self.thresholds = self.initial_thresholds.copy()
         self.initial_learning_rate = learning_rate  # Store initial learning rate
+        self.aux = True
+        self.temp_value = {key: self.initial_thresholds[key] for key in self.groups}
+
 
 
     # Optimizing thresholds to maximize metrics while maintaining fairness.
@@ -44,6 +47,7 @@ class ThresholdOptimizer:
         
         # Print the initial state once
         if not hasattr(self, 'printed_initial_state'):
+            print("temp_value: ", self.temp_value)
             print("Initial thresholds:", self.initial_thresholds)
             print("Learning rate:", self.learning_rate)
             print("Max iterations:", self.max_iterations)
@@ -103,15 +107,17 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 #self.thresholds[group] = threshold - self.learning_rate * gradient
+                
                 self.thresholds[group] -= self.learning_rate * gradient
                 self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995) # Ensures the group's thresholds stay within the range
                 
+
             
                 if iterations % 50 == 0:# and group == "medium":                    
                     print(f"\nGroup <{group}>:")
                     print(f"#1s: {np.sum(group_y_pred):,}, #0s: {len(group_y_pred) - np.sum(group_y_pred):,}")
                     print(f"ACC: {acc}, F1: {f1}")
-                    print(f"Gradient = {gradient:.5f}, learning rate = {self.learning_rate} , threshold = {threshold}, self.thresholds[group] = {self.thresholds[group]}")
+                    print(f"Gradient = {gradient:.5f}, threshold = {threshold}, [t] = {self.thresholds[group]}")
                     print(f"Confusion_matrix_df: \n{confusion_matrix_df}")
                     self.check_fairness(confusion_matrix_df, True)
                     self.check_performance_criteria(acc_dict, f1_dict, True)
@@ -125,30 +131,38 @@ class ThresholdOptimizer:
                 print(f"Current thresholds: {self.thresholds}, \nPrevious thresholds: {previous_thresholds}")
             
             #print(f"\nMax threshold change: {max_threshold_change}, Tolerance: {self.tolerance}")
-                
+            
+            #fairness, excluded_rows = self.check_fairness(confusion_matrix_df)                 
+            #for group, exclude in excluded_rows.items():
+            #    if not exclude:  # Only update if the value in excluded_rows is False
+            #        self.thresholds[group] -= self.learning_rate * gradient
+            #        self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995) # Ensures the group's thresholds stay within the range
+
+
             if max_threshold_change < self.tolerance:
-                if self.check_fairness(confusion_matrix_df) and self.check_performance_criteria(acc_dict, f1_dict):
+                fairness, excluded_rows = self.check_fairness(confusion_matrix_df) 
+                if fairness and self.check_performance_criteria(acc_dict, f1_dict):
                     print(f"\nConverged after {iterations + 1} iterations.\n")
                     break
 
-            # in case there is no change of the threshold
-            #for group in self.thresholds:
-                #if abs(self.thresholds[group] - previous_thresholds[group]) < self.tolerance:
-                    #random_number = np.random.uniform(0, 1)
-                    #self.thresholds[group] -= self.learning_rate * gradient * random_number
-                    #self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995)
-                    #self.thresholds[group] = self.initial_thresholds[group]                
-            
-            previous_thresholds = self.thresholds.copy()
-            
-            if any(value > 0.95 for value in self.thresholds.values()):
-                self.thresholds = self.initial_thresholds.copy()
-                self.learning_rate -= 2*10**-1*self.initial_learning_rate #/ 2
+            fairness, excluded_rows = self.check_fairness(confusion_matrix_df)                 
+            if any(excluded_rows.values()) and self.aux: #At least one value is True.
                 print("="*500)
-                print(f"self.thresholds: {self.thresholds}")
-                print(f"self.learning_rate: {self.learning_rate}")
-            
-                
+                print(excluded_rows)
+                print(self.thresholds)
+                for group, exclude in excluded_rows.items():
+                    print(group, exclude)
+                    if not exclude:  # Only update if the value in excluded_rows is False
+                        self.thresholds[group] = self.initial_thresholds[group]    
+                        print("inside: ", group)
+                    if exclude: 
+                        self.temp_value[group] = self.thresholds[group]
+                self.aux = False
+                print(self.thresholds)
+                print("="*500)
+                    
+   
+            previous_thresholds = self.thresholds.copy()
             iterations += 1
             
             progress_bar.update(1)
@@ -187,7 +201,31 @@ class ThresholdOptimizer:
         fpr_disparity = fpr_values.max() - fpr_values.min()
         tpr_disparity = tpr_values.max() - tpr_values.min()
         
+        
+        # Identify indices for min and max values of PPR, FPR, and TPR
+        ppr_min_idx, ppr_max_idx = np.argmin(ppr_values), np.argmax(ppr_values)
+        fpr_min_idx, fpr_max_idx = np.argmin(fpr_values), np.argmax(fpr_values)
+        tpr_min_idx, tpr_max_idx = np.argmin(tpr_values), np.argmax(tpr_values)
+
+        # Get row names (index labels)
+        row_names = confusion_matrix_df.index.tolist()
+
+        # Create a dictionary with all rows marked as True
+        excluded_rows = {name: True for name in row_names}
+
+        # Mark rows with min or max values as False
+        indices_to_include = {ppr_min_idx, ppr_max_idx, fpr_min_idx, fpr_max_idx, tpr_min_idx, tpr_max_idx}
+        for idx in indices_to_include:
+            excluded_rows[row_names[idx]] = False
+        
+        
         if imprimir:
+            #print(confusion_matrix_df)
+            print(excluded_rows)
+            print(indices_to_include)
+            print(np.argmin(ppr_values), np.argmax(ppr_values))
+            print(np.argmin(fpr_values), np.argmax(fpr_values))
+            print(np.argmin(tpr_values), np.argmax(tpr_values))
             print(f"PPR Disparity: {ppr_disparity} (<= {self.acceptable_ppr_disparity})")
             print(f"FPR Disparity: {fpr_disparity} (<= {self.acceptable_fpr_disparity})")
             print(f"TPR Disparity: {tpr_disparity} (<= {self.acceptable_tpr_disparity})")
@@ -195,9 +233,9 @@ class ThresholdOptimizer:
         # Demographic Parity (DP): ppr_disparity <= self.acceptable_ppr_disparity 
         # Equalized Odds (EO): fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity
         if ppr_disparity <= self.acceptable_ppr_disparity and fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity:
-            return True
+            return True, excluded_rows
         else:
-            return False
+            return False, excluded_rows
         
         
     def check_performance_criteria(self, acc_dict, f1_dict, imprimir = False):
