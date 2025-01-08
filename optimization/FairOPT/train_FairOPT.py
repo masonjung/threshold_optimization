@@ -12,14 +12,14 @@ import FairOPT
 
 
 # Cyntia's path
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
+path = 'C://Users//Cynthia//Documents///MIT//datasets'
 train_path = path+'//train_features.csv'
 
 
 
 # hyperparameters
-acceptable_disparities =  [1, 0.5, 0.25, 0.24, 0.239, 0.238, 0.237, 0.236, 0.235, 0.234, 0.233, 0.232, 0.231, 0.23, 0.229, 0.228, 0.227, 0.226, 0.225, 0.223, 0.22, 0.21, 0.2] # [1, 0.5, 0.2, 0.1, 0.01, 0.001]
-max_iterations = 10**3
+acceptable_disparities =  [1, 0.5, 0.2] #[1, 0.5, 0.25, 0.24, 0.239, 0.238, 0.237, 0.236, 0.235, 0.234, 0.233, 0.232, 0.231, 0.23, 0.229, 0.228, 0.227, 0.226, 0.225, 0.223, 0.22, 0.21, 0.2] # [1, 0.5, 0.2, 0.1, 0.01, 0.001]
+max_iterations = 2*10**3
 learning_rate = 10**-3
 tolerance = 1e-3 #10**-5
 min_acc_threshold = 0.5 #0.5

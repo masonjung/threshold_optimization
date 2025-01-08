@@ -11,7 +11,7 @@ import FairOPT
 
 
 # Cynthia's path
-path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
+path = 'C://Users//Cynthia//Documents///MIT//datasets'
 test_path = path+'//test_t4_features.csv'
 
 test_dataset = pd.read_csv(test_path)
