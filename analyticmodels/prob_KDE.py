@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load the dataset
-df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_MAGE_d3.csv")
+df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv")
+
+df.columns
 
 # Combine probabilities from all detectors
 probability_columns = [
@@ -19,8 +21,8 @@ df_filtered = df[(df['combined_probability'] >= 0.00) & (df['combined_probabilit
 
 # Categorize text length
 conditions = [
-    (df_filtered['num_chars'] < 1000),
-    (df_filtered['num_chars'] > 2500)
+    (df_filtered['text_length'] < 1000),
+    (df_filtered['text_length'] > 2500)
 ]
 choices = ['short', 'long']
 df_filtered['text_length_category'] = np.select(conditions, choices, default='medium')
