@@ -204,7 +204,7 @@ class FairThresholdAnalysis:
 # Usage example
 if __name__ == "__main__":
     filepath = r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets\train_features.csv" # test_t4_features.csv
-    feature_columns = ['personality', 'sentiment_label', "formality_label", "length_label" ] # "formality_label",  "length_label" 'sentiment_label'
+    feature_columns = ['personality', "length_label" ] # add 'sentiment_label', "formality_label",
     probability_columns = [
         # 'roberta_base_openai_detector_probability',
         'roberta_large_openai_detector_probability',

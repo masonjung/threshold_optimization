@@ -8,9 +8,9 @@ df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimizat
 
 # Combine probabilities from all detectors
 probability_columns = [
-    'roberta_base_openai_detector_probability',
+    # 'roberta_base_openai_detector_probability',
     'roberta_large_openai_detector_probability',
-    'radar_probability'
+    # 'radar_probability'
 ]
 df['combined_probability'] = df[probability_columns].mean(axis=1)
 
@@ -62,11 +62,11 @@ for i, ai_written in enumerate([1, 0]):
     # ax.set_title(f'{title}')
 
     # Adjust text position to the left upper side of the box
-    ax.text(0.01, 0.95, title, horizontalalignment='left', verticalalignment='top', transform=ax.transAxes, fontsize=14, bbox=dict(facecolor='white', alpha=0.0))
-    ax.legend(loc='upper right')
+    ax.text(0.80, 0.95, title, horizontalalignment='left', verticalalignment='top', transform=ax.transAxes, fontsize=14, bbox=dict(facecolor='white', alpha=0.0))
+    ax.legend(loc='upper left')
 
 # Set common x-axis label
-plt.xlabel('Probability of AI-generated text', size = 16)
+plt.xlabel('AI text classifier probability by length and origin', size = 16)
 plt.xticks(np.arange(0.0, 1.1, 0.1))
 
 # Adjust layout and show the plots
