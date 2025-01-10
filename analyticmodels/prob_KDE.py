@@ -7,6 +7,8 @@ import seaborn as sns
 df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv")
 
 df.columns
+df.shape
+
 
 # Combine probabilities from all detectors
 probability_columns = [
