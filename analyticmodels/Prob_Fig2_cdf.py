@@ -93,15 +93,15 @@ for i, text_length in enumerate(text_length_categories):
         threshold_line = ax.axvline(
             x=threshold,  # Threshold now on x-axis
             color=color,
-            linestyle='--',
+            linestyle='-.',
             linewidth=1.5,
             label=f'{personality} threshold'
         )
         if i == 0:  # Only collect legend items once
             handles.append(cdf_plot)
-            labels.append(f'{personality} (CDF)')
+            labels.append(f'probability of {personality}')
             handles.append(threshold_line)
-            labels.append(f'{personality} threshold')
+            labels.append(f'threshold for {personality}')
     
     # Add universal static threshold line
     static_line = ax.axvline(
@@ -109,28 +109,28 @@ for i, text_length in enumerate(text_length_categories):
         color='black',
         linestyle='-.',
         linewidth=2,
-        label='Static Threshold'
+        label='static threshold'
     )
     auroc_line = ax.axvline(
         x=0.9984415,  # AUROC threshold on x-axis
         color='gray',
-        linestyle='--',
+        linestyle='-.',
         linewidth=2,
-        label='AUROC Threshold'
+        label='ROCFPR threshold'
     )
     if i == 0:  # Only collect legend items once
         handles.extend([static_line, auroc_line])
-        labels.extend(['Static Threshold', 'AUROC Threshold'])
+        labels.extend(['Static threshold', 'ROCFPR threshold'])
 
     # Set title and labels
-    ax.set_title(f'{text_length.capitalize()} Text', fontsize=14)
+    ax.set_title(f'{text_length.capitalize()} length text', fontsize=14, loc='left', pad=10)
     ax.set_xlim(0, 1)
-    ax.set_xlabel('Detector Probability', fontsize=12)  # Correct x-axis label
+    ax.set_xlabel('Detector probability', fontsize=12)  # x-axis label
     if i == 0:
-        ax.set_ylabel('Cumulative Probability', fontsize=12)  # Correct y-axis label
+        ax.set_ylabel('Cumulative density', fontsize=12)  # y-axis label
 
 # Add a combined legend outside the plot
-fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=3, fontsize=10)
+fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.02), ncol=3, fontsize=10)
 
 # Adjust layout and show the plot
 plt.tight_layout()

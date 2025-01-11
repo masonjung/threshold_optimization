@@ -46,18 +46,18 @@ for i, ai_written in enumerate([1, 0]):
     ax.set_xlim(0, 1)
     # Draw a static threshold line
     threshold = 0.5
-    ax.axvline(x=threshold, color='black', linestyle='-', linewidth=3, label='Static threshold')
+    ax.axvline(x=threshold, color='black', linestyle='-', linewidth=3, label='Static threshold (0.5)')
 
-    # Draw adaptive threshold lines for each group
-    adaptive_thresholds = {
-        'short': df_filtered[df_filtered['text_length_category'] == 'short']['combined_probability'].mean(),
-        'medium': df_filtered[df_filtered['text_length_category'] == 'medium']['combined_probability'].mean(),
-        'long': df_filtered[df_filtered['text_length_category'] == 'long']['combined_probability'].mean()
-    }
-    for length_category, linestyle, color in zip(['short', 'medium', 'long'], [':', '-.', '--'], ['red', 'green', 'blue']):
-        adaptive_threshold = adaptive_thresholds[length_category]
-        ax.axvline(x=adaptive_threshold, color=color, linestyle=linestyle, linewidth=2, label=f'Adaptive threshold for {length_category} text')
-        # ax.axvline(x=adaptive_threshold, color=color, linestyle=linestyle, linewidth=2, label=f'Adaptive Threshold for ({length_category.capitalize()}) = {adaptive_threshold:.4f}')
+    # # Draw adaptive threshold lines for each group
+    # adaptive_thresholds = {
+    #     'short': df_filtered[df_filtered['text_length_category'] == 'short']['combined_probability'].mean(),
+    #     'medium': df_filtered[df_filtered['text_length_category'] == 'medium']['combined_probability'].mean(),
+    #     'long': df_filtered[df_filtered['text_length_category'] == 'long']['combined_probability'].mean()
+    # }
+    # for length_category, linestyle, color in zip(['short', 'medium', 'long'], [':', '-.', '--'], ['red', 'green', 'blue']):
+    #     adaptive_threshold = adaptive_thresholds[length_category]
+    #     ax.axvline(x=adaptive_threshold, color=color, linestyle=linestyle, linewidth=2, label=f'Adaptive threshold for {length_category} text')
+    #     # ax.axvline(x=adaptive_threshold, color=color, linestyle=linestyle, linewidth=2, label=f'Adaptive Threshold for ({length_category.capitalize()}) = {adaptive_threshold:.4f}')
 
 
     # Set labels and title for each subplot
@@ -70,7 +70,7 @@ for i, ai_written in enumerate([1, 0]):
     ax.legend(loc='upper left')
 
 # Set common x-axis label
-plt.xlabel('AI text classifier probability by length and origin', size = 16)
+plt.xlabel('AI text classifier probability by length', size = 16)
 plt.xticks(np.arange(0.0, 1.1, 0.1))
 
 # Adjust layout and show the plots
