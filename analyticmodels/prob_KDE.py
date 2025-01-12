@@ -61,17 +61,19 @@ for i, ai_written in enumerate([1, 0]):
 
 
     # Set labels and title for each subplot
-    ax.set_ylabel('Percentage (%)', size = 16)
+    ax.set_ylabel('Percentage (%)', size = 25)
     title = 'AI-written text' if ai_written == 1 else 'Human-written text'
     # ax.set_title(f'{title}')
 
     # Adjust text position to the left upper side of the box
-    ax.text(0.80, 0.95, title, horizontalalignment='left', verticalalignment='top', transform=ax.transAxes, fontsize=14, bbox=dict(facecolor='white', alpha=0.0))
-    ax.legend(loc='upper left')
-
+    ax.text(0.7, 0.95, title, horizontalalignment='left', verticalalignment='top', transform=ax.transAxes, fontsize=25, bbox=dict(facecolor='white', alpha=0.0))
+    ax.legend(loc='upper left', fontsize=20)
+    ax.tick_params(axis='y', labelsize=20)
+    if i == 1:
+        ax.set_yticks(ax.get_yticks()[1:]) # eliminate the 0 of y-axis because x-axis provides 0
 # Set common x-axis label
-plt.xlabel('AI text classifier probability by length', size = 16)
-plt.xticks(np.arange(0.0, 1.1, 0.1))
+plt.xlabel('AI text classifier probability by length', size = 25)
+plt.xticks(np.arange(0.0, 1.1, 0.1), fontsize=20)
 
 # Adjust layout and show the plots
 plt.tight_layout()

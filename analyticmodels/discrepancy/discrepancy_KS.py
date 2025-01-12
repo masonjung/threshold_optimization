@@ -4,6 +4,8 @@ import seaborn as sns
 import itertools
 from scipy.stats import ks_2samp
 
+
+
 class FairThresholdAnalysis:
     def __init__(self, filepath, feature_columns, probability_columns, quantile_range=(0.25, 0.75)):
         self.df = pd.read_csv(filepath)
