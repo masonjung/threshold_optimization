@@ -31,28 +31,27 @@ df_filtered['text_length_category'] = np.select(conditions, choices, default='me
 # Thresholds for each personality and text length
 thresholds = {
     'short': {
-        'extroversion': 0.5074,
-        'neuroticism': 0.5240,
-        'agreeableness': 0.5000,
-        'conscientiousness': 0.4994,
-        'openness': 0.5015,
+        'extroversion': 0.5074398,
+        'neuroticism': 0.5134435,
+        'agreeableness': 0.5000000,
+        'conscientiousness': 0.4994540,
+        'openness': 0.5015122,
     },
     'medium': {
-        'extroversion': 0.4923,
-        'neuroticism': 0.4757,
-        'agreeableness': 0.4984,
-        'conscientiousness': 0.4522,
-        'openness': 0.1000,
+        'extroversion': 0.4923216,
+        'neuroticism': 0.4901528,
+        'agreeableness': 0.4984677,
+        'conscientiousness': 0.4898049,
+        'openness': 0.4928704,
     },
     'long': {
-        'extroversion': 0.5000,
-        'neuroticism': 0.5000,
-        'agreeableness': 0.5055,
-        'conscientiousness': 0.5125,
-        'openness': 0.5078,
+        'extroversion': 0.5000000,
+        'neuroticism': 0.5000000,
+        'agreeableness': 0.5053591,
+        'conscientiousness': 0.5125101,
+        'openness': 0.5056818,
     }
 }
-
 # Colors for each personality (with higher contrast)
 colors = {
     'extroversion': '#ff7f0e',  # Orange
