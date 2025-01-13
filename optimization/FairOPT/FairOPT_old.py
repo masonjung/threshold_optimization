@@ -136,7 +136,7 @@ class ThresholdOptimizer:
         tpr_disparity = tpr_values.max() - tpr_values.min()
 
         # DP and EO
-        if ppr_disparity <= self.acceptable_ppr_disparity and (fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity):
+        if ppr_disparity <= self.acceptable_ppr_disparity: # and (fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity):
             return True
         else:
             return False
@@ -248,8 +248,8 @@ groups = pd.Series([
 y_true = df['AI_written']  # True labels
 y_pred_proba = df['roberta_large_openai_detector_probability'].values     # Predicted probabilities the probability is learned from one model
 
-# Initial thresholds (set to 0.5 for all groups)
-initial_thresholds = {group: 0.5 for group in np.unique(groups)}
+# Initial thresholds (set to x for all groups)
+initial_thresholds = {group: 0.6 for group in np.unique(groups)}
 
 # Create an instance of ThresholdOptimizer
 optimizer = ThresholdOptimizer(
@@ -258,7 +258,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-5,
-    max_iterations=10**4,
+    max_iterations=10**3,
     acceptable_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.25,         # Set realistic minimum accuracy
     min_f1_threshold=0.25,           # Set realistic minimum F1 score
@@ -356,6 +356,7 @@ for source in unique_sources:
         test_accuracy = accuracy_score(test_y_true, test_y_pred)
         test_fpr = np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0) if np.sum(test_y_true == 0) > 0 else 0
         test_fnr = np.sum((test_y_pred == 0) & (test_y_true == 1)) / np.sum(test_y_true == 1) if np.sum(test_y_true == 1) > 0 else 0
+        test_f1 = f1_score(test_y_true, test_y_pred, zero_division=1)
         test_ber = (test_fpr + test_fnr) / 2
 
         features = {
@@ -365,11 +366,12 @@ for source in unique_sources:
 
         feature_discrepancies = calculate_discrepancies(test_y_true, test_y_pred, features)
 
-        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_fairopt_0.2_try16_10K.txt", "a") as f:
+        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_FairOPT_with_f1.txt_try15", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.4f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
             f.write(f"Balanced Error Rate (BER): {test_ber:.4f}\n")
+            f.write(f"F1 Score: {test_f1:.4f}\n")
             for group in np.unique(test_groups):
                 threshold = thresholds.get(group, 0.5)  # Use thresholds dictionary
                 f.write(f"  Group: {group}, Threshold: {threshold:.7f}\n")
@@ -377,130 +379,3 @@ for source in unique_sources:
             for feature_name, discrepancies in feature_discrepancies.items():
                 f.write(f"  Feature: {feature_name.capitalize()}\n")
                 f.write(f"   BER Discrepancy: {discrepancies['BER']:.4f}\n")
-
-
-
-
-
-
-
-
-# # Move the results to the list
-# optimized_thresholds_list = []
-# for group, threshold in thresholds.items():
-#     optimized_thresholds_list.append({'group': group, 'threshold': threshold})
-
-# # Print the list of optimized thresholds
-# print("\nOptimized Thresholds:")
-# for group, threshold in thresholds.items():
-#     print(f"Group: {group}, Threshold: {threshold:.7f}")
-
-
-
-# ##################################TEST
-
-# # need to apply the generated thresold to the test dataset
-# # Load test dataset
-# test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv")
-
-# # Split test dataset by 'source'
-# unique_sources = test_dataset['source'].unique()
-
-# # Calculate and return discrepancies for each feature
-# def calculate_discrepancies(test_y_true, test_y_pred, features):
-#     feature_discrepancies = {}
-
-#     for feature_name, feature_values in features.items():
-#         unique_feature_values = np.unique(feature_values)
-#         tpr_values, tnr_values, fpr_values, fnr_values = [], [], [], []
-
-#         for feature_value in unique_feature_values:
-#             group_indices = (feature_values == feature_value)
-#             TP = np.sum((test_y_pred[group_indices] == 1) & (test_y_true[group_indices] == 1))
-#             TN = np.sum((test_y_pred[group_indices] == 0) & (test_y_true[group_indices] == 0))
-#             FP = np.sum((test_y_pred[group_indices] == 1) & (test_y_true[group_indices] == 0))
-#             FN = np.sum((test_y_pred[group_indices] == 0) & (test_y_true[group_indices] == 1))
-
-#             TPR = TP / (TP + FN) if (TP + FN) > 0 else 0
-#             TNR = TN / (TN + FP) if (TN + FP) > 0 else 0
-#             FPR = FP / (FP + TN) if (FP + TN) > 0 else 0
-#             FNR = FN / (FN + TP) if (FN + TP) > 0 else 0
-
-#             tpr_values.append(TPR)
-#             tnr_values.append(TNR)
-#             fpr_values.append(FPR)
-#             fnr_values.append(FNR)
-
-#         tpr_discrepancy = max(tpr_values) - min(tpr_values) if tpr_values else 0
-#         tnr_discrepancy = max(tnr_values) - min(tnr_values) if tnr_values else 0
-#         fpr_discrepancy = max(fpr_values) - min(fpr_values) if fpr_values else 0
-#         fnr_discrepancy = max(fnr_values) - min(fnr_values) if fnr_values else 0
-
-#         feature_discrepancies[feature_name] = {
-#             "TPR": tpr_discrepancy,
-#             "TNR": tnr_discrepancy,
-#             "FPR": fpr_discrepancy,
-#             "FNR": fnr_discrepancy,
-#             "BER": (fpr_discrepancy + fnr_discrepancy) / 2
-#         }
-
-#     return feature_discrepancies
-
-# detector_probabilities = ['roberta_large_openai_detector_probability', 'radar_probability', 'roberta_base_openai_detector_probability', 'GPT4o-mini_probability']
-
-
-# # Main loop with added discrepancy calculations
-# for source in unique_sources:
-#     source_dataset = test_dataset[test_dataset['source'] == source]
-
-#     for detector in detector_probabilities:
-#         if detector not in source_dataset.columns:
-#             continue
-
-#         test_y_true = source_dataset['AI_written']
-#         test_y_pred_proba = source_dataset[detector].values
-
-#         test_groups = pd.Series([
-#             f"{length}_{sentiment}"
-#             for length, sentiment in zip(
-#                 pd.cut(source_dataset['text_length'], bins=[0, 1000, 2500, np.inf], labels=['short', 'medium', 'long']).astype(str).values,
-#                 source_dataset['sentiment_label'].fillna('neutral').astype(str).values,
-#                 # pd.cut(source_dataset['formality'], bins=[0, 50, np.inf], labels=['informal', 'formal']).astype(str).values
-#             )
-#         ]).values
-
-#         test_y_pred = np.zeros_like(test_y_true)
-#         for group in np.unique(test_groups):
-#             group_indices = (test_groups == group)
-#             threshold = optimized_thresholds_list.get(group, 0.5)
-#             test_y_pred[group_indices] = test_y_pred_proba[group_indices] >= threshold
-
-#         test_accuracy = accuracy_score(test_y_true, test_y_pred)
-#         test_fpr = np.sum((test_y_pred == 1) & (test_y_true == 0)) / np.sum(test_y_true == 0) if np.sum(test_y_true == 0) > 0 else 0
-#         test_fnr = np.sum((test_y_pred == 0) & (test_y_true == 1)) / np.sum(test_y_true == 1) if np.sum(test_y_true == 1) > 0 else 0
-#         test_ber = (test_fpr + test_fnr) / 2
-
-#         features = {
-#             'length': pd.cut(source_dataset['text_length'], bins=[0, 1000, 2500, np.inf], labels=['short', 'medium', 'long']).astype(str).values,
-#             # 'sentiment': source_dataset['sentiment_label'].astype(str).values,
-#             # 'formality': pd.cut(source_dataset['formality'], bins=[0, 50, np.inf], labels=['informal', 'formal']).astype(str).values,
-#             'personality': source_dataset['personality'].astype(str).values
-#         }
-
-#         feature_discrepancies = calculate_discrepancies(test_y_true, test_y_pred, features)
-
-#         with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_updated2.txt", "a") as f:
-#             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
-#             f.write(f"Accuracy: {test_accuracy:.4f}\n")
-#             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
-#             f.write(f"Balanced Error Rate (BER): {test_ber:.4f}\n")
-#             for group in np.unique(test_groups):
-#                 threshold = thresholds.get(group, 0.5)  # Default to 0.5 if group not found
-#                 f.write(f"  Group: {group}, Threshold: {threshold:.4f}\n")
-#             f.write(f"Discrepancies by Feature:\n")
-#             for feature_name, discrepancies in feature_discrepancies.items():
-#                 f.write(f"  Feature: {feature_name.capitalize()}\n")
-#                 f.write(f"   BER Discrepancy: {discrepancies['BER']:.4f}\n")
-
-
-
