@@ -17,7 +17,7 @@ probability_columns = [
 ]
 df['combined_probability'] = df[probability_columns].mean(axis=1)
 
-# Focus on combined probability between 0.00 and 1.00
+# Focus on combined probability between 0 and 1
 df_filtered = df[(df['combined_probability'] >= 0.00) & (df['combined_probability'] <= 1.00)]
 
 # Categorize text length
@@ -31,28 +31,29 @@ df_filtered['text_length_category'] = np.select(conditions, choices, default='me
 # Thresholds for each personality and text length
 thresholds = {
     'short': {
-        'extroversion': 0.5074398,
-        'neuroticism': 0.5134435,
-        'agreeableness': 0.5000000,
-        'conscientiousness': 0.4994540,
-        'openness': 0.5015122,
+        'extroversion': 0.2515866,
+        'neuroticism': 0.2501819,
+        'agreeableness': 0.2525938,
+        'conscientiousness': 0.2489418,
+        'openness': 0.2497191,
     },
     'medium': {
-        'extroversion': 0.4923216,
-        'neuroticism': 0.4901528,
-        'agreeableness': 0.4984677,
-        'conscientiousness': 0.4898049,
-        'openness': 0.4928704,
+        'extroversion': 0.2482100,
+        'neuroticism': 0.2463024,
+        'agreeableness': 0.2467731,
+        'conscientiousness': 0.2492236,
+        'openness': 0.2474614,
     },
     'long': {
-        'extroversion': 0.5000000,
-        'neuroticism': 0.5000000,
-        'agreeableness': 0.5053591,
-        'conscientiousness': 0.5125101,
-        'openness': 0.5056818,
+        'extroversion': 0.2500000,
+        'neuroticism': 0.2500000,
+        'agreeableness': 0.2500000,
+        'conscientiousness': 0.2567252,
+        'openness': 0.2517045,
     }
 }
-# Colors for each personality (with higher contrast)
+
+# Colors for each personality
 colors = {
     'extroversion': '#ff7f0e',  # Orange
     'neuroticism': '#1f77b4',  # Blue
@@ -120,16 +121,17 @@ for i, text_length in enumerate(text_length_categories):
     if i == 0:  # Only collect legend items once
         handles.extend([static_line, auroc_line])
         labels.extend(['Static threshold', 'ROCFPR threshold'])
-
+        # Set the font size of x and y ticks
+        ax.tick_params(axis='both', which='major', labelsize=16)
     # Set title and labels
-    ax.set_title(f'{text_length.capitalize()} length text', fontsize=14, loc='left', pad=10)
+    ax.set_title(f'{text_length.capitalize()} length text', fontsize=16, loc='left', pad=10)
     ax.set_xlim(0, 1)
-    ax.set_xlabel('Detector probability', fontsize=12)  # x-axis label
+    ax.set_xlabel('Detector probability', fontsize=16)  # x-axis label
     if i == 0:
-        ax.set_ylabel('Cumulative density', fontsize=12)  # y-axis label
+        ax.set_ylabel('Cumulative density', fontsize=16)  # y-axis label
 
 # Add a combined legend outside the plot
-fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.02), ncol=3, fontsize=10)
+fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.02), ncol=3, fontsize=16)
 
 # Adjust layout and show the plot
 plt.tight_layout()
