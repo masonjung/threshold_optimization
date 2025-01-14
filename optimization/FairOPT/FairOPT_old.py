@@ -87,7 +87,7 @@ class ThresholdOptimizer:
 
                 # Update threshold
                 self.thresholds[group] = threshold - self.learning_rate * gradient
-                self.thresholds[group] = np.clip(self.thresholds[group], 0.25, 0.75) # range
+                self.thresholds[group] = np.clip(self.thresholds[group], 0.01, 0.99) # range
 
                 # Monitor gradient and threshold updates
                 # print(f"Iteration {iteration}, Group {group}, Gradient: {gradient:.7f}, Threshold: {self.thresholds[group]:.7f}")
@@ -233,12 +233,13 @@ personality_groups = df['personality'].fillna('unknown').astype(str).values
 
 # Combine groups into a single group label
 
-
+# Two groups
 groups = pd.Series([
     f"{length}_{personality}"
     for length, personality in zip(length_groups, personality_groups)
 ]).values
 
+# Four groups
 # groups = pd.Series([
 #     f"{length}_{formality}_{sentiment}_{personality}"
 #     for length, formality, sentiment, personality in zip(length_groups, formality_groups, sentiment_groups, personality_groups)
@@ -249,7 +250,7 @@ y_true = df['AI_written']  # True labels
 y_pred_proba = df['roberta_large_openai_detector_probability'].values     # Predicted probabilities the probability is learned from one model
 
 # Initial thresholds (set to x for all groups)
-initial_thresholds = {group: 0.6 for group in np.unique(groups)}
+initial_thresholds = {group: 0.25 for group in np.unique(groups)}
 
 # Create an instance of ThresholdOptimizer
 optimizer = ThresholdOptimizer(
@@ -268,10 +269,6 @@ optimizer = ThresholdOptimizer(
 
 # Optimize thresholds using gradient-based method
 thresholds, history = optimizer.optimize()
-
-
-# No need to convert thresholds to a list if you intend to use it as a dictionary
-# Remove the optimized_thresholds_list entirely or use it correctly if needed
 
 # Print the list of optimized thresholds (optional)
 print("\nOptimized Thresholds:")
@@ -366,7 +363,7 @@ for source in unique_sources:
 
         feature_discrepancies = calculate_discrepancies(test_y_true, test_y_pred, features)
 
-        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_FairOPT_with_f1.txt_try15", "a") as f:
+        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_FairOPT_fm1_try22", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.4f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
