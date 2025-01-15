@@ -24,6 +24,7 @@ class ThresholdOptimizer:
         self.y_pred_proba = y_pred_proba
         self.groups = groups
         self.initial_thresholds = {group: initial_thresholds for group in np.unique(groups)}
+        self.initial_thresholds = initial_thresholds.copy()
         self.learning_rate = learning_rate
         self.max_iterations = max_iterations
         self.acceptable_ppr_disparity = acceptable_disparity
@@ -34,12 +35,9 @@ class ThresholdOptimizer:
         self.tolerance = tolerance
         self.penalty = penalty
         self.group_indices = group_indices#{group: (groups == group) for group in np.unique(groups)}  # Dictionary mapping each group to a boolean vector indicating which samples belong to that group.
-        self.thresholds = {group: initial_thresholds for group in np.unique(groups)}
+        self.thresholds = self.initial_thresholds.copy()
         self.initial_learning_rate = learning_rate  # Store initial learning rate
-        self.delta_fairness = 0.0  #0.02
-        self.delta_performance = 0.0  #0.2
-        self.delta = False
-        self.is_convergence = False
+        self.delta = 0.01
         
 
 
@@ -67,30 +65,20 @@ class ThresholdOptimizer:
         progress_bar = tqdm(total=self.max_iterations, desc="Progress (to max iterations)")
 
         while iterations < self.max_iterations:  # Loop until convergence or maximum iterations reached
-            iterations += 1
             confusion_matrix_df = pd.DataFrame()
             acc_dict, f1_dict = {}, {}
 
             # Calculate metrics for each group
             # E.g.: group:   long_formal_NEGATIVE_extroversion
             #       indices: [False False False ... False False  True]
+            
             for group, indices in self.group_indices.items():
-                #print('='*500)
-                #print(group)
-                #print(self.min_acc_threshold[group])
-                #print(self.min_f1_threshold[group])
-                #print(self.thresholds[group])
                 group_y_true = self.y_true[indices]
                 group_y_pred_proba = self.y_pred_proba[indices]
-                #threshold = self.thresholds[group]
-                #print(self.y_true.shape)
-                #print(group_y_true.shape)
-                #print(self.min_acc_threshold[group])
-                #print(self.min_f1_threshold[group])
-                
+                threshold = self.thresholds[group]
                 
                 # Calculate current predictions
-                group_y_pred = (group_y_pred_proba >= self.thresholds[group])
+                group_y_pred = group_y_pred_proba >= threshold
 
                 # Calculate accuracy and F1 score
                 acc = accuracy_score(group_y_true, group_y_pred)
@@ -105,12 +93,10 @@ class ThresholdOptimizer:
                 confusion_matrix_df = self.update_confusion_matrix(
                     group, group_y_true, group_y_pred, confusion_matrix_df
                 )
-                
+
                 gradient = self.compute_gradient(
-                    group_y_true, group_y_pred_proba, 
-                    self.thresholds[group], self.min_acc_threshold[group], self.min_f1_threshold[group]
+                    group_y_true, group_y_pred_proba, threshold
                 )
-                #print("gradient:",gradient)
 
                 # Check if gradient is effectively zero
                 #if abs(gradient) < 1e-7:
@@ -127,13 +113,10 @@ class ThresholdOptimizer:
                     print(f"\nGroup <{group}>:")
                     print(f"#1s: {np.sum(group_y_pred):,}, #0s: {len(group_y_pred) - np.sum(group_y_pred):,}")
                     print(f"ACC: {acc}, F1: {f1}")
-                    print(f"Gradient = {gradient:.5f}, learning rate = {self.learning_rate}, self.thresholds[group] = {self.thresholds[group]}")
+                    print(f"Gradient = {gradient:.5f}, learning rate = {self.learning_rate} , threshold = {threshold}, self.thresholds[group] = {self.thresholds[group]}")
                     print(f"Confusion_matrix_df: \n{confusion_matrix_df}")
                     self.check_fairness(confusion_matrix_df, True)
                     self.check_performance_criteria(acc_dict, f1_dict, True)
-                    print(f"self.delta_fairness: {self.delta_fairness }")
-                    print(f"self.delta_performance: {self.delta_performance }")
-                    print(f"self.delta: {self.delta }")
                     pass   
                     
             # Check convergence            
@@ -147,7 +130,6 @@ class ThresholdOptimizer:
                 
             if max_threshold_change < self.tolerance:
                 if self.check_fairness(confusion_matrix_df) and self.check_performance_criteria(acc_dict, f1_dict):
-                    self.is_convergence = True
                     print(f"\nConverged after {iterations + 1} iterations.\n")
                     break
 
@@ -171,21 +153,16 @@ class ThresholdOptimizer:
                     self.learning_rate = self.initial_learning_rate
                 print("="*500)
                 print(f"self.thresholds: {self.thresholds}")
-                print(f"self.learning_rate: {self.learning_rate}")                
+                print(f"self.learning_rate: {self.learning_rate}")
             
-            if iterations == self.max_iterations and self.delta == False:
-                self.max_iterations *= 2
-                self.delta_fairness = 0.02
-                self.delta_performance = 0.2
-                self.delta = True
-                progress_bar.total = self.max_iterations
-                progress_bar.desc = "Progress (to 2 * max iterations)"
-           
+                
+            iterations += 1
+            
             progress_bar.update(1)
                         
         progress_bar.close()
 
-        return self.thresholds, iterations, self.learning_rate, acc_dict, f1_dict, self.is_convergence, self.delta
+        return self.thresholds, (iterations) # add 1 because it started at 0.
 
 
     def update_confusion_matrix(self, group, y_true, y_pred, confusion_matrix_df):
@@ -240,9 +217,9 @@ class ThresholdOptimizer:
                             
         # Demographic Parity (DP): ppr_disparity <= self.acceptable_ppr_disparity 
         # Equalized Odds (EO): fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity
-        ppr_check = (ppr_disparity <= (self.acceptable_ppr_disparity + self.delta_fairness))
-        fpr_check = (fpr_disparity <= (self.acceptable_fpr_disparity + self.delta_fairness))
-        tpr_check = (tpr_disparity <= (self.acceptable_tpr_disparity + self.delta_fairness))
+        ppr_check = (ppr_disparity <= (self.acceptable_ppr_disparity + self.delta))
+        fpr_check = (fpr_disparity <= (self.acceptable_fpr_disparity + self.delta))
+        tpr_check = (tpr_disparity <= (self.acceptable_tpr_disparity + self.delta))
         #if ppr_disparity <= self.acceptable_ppr_disparity and fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity:
         if ppr_check and fpr_check and tpr_check:
             return True
@@ -252,8 +229,8 @@ class ThresholdOptimizer:
         
     def check_performance_criteria(self, acc_dict, f1_dict, imprimir = False):
         
-        acc_check = all(acc_dict[group] >= (self.min_acc_threshold[group] - self.delta_performance) for group in acc_dict)
-        f1_check = all(f1_dict[group] >= (self.min_f1_threshold[group] - self.delta_performance) for group in f1_dict)
+        acc_check = all(acc_dict[group] >= (self.min_acc_threshold[group] - self.delta) for group in acc_dict)
+        f1_check = all(f1_dict[group] >= (self.min_f1_threshold[group] - self.delta) for group in f1_dict)
         
         if imprimir:
             print("\nPerformance criteria met:")
@@ -270,9 +247,9 @@ class ThresholdOptimizer:
             return False
 
 
-    def compute_gradient(self, group_y_true, group_y_pred_proba, min_acc_threshold, threshold, min_f1_threshold):
+    def compute_gradient(self, group_y_true, group_y_pred_proba, threshold):
         # Calculate current predictions
-        group_y_pred = (group_y_pred_proba >= threshold)
+        group_y_pred = group_y_pred_proba >= threshold
 
         # Calculate accuracy and F1 score
         acc = accuracy_score(group_y_true, group_y_pred)
@@ -280,31 +257,27 @@ class ThresholdOptimizer:
 
         # Compute loss: negative accuracy (to maximize accuracy)
         loss = -acc
-        #loss = 0
-            
-        if acc < min_acc_threshold:
-            loss += self.penalty * (min_acc_threshold - acc)
-            
+
         # Add penalty if F1 score is below the minimum threshold
-        if f1 < min_f1_threshold:
-            loss += self.penalty * (min_f1_threshold - f1)
+        if f1 < self.min_f1_threshold:
+            loss += self.penalty * (self.min_f1_threshold - f1)
 
         #gradient = loss
 
 
         # Adjust delta
-        #delta = 0.01 #0.01  # Increased delta
+        delta = 0.01 #0.01  # Increased delta
 
-        #threshold_plus = min(threshold + delta, 1)
-        #threshold_minus = max(threshold - delta, 0)
+        threshold_plus = min(threshold + delta, 1)
+        threshold_minus = max(threshold - delta, 0)
         
         # Loss at threshold_plus
-        #group_y_pred_plus = group_y_pred_proba >= threshold_plus
-        #acc_plus = accuracy_score(group_y_true, group_y_pred_plus)
-        #f1_plus = f1_score(group_y_true, group_y_pred_plus, zero_division=1)
-        #loss_plus = -acc_plus
-        #if f1_plus < self.min_f1_threshold:
-        #    loss_plus += self.penalty * (self.min_f1_threshold - f1_plus)
+        group_y_pred_plus = group_y_pred_proba >= threshold_plus
+        acc_plus = accuracy_score(group_y_true, group_y_pred_plus)
+        f1_plus = f1_score(group_y_true, group_y_pred_plus, zero_division=1)
+        loss_plus = -acc_plus
+        if f1_plus < self.min_f1_threshold:
+            loss_plus += self.penalty * (self.min_f1_threshold - f1_plus)
 
         #gradient = loss_plus
         #print(f"Gradient: {gradient}, Loss: {loss}, Loss_minus_plus: {loss_minus_plus}, Delta: {delta}")

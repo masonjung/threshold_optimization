@@ -13,14 +13,14 @@ import acc_f1_baseline
 
 
 # Cyntia's path
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
+path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
 train_path = path+'//train_features.csv'
 
 
 
 # hyperparameters
-acceptable_disparities =  [ 1.00, 0.50, 0.40, 0.30, 0.25, 0.20, 0.15, 0.10]
-max_iterations = 2.5*10**4
+acceptable_disparities = [0.215] #[ 1.00, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.23, 0.22, 0.21, 0.20, 0.19, 0.18, 0.17, 0.16, 0.15, 0.10, 0.09, 0.08, 0.06, 0.05]  #[1, 0.5, 0.25, 0.24, 0.239, 0.238, 0.237, 0.236, 0.235, 0.234, 0.233, 0.232, 0.231, 0.23, 0.229, 0.228, 0.227, 0.226, 0.225, 0.223, 0.22, 0.21, 0.2] # [1, 0.5, 0.2, 0.1, 0.01, 0.001]
+max_iterations = 5*10**4
 learning_rate = 10**-2
 tolerance = 1e-2 #10**-5
 #min_acc_threshold = 0 #0.402753 #0.4 #0.5
@@ -31,7 +31,6 @@ num_features = [1, 2] #[1, 2, 3, 4]
 frac = 1.0 # sample fraction of dataset
 #perc_excluded = 1
 min_data = 100 # 500
-min_accuracy = 0.2
 
 train_df = pd.read_csv(train_path)
 train_df['length_personality'] = train_df['length_label'] + '_' + train_df['personality']
@@ -90,7 +89,7 @@ initial_thresholds = baseline_df.groupby(['group', 'column', 'label']).agg(
 #exclude_values = value_counts.loc[value_counts['percentage'] < perc_excluded, 'length_personality']
 #exclude_values = value_counts.loc[value_counts['count'] < min_data, 'length_personality']
 #exclude_values = initial_thresholds[initial_thresholds['min_accuracy'] < 0.2]['label']
-exclude_values_1 = initial_thresholds.loc[initial_thresholds['min_accuracy'] < min_accuracy, 'label']
+exclude_values_1 = initial_thresholds.loc[initial_thresholds['min_accuracy'] < 0.2, 'label']
 exclude_values_2 = value_counts.loc[value_counts['count'] < min_data, 'length_personality']
 exclude_values = exclude_values_1.to_numpy().tolist() + exclude_values_2.to_numpy().tolist()
 df = df[~df['length_personality'].isin(exclude_values)].reset_index(drop=True)
@@ -125,22 +124,21 @@ def optimize_thresholds(y_true, y_pred_proba, groups, initial_thresholds, group_
 
     # Optimize thresholds using gradient-based method
     #thresholds, history, iteration = optimizer.optimize()
-    thresholds, iteration, opt_learning_rate, opt_acc_dict, opt_f1_dict, is_convergence, delta = optimizer.optimize()
+    thresholds, iteration, opt_learning_rate, opt_acc_dict, opt_f1_dict = optimizer.optimize()
     
-    if is_convergence:
-        # Save thresholds to a file
-        file_path = path+f"//thresholds_{group_column}_disparity_{str(acceptable_disparity).replace('.', '_').ljust(4, '0')}.txt"
-        with open(file_path, 'w') as file:
-            for group, threshold in thresholds.items():
-                file.write(f"Group: {group}, Threshold: {threshold:.7f}\n")
-        print("The optimized thresholds have been saved to:", file_path)
+    # Save thresholds to a file
+    file_path = path+f"//thresholds_{group_column}_disparity_{str(acceptable_disparity).replace('.', '_').ljust(4, '0')}.txt"
+    with open(file_path, 'w') as file:
+        for group, threshold in thresholds.items():
+            file.write(f"Group: {group}, Threshold: {threshold:.7f}\n")
+    print("The optimized thresholds have been saved to:", file_path)
 
     # Move the results to the list
     optimized_thresholds_list = []
     for group, threshold in thresholds.items():
         optimized_thresholds_list.append({'group': group, 'threshold': threshold})
 
-    return optimized_thresholds_list, iteration, opt_learning_rate, opt_acc_dict, opt_f1_dict, is_convergence, delta
+    return optimized_thresholds_list, iteration, opt_learning_rate, opt_acc_dict, opt_f1_dict
 
 
 
@@ -185,7 +183,7 @@ for col in features_columns:
         print("\n"+"="*100)
         print(f"Optimized Thresholds for acceptable_disparity = {acceptable_disparity}:\n")
 
-        optimized_thresholds, iterations, opt_learning_rate, opt_acc_dict, opt_f1_dict, is_convergence, delta = optimize_thresholds(
+        optimized_thresholds, iterations, opt_learning_rate, opt_acc_dict, opt_f1_dict = optimize_thresholds(
                                                 y_true = y_true,
                                                 y_pred_proba = y_pred_proba,
                                                 groups = initial_thresholds_col['label'],
@@ -201,16 +199,15 @@ for col in features_columns:
                                                 group_column = group_column
                                             )
         
-        #if iterations == max_iterations or :
-        #    is_convergence = False
-        #else:
-        #    is_convergence = True
+        if iterations == max_iterations:
+            is_convergence = False
+        else:
+            is_convergence = True
         
         logout_convergence = (
             f"Acceptable disparity: {acceptable_disparity}; "
             f"Convergence: {is_convergence}; "
             f'Iterations: {iterations}; '
-            f'delta: {delta}; '
             f'Optimized Learning Rate: {opt_learning_rate}; '
             f'\nOptimized Accuracy: {opt_acc_dict}; '
             f'\nOptimized F1: {opt_f1_dict}.'

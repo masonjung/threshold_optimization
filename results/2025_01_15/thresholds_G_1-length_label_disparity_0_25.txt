@@ -1,0 +1,3 @@
+Group: long, Threshold: 0.5739745
+Group: mid, Threshold: 0.5712345
+Group: short, Threshold: 0.5665964
