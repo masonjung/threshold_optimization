@@ -212,7 +212,7 @@ class ThresholdOptimizer:
                 abs(self.thresholds[group] - previous_thresholds[group]) for group in self.thresholds
             )
             # Check for early stopping
-            if self.early_stopping(acc_dict, f1_dict, confusion_matrix_df, min_stable_groups=2**5, change_tolerance=1e-5):
+            if self.early_stopping(acc_dict, f1_dict, confusion_matrix_df, min_stable_groups=2**3, change_tolerance=1e-5):
                 print(f"Converged after {iteration} iterations.")
                 break
             elif max_threshold_change < self.tolerance:
@@ -339,7 +339,7 @@ y_true = df['AI_written']  # True labels
 y_pred_proba = df['roberta_large_openai_detector_probability'].values     # Predicted probabilities the probability is learned from one model
 
 # Initial thresholds (set to x for all groups)
-initial_thresholds = {group: 0.5 for group in np.unique(groups)}
+initial_thresholds = {group: 0.25 for group in np.unique(groups)}
 
 # Create an instance of ThresholdOptimizer
 optimizer = ThresholdOptimizer(
@@ -348,7 +348,7 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-5,
-    max_iterations=10**4,
+    max_iterations=10**5,
     acceptable_disparity=0.2,  # Adjust based on your fairness criteria
     min_acc_threshold=0.5,         # Set realistic minimum accuracy
     min_f1_threshold=0.5,           # Set realistic minimum F1 score
@@ -452,7 +452,7 @@ for source in unique_sources:
 
         feature_discrepancies = calculate_discrepancies(test_y_true, test_y_pred, features)
 
-        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_FairOPT_fm1_early_stop", "a") as f:
+        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_FairOPT_fm1_early_try1", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.4f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
