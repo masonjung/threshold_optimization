@@ -212,7 +212,7 @@ class ThresholdOptimizer:
                 abs(self.thresholds[group] - previous_thresholds[group]) for group in self.thresholds
             )
             # Check for early stopping
-            if self.early_stopping(acc_dict, f1_dict, confusion_matrix_df, min_stable_groups=2**3, change_tolerance=1e-5):
+            if self.early_stopping(acc_dict, f1_dict, confusion_matrix_df, min_stable_groups=2**4, change_tolerance=1e-4):
                 print(f"Converged after {iteration} iterations.")
                 break
             elif max_threshold_change < self.tolerance:
@@ -452,7 +452,7 @@ for source in unique_sources:
 
         feature_discrepancies = calculate_discrepancies(test_y_true, test_y_pred, features)
 
-        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_FairOPT_fm1_early_try1", "a") as f:
+        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_FairOPT_fm1_early_try2", "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.4f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")
