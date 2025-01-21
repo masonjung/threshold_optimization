@@ -67,7 +67,7 @@ colors = {
 fig, axes = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
 
 # Text length categories
-text_length_categories = ['short', 'medium', 'long']
+text_length_categories = ['long', 'medium', 'short']
 
 # Combined legend
 handles, labels = [], []
