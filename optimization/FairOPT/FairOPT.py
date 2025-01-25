@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
 from tqdm import tqdm
 
-
 class ThresholdOptimizer:
     def __init__(
         self,
@@ -23,7 +22,7 @@ class ThresholdOptimizer:
         self.y_true = y_true
         self.y_pred_proba = y_pred_proba
         self.groups = groups
-        self.initial_thresholds = {group: initial_thresholds for group in np.unique(groups)}
+        self.initial_thresholds = {group: 0.01 for group in np.unique(groups)} # {group: initial_thresholds for group in np.unique(groups)}
         self.learning_rate = learning_rate
         self.max_iterations = max_iterations
         self.acceptable_ppr_disparity = acceptable_disparity
@@ -37,9 +36,10 @@ class ThresholdOptimizer:
         self.thresholds = {group: initial_thresholds for group in np.unique(groups)}
         self.initial_learning_rate = learning_rate  # Store initial learning rate
         self.delta_fairness = 0.0  #0.02
-        self.delta_performance = 0.0  #0.2
-        self.delta = False
+        self.delta_performance = 1.0 #0.2
+        self.delta = True
         self.is_convergence = False
+        self.start_count = 1
         
 
 
@@ -162,24 +162,25 @@ class ThresholdOptimizer:
             previous_thresholds = self.thresholds.copy()
             
             if any(value > 0.999 for value in self.thresholds.values()):
-                #self.thresholds = self.initial_thresholds.copy()
-                self.thresholds = {key: 0.01 for key in self.initial_thresholds}
-                self.learning_rate -= 1*10**-1*self.initial_learning_rate #/ 2
-                if self.learning_rate < 5*10**-6:
-                    print("#-"*50)
-                    self.initial_learning_rate = 1*10**-1*self.initial_learning_rate
-                    self.learning_rate = self.initial_learning_rate
-                print("="*500)
-                print(f"self.thresholds: {self.thresholds}")
-                print(f"self.learning_rate: {self.learning_rate}")                
+            #    #self.thresholds = self.initial_thresholds.copy()
+                self.thresholds = {key: 0.01 + self.start_count * self.learning_rate for key in self.initial_thresholds}
+                self.start_count += 1
+            #    self.learning_rate -= 1*10**-1*self.initial_learning_rate #/ 2
+            #    if self.learning_rate < 5*10**-6:
+            #        print("#-"*50)
+            #        self.initial_learning_rate = 1*10**-1*self.initial_learning_rate
+            #        self.learning_rate = self.initial_learning_rate
+            #    print("="*500)
+            #    print(f"self.thresholds: {self.thresholds}")
+            #    print(f"self.learning_rate: {self.learning_rate}")                
             
-            if iterations == self.max_iterations and self.delta == False:
-                self.max_iterations *= 2
-                self.delta_fairness = 0.02
-                self.delta_performance = 0.2
-                self.delta = True
-                progress_bar.total = self.max_iterations
-                progress_bar.desc = "Progress (to 2 * max iterations)"
+            #if iterations == self.max_iterations and self.delta == False:
+            #    self.max_iterations *= 2
+            #    self.delta_fairness = 0.02
+            #    self.delta_performance = 0.2
+            #    self.delta = True
+            #    progress_bar.total = self.max_iterations
+            #    progress_bar.desc = "Progress (to 2 * max iterations)"
            
             progress_bar.update(1)
                         
@@ -244,7 +245,8 @@ class ThresholdOptimizer:
         fpr_check = (fpr_disparity <= (self.acceptable_fpr_disparity + self.delta_fairness))
         tpr_check = (tpr_disparity <= (self.acceptable_tpr_disparity + self.delta_fairness))
         #if ppr_disparity <= self.acceptable_ppr_disparity and fpr_disparity <= self.acceptable_fpr_disparity and tpr_disparity <= self.acceptable_tpr_disparity:
-        if ppr_check and fpr_check and tpr_check:
+        #if ppr_check and fpr_check and tpr_check:
+        if ppr_check:
             return True
         else:
             return False

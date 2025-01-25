@@ -13,25 +13,25 @@ import acc_f1_baseline
 
 
 # Cyntia's path
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
+path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
 train_path = path+'//train_features.csv'
 
 
 
 # hyperparameters
-acceptable_disparities =  [ 1.00, 0.50, 0.40, 0.30, 0.25, 0.20, 0.15, 0.10]
-max_iterations = 2.5*10**4
-learning_rate = 10**-2
+acceptable_disparities =  [ 1.00, 0.50, 0.40, 0.30, 0.25, 0.20, 0.19, 0.18, 0.17, 0.16, 0.15, 0.14, 0.13, 0.12, 0.11, 0.10, 0.09, 0.08, 0.07, 0.06, 0.05]
+max_iterations = 1*10**5
+learning_rate = 10**-5
 tolerance = 1e-2 #10**-5
-#min_acc_threshold = 0 #0.402753 #0.4 #0.5
-#min_f1_threshold = 0 # 0.275660 #0.4 #0.5
-initial_thresholds_values = 0.5# 0.1
+#min_acc_threshold = 0 # 0.5
+#min_f1_threshold = 0 # 0.4 #0.5
+initial_thresholds_values = 0.4
 penalty=1 #10 #20  # Increase penalty to enforce stricter updates
 num_features = [1, 2] #[1, 2, 3, 4]
 frac = 1.0 # sample fraction of dataset
 #perc_excluded = 1
-min_data = 100 # 500
-min_accuracy = 0.2
+min_data = 0 #100 # 500
+min_accuracy = 0 # 0.2
 
 train_df = pd.read_csv(train_path)
 train_df['length_personality'] = train_df['length_label'] + '_' + train_df['personality']
