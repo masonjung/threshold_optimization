@@ -2,15 +2,13 @@ import pandas as pd
 import numpy as np
 import FairOPT
 import acc_f1_baseline
-import time
-start_time = time.time()
 
 # Minseok's path
 #path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets"
 #train_path = path+"\\train_features.csv"
 
 # Cyntia's path
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
+path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
 train_path = path+'//train_features.csv'
 
 
@@ -19,7 +17,7 @@ train_path = path+'//train_features.csv'
 # Hyperparameters
 ##########################################
 
-acceptable_disparity =  0.25 #[1.00, 0.50, 0.40, 0.30, 0.25, 0.20]
+acceptable_disparity =  0.21 #[1.00, 0.50, 0.40, 0.30, 0.25, 0.20]
 
 max_iterations=10**4   # Maximum number of iterations.
 learning_rate = 1e-3   # Adjusted learning rate. For threshold adjustment.
@@ -141,11 +139,4 @@ for _, col in enumerate(features_columns):
         is_convergence = optimizer.optimize()
         if is_convergence:
             break
-    print(f'Convergence: {is_convergence}')
     
-print(f'Convergence: {is_convergence}')
-end_time = time.time()
-execution_time = end_time - start_time
-minutes = execution_time // 60
-seconds = execution_time % 60
-print(f"The code took {minutes} minutes and {seconds:.2f} seconds to run.")

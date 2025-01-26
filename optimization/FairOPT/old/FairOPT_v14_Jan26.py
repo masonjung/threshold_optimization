@@ -32,22 +32,7 @@ class ThresholdOptimizer:
         self.y_pred_proba = y_pred_proba
         
         self.group_indices = group_indices
-        """
-        # self.delta_performance = 0.1 convergence until disparity = 0.3
-        # self.delta_performance = 0.2 convergence until disparity = 0.25
-        # self.delta_performance = 0.3 convergence until disparity = 0.21 
-        # self.delta_performance = 1.0 convergence until disparity = 0.20
-        # change thresholds: 0.19:
-            self.min_threshold = 0.0 #0.00005; since 0.19: 0
-            self.max_threshold = 1.0 #0.99995: since 0.19: 1
-        # For lower convergence, don't consider this and everything will be categorized as negative with ppr = 0.
-            acc_check = acc_check and any( (acc_dict[group] >0) for group in acc_dict)
-            f1_check = f1_check and any( (f1_dict[group] >0) for group in f1_dict)
-        """
-        self.delta_performance = 0.2
-        self.min_threshold = 0.00005 #0.00005; since 0.19: 0
-        self.max_threshold = 0.99995 #0.99995: since 0.19: 1
-        
+        self.delta_performance = 0.3 #0.3 for 0.21 #0.2 until disparity = 0.25 #0.1 until disparity = 0.3
         #self.min_acc = min_acc
         self.min_acc = {key: value - self.delta_performance for key, value in min_acc.items()}
         #self.min_f1 = min_f1
@@ -169,13 +154,11 @@ class ThresholdOptimizer:
             
             #self.thresholds[group] -= self.learning_rate * (group_loss * (1 if group_loss >= 0 else -1))  # Aumentar o disminuir según la pérdida
             self.thresholds[group] -= self.learning_rate * group_loss * factor  # Update the threshold
-            self.thresholds[group] = np.clip(self.thresholds[group], self.min_threshold, self.max_threshold)  # Ensure thresholds stay within bounds
+            self.thresholds[group] = np.clip(self.thresholds[group], 0.00005, 0.99995)  # Ensure thresholds stay within bounds
             #print (f'group_loss: {group_loss}')
                            
         acc_check = all( (acc_dict[group] >= self.min_acc[group]) for group in acc_dict)
-        acc_check = acc_check and any( (acc_dict[group] >0) for group in acc_dict)
         f1_check  = all( (f1_dict[group]  >= self.min_f1[group] ) for group in f1_dict )
-        f1_check = f1_check and any( (f1_dict[group] >0) for group in f1_dict)
         
         acc = accuracy_score(self.y_true, final_y_pred)
         f1 = f1_score(self.y_true, final_y_pred, zero_division=1)
@@ -239,31 +222,3 @@ class ThresholdOptimizer:
         except ConvergenceReached:
             print("Optimization stopped early due to convergence.")
             return self.is_convergence
-        
-        
-        
-    # Stochastic Gradient Based Method # in the end, it was not used
-    #def optimize_sg(self):
-    #    # Convertir a tensores
-    #    thresholds = torch.tensor(list(self.thresholds.values()), requires_grad=True)
-
-    #   weight_decay = 0.1 
-    #    #beta1 = 0.9  # Adam's first moment estimate decay
-    #    #beta2 = 0.999  # Adam's second moment estimate decay
-    #    # Definir optimizador Adam
-    #    #optimizer = torch.optim.Adam([thresholds], lr=self.learning_rate)
-    #    optimizer = torch.optim.Adam(
-    #        [thresholds], 
-    #        lr=self.learning_rate, 
-    #        weight_decay=weight_decay, 
-    #        #betas=(beta1, beta2)  # Explicitly set beta1 and beta2
-    #    )
-
-    #    for epoch in range(1000):
-    #        optimizer.zero_grad()
-    #        loss = torch.tensor(self.loss_function(thresholds.detach().numpy()), requires_grad=True)
-    #        loss.backward()
-    #        optimizer.step()
-    #        thresholds.data.clamp_(0, 1)  # Asegurar límites
-        
-    #    return self.is_convergence

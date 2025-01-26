@@ -76,6 +76,7 @@ for col in features_columns:
                     )
                     source_df = test_df[(test_df['source'] == source)]
                     accuracy = accuracy_score(source_df['y_true'], source_df['y_pred'])
+                    f1 = f1_score(source_df['y_true'], source_df['y_pred'], zero_division=1)
                     #print(f"Accuracy for source {source} and detector {detector}: {accuracy}")
                     fpr = np.sum((source_df['y_pred'] == 1) & (source_df['y_true'] == 0)) / np.sum(source_df['y_true'] == 0)
                     fnr = np.sum((source_df['y_pred'] == 0) & (source_df['y_true'] == 1)) / np.sum(source_df['y_true'] == 1)
@@ -85,11 +86,13 @@ for col in features_columns:
                     
                     print(f"\nPerformance for Source: {source}, Detector: {detector}")
                     print(f"Accuracy: {accuracy:.4f}")
+                    print(f"F1: {f1:.4f}")
                     print(f"False Positive Rate (FPR): {fpr:.4f}")
                     print(f"Balanced Error (BER): {ber:.4f}")
             
                     results_file.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
                     results_file.write(f"Accuracy: {accuracy:.4f}\n")
+                    results_file.write(f"F1: {f1:.4f}\n")
                     results_file.write(f"False Positive Rate (FPR): {fpr:.4f}\n")
                     results_file.write(f"Balanced Error (BER): {ber:.4f}\n")
             
