@@ -11,7 +11,7 @@ import FairOPT
 
 
 # Cynthia's path
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
+path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
 test_path = path+'//test_t4_features.csv'
 
 test_df = pd.read_csv(test_path)
@@ -21,7 +21,7 @@ unique_sources = test_df['source'].unique()
 detector_probabilities = ['radar_probability', 'roberta_base_openai_detector_probability', 'roberta_large_openai_detector_probability', 'GPT4o-mini_probability']
 #features_columns  = ['length_label', 'personality', 'length_personality']
 features_columns  = ['length_personality']
-acceptable_disparities =  [ 1.00, 0.25, 0.24, 0.23, 0.21]
+acceptable_disparities =  [ 1.00, 0.50, 0.40, 0.30, 0.25, 0.20, 0.15, 0.10]
 
 
 test_df['length_personality'] = test_df['length_label'] + '_' + test_df['personality']

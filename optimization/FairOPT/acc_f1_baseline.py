@@ -16,18 +16,18 @@ def performance_by_threshold (y_pred_proba, y_true, threshold):
     return accuracy, f1, data_below_threshold, data_above_threshold
 
 def evaluate_thresholds(y_true, y_pred_proba):
-    thresholds = np.arange(0.0, 1.01, 0.01)
+    #thresholds = np.arange(0.0, 1.01, 0.01)
     results = []
 
-    for threshold in thresholds:
-        accuracy, f1, data_below_threshold, data_above_threshold = performance_by_threshold (y_pred_proba, y_true, threshold)
-        results.append({
-            'threshold': threshold,
-            'accuracy': accuracy,
-            'f1': f1,
-            'perc_below_threshold': data_below_threshold,
-            'perc_above_threshold': data_above_threshold
-        })
+    #for threshold in thresholds:
+    #    accuracy, f1, data_below_threshold, data_above_threshold = performance_by_threshold (y_pred_proba, y_true, threshold)
+    #    results.append({
+    #        'threshold': threshold,
+    #        'accuracy': accuracy,
+    #        'f1': f1,
+    #        'perc_below_threshold': data_below_threshold,
+    #        'perc_above_threshold': data_above_threshold
+    #    })
 
     # Static threshold
     static_threshold = 0.5
@@ -62,6 +62,7 @@ def evaluate_thresholds(y_true, y_pred_proba):
         'perc_above_threshold': roc_data_above_threshold
     })
 
+    # Convert the results List to a DataFrame:
     results_df = pd.DataFrame(results)
     results_df = results_df.sort_values(by='threshold', ascending=True)
     results_df = results_df.drop_duplicates(subset='threshold', keep='first')
