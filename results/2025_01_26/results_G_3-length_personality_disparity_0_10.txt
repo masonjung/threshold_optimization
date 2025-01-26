@@ -1,0 +1,72 @@
+
+Performance for Source: mage, Detector: radar_probability
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: GPT4o-mini_probability
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: radar_probability
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: radar_probability
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
