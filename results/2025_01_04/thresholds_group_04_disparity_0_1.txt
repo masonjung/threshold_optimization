@@ -1,5 +1,0 @@
-Group: agreeableness, Threshold: 0.5000000
-Group: conscientiousness, Threshold: 0.4975518
-Group: extroversion, Threshold: 0.3275806
-Group: neuroticism, Threshold: 0.5240467
-Group: openness, Threshold: 0.4961741

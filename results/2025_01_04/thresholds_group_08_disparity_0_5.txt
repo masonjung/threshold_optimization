@@ -1,4 +1,0 @@
-Group: formal_NEGATIVE, Threshold: 0.5187255
-Group: formal_POSITIVE, Threshold: 0.4587763
-Group: informal_NEGATIVE, Threshold: 0.5580873
-Group: informal_POSITIVE, Threshold: 0.5137212

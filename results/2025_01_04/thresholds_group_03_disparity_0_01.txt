@@ -1,2 +1,0 @@
-Group: NEGATIVE, Threshold: 0.5263132
-Group: POSITIVE, Threshold: 0.4831420
