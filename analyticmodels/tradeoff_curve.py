@@ -12,8 +12,8 @@ detector_regex = re.compile(r"Performance for Source: .*?, Detector: (.*?)\n")
 accuracy_regex = re.compile(r"Accuracy: (\d+\.\d+)")
 
 # Target detector to focus on
-target_detector = "roberta_large_openai_detector_probability"
-
+target_detector = "GPT4o-mini_probability"
+#  "roberta_base_openai_detector_probability"
 relaxation_values = []
 accuracies = []
 
