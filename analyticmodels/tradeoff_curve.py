@@ -1,5 +1,6 @@
 import os
 import re
+from matplotlib.patches import FancyArrow
 import matplotlib.pyplot as plt
 
 # Directory containing the result files
@@ -64,6 +65,16 @@ plt.axvline(
     linestyle="--",
     label="Rule-based fairness",
 )
+
+# Draw a leftward error arrow indicating increasing fairness
+arrow = FancyArrow(0.6, 0.455, -0.35, 0, 
+                   color="red", linestyle="--", 
+                   width=0.007, head_width=0.02, head_length=0.03)
+plt.gca().add_patch(arrow)
+
+# Annotate "Better Fairness" on the right side
+plt.text(0.41, 0.43, "Better Fairness", color="black", fontsize=20, ha="center", va="center", rotation=0)
+
 
 # Set font size on y-ticks
 plt.yticks(fontsize=16)
