@@ -12,7 +12,7 @@ detector_regex = re.compile(r"Performance for Source: .*?, Detector: (.*?)\n")
 accuracy_regex = re.compile(r"Accuracy: (\d+\.\d+)")
 
 # Target detector to focus on
-target_detector = "GPT4o-mini_probability"
+target_detector = "roberta_large_openai_detector_probability"
 #  "roberta_base_openai_detector_probability"
 relaxation_values = []
 accuracies = []
@@ -53,9 +53,13 @@ plt.figure(figsize=(10, 6))
 # Plot the main accuracy-relaxation curve
 plt.plot(relaxation_values, accuracies, marker="o", linestyle="-", color="blue", label="FairOPT")
 
-# Plot the additional scatter points at relaxation=1.0
-plt.scatter([1.0], [0.3702], color="gray", label="Static")
-plt.scatter([1.0], [0.3925], color="green", label="ROCFPR")
+# # Plot the additional scatter points at relaxation=1.0 <- RoBERTa_base
+# plt.scatter([1.0], [0.3701], color="gray", label="Static")
+# plt.scatter([1.0], [0.3925], color="green", label="ROCFPR")
+
+# Plot the additional scatter points at relaxation=1.0 <- RoBERTa_large
+plt.scatter([1.0], [0.4009], color="gray", label="Static")
+plt.scatter([1.0], [0.4455], color="green", label="ROCFPR")
 
 # Draw a dashed red vertical line at x=0.2
 # (Even though 0.2 is not in xtick_values, we still show the line.)
