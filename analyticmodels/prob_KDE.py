@@ -46,7 +46,7 @@ for i, ai_written in enumerate([1, 0]):
     ax.set_xlim(0, 1)
     # Draw a static threshold line
     threshold = 0.5
-    ax.axvline(x=threshold, color='black', linestyle='-', linewidth=3, label='Static threshold (0.5)')
+    ax.axvline(x=threshold, color='black', linestyle='--', linewidth=3, label='Static threshold (0.5)')
 
     # # Draw adaptive threshold lines for each group
     # adaptive_thresholds = {
