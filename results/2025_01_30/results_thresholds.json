@@ -1,0 +1,254 @@
+{
+    "1.0": {
+        "acc_opt": 0.5914,
+        "f1": 0.672175866495507,
+        "thresholds_opt": {
+            "long_agreeableness": 0.0006791933418693983,
+            "long_conscientiousness": 5e-05,
+            "long_extroversion": 0.0005282111899133176,
+            "long_neuroticism": 0.9977000000000925,
+            "long_openness": 5e-05,
+            "mid_agreeableness": 5e-05,
+            "mid_conscientiousness": 5e-05,
+            "mid_extroversion": 5e-05,
+            "mid_neuroticism": 5e-05,
+            "mid_openness": 0.9345541805529622,
+            "short_agreeableness": 0.9594621979243615,
+            "short_conscientiousness": 0.9817347312017024,
+            "short_extroversion": 0.9714041865712697,
+            "short_neuroticism": 0.9402004279547785,
+            "short_openness": 0.9343968183751553
+        }
+    },
+    "0.9": {
+        "acc_opt": 0.5914,
+        "f1": 0.672175866495507,
+        "thresholds_opt": {
+            "long_agreeableness": 0.0006791933418693983,
+            "long_conscientiousness": 5e-05,
+            "long_extroversion": 0.0005282111899133176,
+            "long_neuroticism": 0.9977000000000925,
+            "long_openness": 5e-05,
+            "mid_agreeableness": 5e-05,
+            "mid_conscientiousness": 5e-05,
+            "mid_extroversion": 5e-05,
+            "mid_neuroticism": 5e-05,
+            "mid_openness": 0.9345541805529622,
+            "short_agreeableness": 0.9594621979243615,
+            "short_conscientiousness": 0.9817347312017024,
+            "short_extroversion": 0.9714041865712697,
+            "short_neuroticism": 0.9402004279547785,
+            "short_openness": 0.9343968183751553
+        }
+    },
+    "0.8": {
+        "acc_opt": 0.56875,
+        "f1": 0.6164450571441278,
+        "thresholds_opt": {
+            "long_agreeableness": 0.20414202650774993,
+            "long_conscientiousness": 0.6854034503687416,
+            "long_extroversion": 0.17350879419594195,
+            "long_neuroticism": 0.9976250000000283,
+            "long_openness": 0.7678174838371842,
+            "mid_agreeableness": 0.6672672276285607,
+            "mid_conscientiousness": 0.8495363644281118,
+            "mid_extroversion": 0.00035024786437535117,
+            "mid_neuroticism": 0.4054569504450002,
+            "mid_openness": 0.9347646802540711,
+            "short_agreeableness": 0.9672125037061657,
+            "short_conscientiousness": 0.9812321041100456,
+            "short_extroversion": 0.9725261939346487,
+            "short_neuroticism": 0.959157897542996,
+            "short_openness": 0.9369620499627043
+        }
+    },
+    "0.7": {
+        "acc_opt": 0.5673,
+        "f1": 0.6144524636906353,
+        "thresholds_opt": {
+            "long_agreeableness": 0.20508052796063495,
+            "long_conscientiousness": 0.6848907905221943,
+            "long_extroversion": 0.1742306445425831,
+            "long_neuroticism": 0.9979250000000283,
+            "long_openness": 0.7675003952295892,
+            "mid_agreeableness": 0.6680074940564262,
+            "mid_conscientiousness": 0.8491160638584239,
+            "mid_extroversion": 0.000869022610440501,
+            "mid_neuroticism": 0.406093962852753,
+            "mid_openness": 0.9342807021063381,
+            "short_agreeableness": 0.966828065396119,
+            "short_conscientiousness": 0.9808330804914344,
+            "short_extroversion": 0.9721005524588261,
+            "short_neuroticism": 0.9587536884261264,
+            "short_openness": 0.9377755188599849
+        }
+    },
+    "0.6": {
+        "acc_opt": 0.56385,
+        "f1": 0.6100058121339473,
+        "thresholds_opt": {
+            "long_agreeableness": 0.20930378449861753,
+            "long_conscientiousness": 0.6910424856689575,
+            "long_extroversion": 0.17856174662243005,
+            "long_neuroticism": 0.9979700000000281,
+            "long_openness": 0.7703442914704791,
+            "mid_agreeableness": 0.6724508823527822,
+            "mid_conscientiousness": 0.8491148139708777,
+            "mid_extroversion": 0.004868331336005742,
+            "mid_neuroticism": 0.40991603729926995,
+            "mid_openness": 0.9342795138494565,
+            "short_agreeableness": 0.9668267855266888,
+            "short_conscientiousness": 0.9808313418274522,
+            "short_extroversion": 0.9720975784293194,
+            "short_neuroticism": 0.9587528796578119,
+            "short_openness": 0.9377748429139546
+        }
+    },
+    "0.5": {
+        "acc_opt": 0.558,
+        "f1": 0.5885693009401471,
+        "thresholds_opt": {
+            "long_agreeableness": 0.6485942276179013,
+            "long_conscientiousness": 0.9839745772414618,
+            "long_extroversion": 0.5727955301267555,
+            "long_neuroticism": 0.9979550000000147,
+            "long_openness": 0.944282987732746,
+            "mid_agreeableness": 0.9210244404888223,
+            "mid_conscientiousness": 0.8485815439425691,
+            "mid_extroversion": 0.28535962662474407,
+            "mid_neuroticism": 0.7624240834478482,
+            "mid_openness": 0.9351830930138856,
+            "short_agreeableness": 0.9880132437712561,
+            "short_conscientiousness": 0.9814227838631038,
+            "short_extroversion": 0.9725483895439567,
+            "short_neuroticism": 0.9653743643926976,
+            "short_openness": 0.9408423429670445
+        }
+    },
+    "0.4": {
+        "acc_opt": 0.5549,
+        "f1": 0.5699101362450478,
+        "thresholds_opt": {
+            "long_agreeableness": 0.9529562318611895,
+            "long_conscientiousness": 0.9940766369871854,
+            "long_extroversion": 0.9038417215492952,
+            "long_neuroticism": 0.997722500000003,
+            "long_openness": 0.9879093705857441,
+            "mid_agreeableness": 0.9630885384239637,
+            "mid_conscientiousness": 0.9333638431743598,
+            "mid_extroversion": 0.8595479786300236,
+            "mid_neuroticism": 0.9771593549811072,
+            "mid_openness": 0.9341742703507313,
+            "short_agreeableness": 0.9894873054998276,
+            "short_conscientiousness": 0.98165965822951,
+            "short_extroversion": 0.9713370300137817,
+            "short_neuroticism": 0.9703561329278246,
+            "short_openness": 0.9595547967709198
+        }
+    },
+    "0.3": {
+        "acc_opt": 0.52895,
+        "f1": 0.4968220904769534,
+        "thresholds_opt": {
+            "long_agreeableness": 0.9943300924412041,
+            "long_conscientiousness": 0.9974004168481814,
+            "long_extroversion": 0.9903832687388862,
+            "long_neuroticism": 0.9979550000000003,
+            "long_openness": 0.9939378812287517,
+            "mid_agreeableness": 0.9885620962943457,
+            "mid_conscientiousness": 0.987714479107806,
+            "mid_extroversion": 0.984594974218557,
+            "mid_neuroticism": 0.9870775903978347,
+            "mid_openness": 0.9860746672475119,
+            "short_agreeableness": 0.9925720858459481,
+            "short_conscientiousness": 0.9909407511009489,
+            "short_extroversion": 0.9917484617799788,
+            "short_neuroticism": 0.988811942680666,
+            "short_openness": 0.9887644547954433
+        }
+    },
+    "0.25": {
+        "acc_opt": 0.51165,
+        "f1": 0.44102329308075316,
+        "thresholds_opt": {
+            "long_agreeableness": 0.9967674605793481,
+            "long_conscientiousness": 0.9979343130412743,
+            "long_extroversion": 0.995550870827286,
+            "long_neuroticism": 0.9983000000000001,
+            "long_openness": 0.996456513003055,
+            "mid_agreeableness": 0.9946349999034079,
+            "mid_conscientiousness": 0.9948584432544612,
+            "mid_extroversion": 0.9932169366002773,
+            "mid_neuroticism": 0.9945872340773039,
+            "mid_openness": 0.9943099674337725,
+            "short_agreeableness": 0.9957973748199154,
+            "short_conscientiousness": 0.9955734907974657,
+            "short_extroversion": 0.9954574199626866,
+            "short_neuroticism": 0.9953224959845384,
+            "short_openness": 0.9953149420761752
+        }
+    },
+    "0.2": {
+        "acc_opt": 0.4884,
+        "f1": 0.37380660954712364,
+        "thresholds_opt": {
+            "long_agreeableness": 0.9980123376623377,
+            "long_conscientiousness": 0.99821199638734,
+            "long_extroversion": 0.9974982815057283,
+            "long_neuroticism": 0.9984500000000001,
+            "long_openness": 0.9978176397869912,
+            "mid_agreeableness": 0.9969497255463446,
+            "mid_conscientiousness": 0.9970478696030575,
+            "mid_extroversion": 0.9964295853712257,
+            "mid_neuroticism": 0.9968918767161578,
+            "mid_openness": 0.9968118243586416,
+            "short_agreeableness": 0.9975245117419645,
+            "short_conscientiousness": 0.9973407306945281,
+            "short_extroversion": 0.9974438493147882,
+            "short_neuroticism": 0.9973443002484488,
+            "short_openness": 0.9973138006375292
+        }
+    },
+    "0.15": {
+        "acc_opt": 0.3739,
+        "f1": 0.0,
+        "thresholds_opt": {
+            "long_agreeableness": 0.99995,
+            "long_conscientiousness": 0.99995,
+            "long_extroversion": 0.99995,
+            "long_neuroticism": 0.99995,
+            "long_openness": 0.99995,
+            "mid_agreeableness": 0.99995,
+            "mid_conscientiousness": 0.99995,
+            "mid_extroversion": 0.99995,
+            "mid_neuroticism": 0.99995,
+            "mid_openness": 0.99995,
+            "short_agreeableness": 0.99995,
+            "short_conscientiousness": 0.99995,
+            "short_extroversion": 0.99995,
+            "short_neuroticism": 0.99995,
+            "short_openness": 0.99995
+        }
+    },
+    "0.1": {
+        "acc_opt": 0.3739,
+        "f1": 0.0,
+        "thresholds_opt": {
+            "long_agreeableness": 0.99995,
+            "long_conscientiousness": 0.99995,
+            "long_extroversion": 0.99995,
+            "long_neuroticism": 0.99995,
+            "long_openness": 0.99995,
+            "mid_agreeableness": 0.99995,
+            "mid_conscientiousness": 0.99995,
+            "mid_extroversion": 0.99995,
+            "mid_neuroticism": 0.99995,
+            "mid_openness": 0.99995,
+            "short_agreeableness": 0.99995,
+            "short_conscientiousness": 0.99995,
+            "short_extroversion": 0.99995,
+            "short_neuroticism": 0.99995,
+            "short_openness": 0.99995
+        }
+    }
+}

@@ -10,7 +10,7 @@ start_time = time.time()
 #train_path = path+"\\train_features.csv"
 
 # Cyntia's path
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
+path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
 train_path = path+'//train_features.csv'
 
 
@@ -19,15 +19,15 @@ train_path = path+'//train_features.csv'
 # Hyperparameters
 ##########################################
 
-acceptable_disparity =  0.15 #[1.00, 0.50, 0.40, 0.30, 0.25, 0.20]
+acceptable_disparity = 0.05 #[1.00, 0.30, 0.25, 0.21, 0.20, 0.19, 0.15, 0.10]
+print(f'acceptable_disparity: {acceptable_disparity}')
 
-max_iterations=10**4   # Maximum number of iterations.
-learning_rate = 1e-3   # Adjusted learning rate. For threshold adjustment.
-tolerance=1e-4         # Convergence criterion (minimum change in thresholds between iterations).
-penalty=10             # Penalty applied if the performance metrics score (acc and f1) is below the minimum threshold.
+learning_rate = 1e-3        # Adjusted learning rate. For threshold adjustment.
+penalty=10                  # Penalty applied if the performance metrics score (acc and f1) is below the minimum threshold.
+max_iteration_minimize = 15 # Maximum number of iterations of the "minimize" function, which objective is to minimize the loss function.
 
-num_features = [1, 2] #[1, 2, 3, 4]
-frac = 1.0 # sample fraction of dataset
+num_features = [1, 2]  # [1, 2, 3, 4]
+frac = 1.0             # sample fraction of dataset
 
 train_df = pd.read_csv(train_path)
 train_df['length_personality'] = train_df['length_label'] + '_' + train_df['personality']
@@ -98,25 +98,18 @@ acc_f1_baseline_df = baseline_df.groupby(['group', 'column', 'label']).agg(
 # True labels and Predicted probabilities learned from one model
 y_true = df['AI_written']  # True labels
 y_pred_proba = df['roberta_large_openai_detector_probability'] # Predicted labels
-#acceptable_disparities = sorted(acceptable_disparities, reverse=True)
-
+print(df.columns)
 
 for _, col in enumerate(features_columns):
     acc_f1_col = acc_f1_baseline_df[acc_f1_baseline_df['column']==col]
+    print(f'{acc_f1_col}')
     min_acc_dict = acc_f1_col.set_index('label')['min_accuracy'].to_dict()
     min_f1_dict = acc_f1_col.set_index('label')['min_f1'].to_dict()
-    #print('min_acc_dict:',min_acc_dict)
-    #print('min_f1_dict:',min_f1_dict)
     unique_values_group = np.unique(acc_f1_baseline_df['group'])
-    #group_column = f'{idx_feature+1}-{col}' # _ was previously idx_feature
-    #print(unique_values_group)
     
     group_indices = {}
     for value in acc_f1_col['label']:
-        #print (value)
         group_indices[value] = (df[col]==value)
-        #print((df[col]==value))
-    #print(acc_f1_col['label'])
     
     optimizer = FairOPT.ThresholdOptimizer(
         y_true = y_true,
@@ -127,20 +120,15 @@ for _, col in enumerate(features_columns):
         min_f1 = min_f1_dict,
         min_disparity = acceptable_disparity,
                 
-        max_iterations = max_iterations,
         learning_rate = learning_rate,
-        tolerance = tolerance,
         penalty = penalty,
-        
-        path = path,
-        group_column = col
+        max_iteration_minimize = max_iteration_minimize
     )
 
     # Optimize thresholds using gradient-based method
-    for i in range(10):
-        is_convergence = optimizer.optimize()
-        if is_convergence:
-            break
+    is_convergence = optimizer.optimize()
+    if is_convergence:
+        break
     print(f'Convergence: {is_convergence}')
     
 print(f'Convergence: {is_convergence}')
