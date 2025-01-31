@@ -1,0 +1,1152 @@
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 1.0
+Accuracy: 0.4355
+F1: 0.5198
+False Positive Rate (FPR): 0.7446
+Balanced Error (BER): 0.5612
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 1.0
+Accuracy: 0.5990
+F1: 0.6266
+False Positive Rate (FPR): 0.4843
+Balanced Error (BER): 0.3995
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 1.0
+Accuracy: 0.5920
+F1: 0.6331
+False Positive Rate (FPR): 0.5285
+Balanced Error (BER): 0.4058
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 1.0
+Accuracy: 0.4875
+F1: 0.3153
+False Positive Rate (FPR): 0.2741
+Balanced Error (BER): 0.5169
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 1.0
+Accuracy: 0.4810
+F1: 0.5193
+False Positive Rate (FPR): 0.6800
+Balanced Error (BER): 0.4642
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 1.0
+Accuracy: 0.2983
+F1: 0.4418
+False Positive Rate (FPR): 0.9670
+Balanced Error (BER): 0.6113
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 1.0
+Accuracy: 0.3143
+F1: 0.4611
+False Positive Rate (FPR): 0.9665
+Balanced Error (BER): 0.5900
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 1.0
+Accuracy: 0.3697
+F1: 0.3263
+False Positive Rate (FPR): 0.6539
+Balanced Error (BER): 0.6223
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 1.0
+Accuracy: 0.4697
+F1: 0.5344
+False Positive Rate (FPR): 0.6861
+Balanced Error (BER): 0.5216
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 1.0
+Accuracy: 0.3183
+F1: 0.4712
+False Positive Rate (FPR): 0.9722
+Balanced Error (BER): 0.6653
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 1.0
+Accuracy: 0.3313
+F1: 0.4825
+False Positive Rate (FPR): 0.9627
+Balanced Error (BER): 0.6521
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 1.0
+Accuracy: 0.4197
+F1: 0.4422
+False Positive Rate (FPR): 0.6399
+Balanced Error (BER): 0.5770
+
+Overall Performance for Source: mage, Disparity: 1.0
+Average Accuracy: 0.5285
+Average F1: 0.5237
+Average False Positive Rate (FPR): 0.5079
+Average Balanced Error (BER): 0.4708
+
+Overall Performance for Source: kaggle, Disparity: 1.0
+Average Accuracy: 0.3658
+Average F1: 0.4371
+Average False Positive Rate (FPR): 0.8169
+Average Balanced Error (BER): 0.5720
+
+Overall Performance for Source: semeval, Disparity: 1.0
+Average Accuracy: 0.3847
+Average F1: 0.4825
+Average False Positive Rate (FPR): 0.8152
+Average Balanced Error (BER): 0.6040
+
+Final Overall Performance for Entire Dataset, Disparity: 1.0
+Average Accuracy: 0.4264
+Average F1: 0.4811
+Average False Positive Rate (FPR): 0.7133
+Average Balanced Error (BER): 0.5489
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.9
+Accuracy: 0.4355
+F1: 0.5198
+False Positive Rate (FPR): 0.7446
+Balanced Error (BER): 0.5612
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.9
+Accuracy: 0.5990
+F1: 0.6266
+False Positive Rate (FPR): 0.4843
+Balanced Error (BER): 0.3995
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.9
+Accuracy: 0.5920
+F1: 0.6331
+False Positive Rate (FPR): 0.5285
+Balanced Error (BER): 0.4058
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.9
+Accuracy: 0.4875
+F1: 0.3153
+False Positive Rate (FPR): 0.2741
+Balanced Error (BER): 0.5169
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.9
+Accuracy: 0.4810
+F1: 0.5193
+False Positive Rate (FPR): 0.6800
+Balanced Error (BER): 0.4642
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.9
+Accuracy: 0.2983
+F1: 0.4418
+False Positive Rate (FPR): 0.9670
+Balanced Error (BER): 0.6113
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.9
+Accuracy: 0.3143
+F1: 0.4611
+False Positive Rate (FPR): 0.9665
+Balanced Error (BER): 0.5900
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.9
+Accuracy: 0.3697
+F1: 0.3263
+False Positive Rate (FPR): 0.6539
+Balanced Error (BER): 0.6223
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.9
+Accuracy: 0.4697
+F1: 0.5344
+False Positive Rate (FPR): 0.6861
+Balanced Error (BER): 0.5216
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.9
+Accuracy: 0.3183
+F1: 0.4712
+False Positive Rate (FPR): 0.9722
+Balanced Error (BER): 0.6653
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.9
+Accuracy: 0.3313
+F1: 0.4825
+False Positive Rate (FPR): 0.9627
+Balanced Error (BER): 0.6521
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.9
+Accuracy: 0.4197
+F1: 0.4422
+False Positive Rate (FPR): 0.6399
+Balanced Error (BER): 0.5770
+
+Overall Performance for Source: mage, Disparity: 0.9
+Average Accuracy: 0.5285
+Average F1: 0.5237
+Average False Positive Rate (FPR): 0.5079
+Average Balanced Error (BER): 0.4708
+
+Overall Performance for Source: kaggle, Disparity: 0.9
+Average Accuracy: 0.3658
+Average F1: 0.4371
+Average False Positive Rate (FPR): 0.8169
+Average Balanced Error (BER): 0.5720
+
+Overall Performance for Source: semeval, Disparity: 0.9
+Average Accuracy: 0.3847
+Average F1: 0.4825
+Average False Positive Rate (FPR): 0.8152
+Average Balanced Error (BER): 0.6040
+
+Final Overall Performance for Entire Dataset, Disparity: 0.9
+Average Accuracy: 0.4264
+Average F1: 0.4811
+Average False Positive Rate (FPR): 0.7133
+Average Balanced Error (BER): 0.5489
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.8
+Accuracy: 0.4240
+F1: 0.4104
+False Positive Rate (FPR): 0.5609
+Balanced Error (BER): 0.5763
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.8
+Accuracy: 0.6605
+F1: 0.6569
+False Positive Rate (FPR): 0.3409
+Balanced Error (BER): 0.3395
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.8
+Accuracy: 0.6590
+F1: 0.6680
+False Positive Rate (FPR): 0.3792
+Balanced Error (BER): 0.3403
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.8
+Accuracy: 0.4765
+F1: 0.1150
+False Positive Rate (FPR): 0.1306
+Balanced Error (BER): 0.5307
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.8
+Accuracy: 0.7490
+F1: 0.6675
+False Positive Rate (FPR): 0.2073
+Balanced Error (BER): 0.2659
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.8
+Accuracy: 0.2507
+F1: 0.3606
+False Positive Rate (FPR): 0.9373
+Balanced Error (BER): 0.6853
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.8
+Accuracy: 0.2890
+F1: 0.4205
+False Positive Rate (FPR): 0.9506
+Balanced Error (BER): 0.6294
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.8
+Accuracy: 0.4447
+F1: 0.1817
+False Positive Rate (FPR): 0.3892
+Balanced Error (BER): 0.6119
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.8
+Accuracy: 0.5957
+F1: 0.4216
+False Positive Rate (FPR): 0.1487
+Balanced Error (BER): 0.4187
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.8
+Accuracy: 0.2023
+F1: 0.3009
+False Positive Rate (FPR): 0.9418
+Balanced Error (BER): 0.7895
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.8
+Accuracy: 0.2357
+F1: 0.3510
+False Positive Rate (FPR): 0.9449
+Balanced Error (BER): 0.7542
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.8
+Accuracy: 0.5253
+F1: 0.2018
+False Positive Rate (FPR): 0.1165
+Balanced Error (BER): 0.4948
+
+Overall Performance for Source: mage, Disparity: 0.8
+Average Accuracy: 0.5550
+Average F1: 0.4626
+Average False Positive Rate (FPR): 0.3529
+Average Balanced Error (BER): 0.4467
+
+Overall Performance for Source: kaggle, Disparity: 0.8
+Average Accuracy: 0.4333
+Average F1: 0.4076
+Average False Positive Rate (FPR): 0.6211
+Average Balanced Error (BER): 0.5481
+
+Overall Performance for Source: semeval, Disparity: 0.8
+Average Accuracy: 0.3898
+Average F1: 0.3188
+Average False Positive Rate (FPR): 0.5380
+Average Balanced Error (BER): 0.6143
+
+Final Overall Performance for Entire Dataset, Disparity: 0.8
+Average Accuracy: 0.4594
+Average F1: 0.3963
+Average False Positive Rate (FPR): 0.5040
+Average Balanced Error (BER): 0.5364
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.7
+Accuracy: 0.4240
+F1: 0.4104
+False Positive Rate (FPR): 0.5609
+Balanced Error (BER): 0.5763
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.7
+Accuracy: 0.6610
+F1: 0.6572
+False Positive Rate (FPR): 0.3399
+Balanced Error (BER): 0.3390
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.7
+Accuracy: 0.6580
+F1: 0.6670
+False Positive Rate (FPR): 0.3802
+Balanced Error (BER): 0.3413
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.7
+Accuracy: 0.4765
+F1: 0.1150
+False Positive Rate (FPR): 0.1306
+Balanced Error (BER): 0.5307
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.7
+Accuracy: 0.7487
+F1: 0.6675
+False Positive Rate (FPR): 0.2084
+Balanced Error (BER): 0.2660
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.7
+Accuracy: 0.2500
+F1: 0.3597
+False Positive Rate (FPR): 0.9373
+Balanced Error (BER): 0.6862
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.7
+Accuracy: 0.2877
+F1: 0.4185
+False Positive Rate (FPR): 0.9500
+Balanced Error (BER): 0.6314
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.7
+Accuracy: 0.4443
+F1: 0.1816
+False Positive Rate (FPR): 0.3897
+Balanced Error (BER): 0.6122
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.7
+Accuracy: 0.5957
+F1: 0.4216
+False Positive Rate (FPR): 0.1487
+Balanced Error (BER): 0.4187
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.7
+Accuracy: 0.2020
+F1: 0.3004
+False Positive Rate (FPR): 0.9418
+Balanced Error (BER): 0.7899
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.7
+Accuracy: 0.2360
+F1: 0.3514
+False Positive Rate (FPR): 0.9449
+Balanced Error (BER): 0.7538
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.7
+Accuracy: 0.5247
+F1: 0.2007
+False Positive Rate (FPR): 0.1171
+Balanced Error (BER): 0.4955
+
+Overall Performance for Source: mage, Disparity: 0.7
+Average Accuracy: 0.5549
+Average F1: 0.4624
+Average False Positive Rate (FPR): 0.3529
+Average Balanced Error (BER): 0.4468
+
+Overall Performance for Source: kaggle, Disparity: 0.7
+Average Accuracy: 0.4327
+Average F1: 0.4068
+Average False Positive Rate (FPR): 0.6213
+Average Balanced Error (BER): 0.5489
+
+Overall Performance for Source: semeval, Disparity: 0.7
+Average Accuracy: 0.3896
+Average F1: 0.3185
+Average False Positive Rate (FPR): 0.5381
+Average Balanced Error (BER): 0.6145
+
+Final Overall Performance for Entire Dataset, Disparity: 0.7
+Average Accuracy: 0.4590
+Average F1: 0.3959
+Average False Positive Rate (FPR): 0.5041
+Average Balanced Error (BER): 0.5367
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.6
+Accuracy: 0.4200
+F1: 0.4039
+False Positive Rate (FPR): 0.5609
+Balanced Error (BER): 0.5804
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.6
+Accuracy: 0.6610
+F1: 0.6572
+False Positive Rate (FPR): 0.3399
+Balanced Error (BER): 0.3390
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.6
+Accuracy: 0.6580
+F1: 0.6670
+False Positive Rate (FPR): 0.3802
+Balanced Error (BER): 0.3413
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.6
+Accuracy: 0.4750
+F1: 0.1102
+False Positive Rate (FPR): 0.1306
+Balanced Error (BER): 0.5322
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.6
+Accuracy: 0.7493
+F1: 0.6681
+False Positive Rate (FPR): 0.2073
+Balanced Error (BER): 0.2654
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.6
+Accuracy: 0.2490
+F1: 0.3583
+False Positive Rate (FPR): 0.9373
+Balanced Error (BER): 0.6876
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.6
+Accuracy: 0.2873
+F1: 0.4181
+False Positive Rate (FPR): 0.9500
+Balanced Error (BER): 0.6318
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.6
+Accuracy: 0.4457
+F1: 0.1820
+False Positive Rate (FPR): 0.3876
+Balanced Error (BER): 0.6111
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.6
+Accuracy: 0.5957
+F1: 0.4216
+False Positive Rate (FPR): 0.1487
+Balanced Error (BER): 0.4187
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.6
+Accuracy: 0.2017
+F1: 0.2999
+False Positive Rate (FPR): 0.9418
+Balanced Error (BER): 0.7903
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.6
+Accuracy: 0.2360
+F1: 0.3514
+False Positive Rate (FPR): 0.9449
+Balanced Error (BER): 0.7538
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.6
+Accuracy: 0.5240
+F1: 0.1987
+False Positive Rate (FPR): 0.1171
+Balanced Error (BER): 0.4962
+
+Overall Performance for Source: mage, Disparity: 0.6
+Average Accuracy: 0.5535
+Average F1: 0.4596
+Average False Positive Rate (FPR): 0.3529
+Average Balanced Error (BER): 0.4482
+
+Overall Performance for Source: kaggle, Disparity: 0.6
+Average Accuracy: 0.4328
+Average F1: 0.4066
+Average False Positive Rate (FPR): 0.6205
+Average Balanced Error (BER): 0.5490
+
+Overall Performance for Source: semeval, Disparity: 0.6
+Average Accuracy: 0.3893
+Average F1: 0.3179
+Average False Positive Rate (FPR): 0.5381
+Average Balanced Error (BER): 0.6148
+
+Final Overall Performance for Entire Dataset, Disparity: 0.6
+Average Accuracy: 0.4586
+Average F1: 0.3947
+Average False Positive Rate (FPR): 0.5039
+Average Balanced Error (BER): 0.5373
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.5
+Accuracy: 0.4320
+F1: 0.3957
+False Positive Rate (FPR): 0.5167
+Balanced Error (BER): 0.5689
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.5
+Accuracy: 0.6620
+F1: 0.6530
+False Positive Rate (FPR): 0.3242
+Balanced Error (BER): 0.3383
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.5
+Accuracy: 0.6735
+F1: 0.6727
+False Positive Rate (FPR): 0.3360
+Balanced Error (BER): 0.3263
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.5
+Accuracy: 0.4990
+F1: 0.0384
+False Positive Rate (FPR): 0.0393
+Balanced Error (BER): 0.5095
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.5
+Accuracy: 0.7787
+F1: 0.6670
+False Positive Rate (FPR): 0.1116
+Balanced Error (BER): 0.2587
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.5
+Accuracy: 0.2537
+F1: 0.3535
+False Positive Rate (FPR): 0.9208
+Balanced Error (BER): 0.6869
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.5
+Accuracy: 0.2773
+F1: 0.3934
+False Positive Rate (FPR): 0.9314
+Balanced Error (BER): 0.6516
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.5
+Accuracy: 0.5383
+F1: 0.0918
+False Positive Rate (FPR): 0.1786
+Balanced Error (BER): 0.5580
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.5
+Accuracy: 0.5960
+F1: 0.3553
+False Positive Rate (FPR): 0.0797
+Balanced Error (BER): 0.4223
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.5
+Accuracy: 0.1957
+F1: 0.2829
+False Positive Rate (FPR): 0.9297
+Balanced Error (BER): 0.7973
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.5
+Accuracy: 0.2280
+F1: 0.3107
+False Positive Rate (FPR): 0.8975
+Balanced Error (BER): 0.7649
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.5
+Accuracy: 0.5200
+F1: 0.1067
+False Positive Rate (FPR): 0.0671
+Balanced Error (BER): 0.5033
+
+Overall Performance for Source: mage, Disparity: 0.5
+Average Accuracy: 0.5666
+Average F1: 0.4399
+Average False Positive Rate (FPR): 0.3040
+Average Balanced Error (BER): 0.4357
+
+Overall Performance for Source: kaggle, Disparity: 0.5
+Average Accuracy: 0.4620
+Average F1: 0.3764
+Average False Positive Rate (FPR): 0.5356
+Average Balanced Error (BER): 0.5388
+
+Overall Performance for Source: semeval, Disparity: 0.5
+Average Accuracy: 0.3849
+Average F1: 0.2639
+Average False Positive Rate (FPR): 0.4935
+Average Balanced Error (BER): 0.6219
+
+Final Overall Performance for Entire Dataset, Disparity: 0.5
+Average Accuracy: 0.4712
+Average F1: 0.3601
+Average False Positive Rate (FPR): 0.4444
+Average Balanced Error (BER): 0.5322
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.4
+Accuracy: 0.4430
+F1: 0.3939
+False Positive Rate (FPR): 0.4853
+Balanced Error (BER): 0.5583
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.4
+Accuracy: 0.6585
+F1: 0.6430
+False Positive Rate (FPR): 0.3104
+Balanced Error (BER): 0.3421
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.4
+Accuracy: 0.6800
+F1: 0.6687
+False Positive Rate (FPR): 0.2986
+Balanced Error (BER): 0.3204
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.4
+Accuracy: 0.5065
+F1: 0.0120
+False Positive Rate (FPR): 0.0108
+Balanced Error (BER): 0.5023
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.4
+Accuracy: 0.7837
+F1: 0.6360
+False Positive Rate (FPR): 0.0516
+Balanced Error (BER): 0.2724
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.4
+Accuracy: 0.2610
+F1: 0.3516
+False Positive Rate (FPR): 0.9032
+Balanced Error (BER): 0.6831
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.4
+Accuracy: 0.2840
+F1: 0.3817
+False Positive Rate (FPR): 0.8995
+Balanced Error (BER): 0.6535
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.4
+Accuracy: 0.6003
+F1: 0.0260
+False Positive Rate (FPR): 0.0510
+Balanced Error (BER): 0.5184
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.4
+Accuracy: 0.5953
+F1: 0.3126
+False Positive Rate (FPR): 0.0443
+Balanced Error (BER): 0.4250
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.4
+Accuracy: 0.1920
+F1: 0.2681
+False Positive Rate (FPR): 0.9165
+Balanced Error (BER): 0.8019
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.4
+Accuracy: 0.2190
+F1: 0.2620
+False Positive Rate (FPR): 0.8475
+Balanced Error (BER): 0.7773
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.4
+Accuracy: 0.5163
+F1: 0.0346
+False Positive Rate (FPR): 0.0361
+Balanced Error (BER): 0.5089
+
+Overall Performance for Source: mage, Disparity: 0.4
+Average Accuracy: 0.5720
+Average F1: 0.4294
+Average False Positive Rate (FPR): 0.2763
+Average Balanced Error (BER): 0.4308
+
+Overall Performance for Source: kaggle, Disparity: 0.4
+Average Accuracy: 0.4823
+Average F1: 0.3488
+Average False Positive Rate (FPR): 0.4763
+Average Balanced Error (BER): 0.5318
+
+Overall Performance for Source: semeval, Disparity: 0.4
+Average Accuracy: 0.3807
+Average F1: 0.2193
+Average False Positive Rate (FPR): 0.4611
+Average Balanced Error (BER): 0.6282
+
+Final Overall Performance for Entire Dataset, Disparity: 0.4
+Average Accuracy: 0.4783
+Average F1: 0.3325
+Average False Positive Rate (FPR): 0.4046
+Average Balanced Error (BER): 0.5303
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.3
+Accuracy: 0.4540
+F1: 0.3724
+False Positive Rate (FPR): 0.4263
+Balanced Error (BER): 0.5482
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.3
+Accuracy: 0.6660
+F1: 0.6289
+False Positive Rate (FPR): 0.2475
+Balanced Error (BER): 0.3356
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.3
+Accuracy: 0.6840
+F1: 0.6384
+False Positive Rate (FPR): 0.2043
+Balanced Error (BER): 0.3180
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.3
+Accuracy: 0.5075
+F1: 1.0000
+False Positive Rate (FPR): 0.0029
+Balanced Error (BER): 0.5015
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.3
+Accuracy: 0.7207
+F1: 0.4213
+False Positive Rate (FPR): 0.0128
+Balanced Error (BER): 0.3701
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.3
+Accuracy: 0.2733
+F1: 0.3469
+False Positive Rate (FPR): 0.8719
+Balanced Error (BER): 0.6772
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.3
+Accuracy: 0.3107
+F1: 0.3695
+False Positive Rate (FPR): 0.8267
+Balanced Error (BER): 0.6426
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.3
+Accuracy: 0.6257
+F1: 0.0018
+False Positive Rate (FPR): 0.0027
+Balanced Error (BER): 0.5009
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.3
+Accuracy: 0.5590
+F1: 0.1568
+False Positive Rate (FPR): 0.0165
+Balanced Error (BER): 0.4649
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.3
+Accuracy: 0.1910
+F1: 0.2432
+False Positive Rate (FPR): 0.8842
+Balanced Error (BER): 0.8048
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.3
+Accuracy: 0.2273
+F1: 0.1757
+False Positive Rate (FPR): 0.7247
+Balanced Error (BER): 0.7754
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.3
+Accuracy: 0.5223
+F1: 0.0056
+False Positive Rate (FPR): 0.0108
+Balanced Error (BER): 0.5040
+
+Overall Performance for Source: mage, Disparity: 0.3
+Average Accuracy: 0.5779
+Average F1: 0.6599
+Average False Positive Rate (FPR): 0.2203
+Average Balanced Error (BER): 0.4258
+
+Overall Performance for Source: kaggle, Disparity: 0.3
+Average Accuracy: 0.4826
+Average F1: 0.2849
+Average False Positive Rate (FPR): 0.4285
+Average Balanced Error (BER): 0.5477
+
+Overall Performance for Source: semeval, Disparity: 0.3
+Average Accuracy: 0.3749
+Average F1: 0.1453
+Average False Positive Rate (FPR): 0.4090
+Average Balanced Error (BER): 0.6373
+
+Final Overall Performance for Entire Dataset, Disparity: 0.3
+Average Accuracy: 0.4785
+Average F1: 0.3634
+Average False Positive Rate (FPR): 0.3526
+Average Balanced Error (BER): 0.5369
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.25
+Accuracy: 0.4665
+F1: 0.3545
+False Positive Rate (FPR): 0.3713
+Balanced Error (BER): 0.5365
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.25
+Accuracy: 0.6585
+F1: 0.6045
+False Positive Rate (FPR): 0.2191
+Balanced Error (BER): 0.3437
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.25
+Accuracy: 0.6725
+F1: 0.6009
+False Positive Rate (FPR): 0.1631
+Balanced Error (BER): 0.3305
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.25
+Accuracy: 0.5080
+F1: 1.0000
+False Positive Rate (FPR): 0.0020
+Balanced Error (BER): 0.5010
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.25
+Accuracy: 0.6710
+F1: 0.2222
+False Positive Rate (FPR): 0.0048
+Balanced Error (BER): 0.4394
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.25
+Accuracy: 0.2827
+F1: 0.3455
+False Positive Rate (FPR): 0.8511
+Balanced Error (BER): 0.6718
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.25
+Accuracy: 0.3293
+F1: 0.3588
+False Positive Rate (FPR): 0.7741
+Balanced Error (BER): 0.6355
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.25
+Accuracy: 0.6260
+F1: 1.0000
+False Positive Rate (FPR): 0.0016
+Balanced Error (BER): 0.5008
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.25
+Accuracy: 0.5367
+F1: 0.0557
+False Positive Rate (FPR): 0.0070
+Balanced Error (BER): 0.4890
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.25
+Accuracy: 0.1887
+F1: 0.2268
+False Positive Rate (FPR): 0.8677
+Balanced Error (BER): 0.8082
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.25
+Accuracy: 0.2413
+F1: 0.1260
+False Positive Rate (FPR): 0.6456
+Balanced Error (BER): 0.7650
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.25
+Accuracy: 0.5240
+F1: 0.0042
+False Positive Rate (FPR): 0.0070
+Balanced Error (BER): 0.5024
+
+Overall Performance for Source: mage, Disparity: 0.25
+Average Accuracy: 0.5764
+Average F1: 0.6400
+Average False Positive Rate (FPR): 0.1889
+Average Balanced Error (BER): 0.4279
+
+Overall Performance for Source: kaggle, Disparity: 0.25
+Average Accuracy: 0.4772
+Average F1: 0.4816
+Average False Positive Rate (FPR): 0.4079
+Average Balanced Error (BER): 0.5619
+
+Overall Performance for Source: semeval, Disparity: 0.25
+Average Accuracy: 0.3727
+Average F1: 0.1032
+Average False Positive Rate (FPR): 0.3818
+Average Balanced Error (BER): 0.6412
+
+Final Overall Performance for Entire Dataset, Disparity: 0.25
+Average Accuracy: 0.4754
+Average F1: 0.4083
+Average False Positive Rate (FPR): 0.3262
+Average Balanced Error (BER): 0.5437
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.2
+Accuracy: 0.4780
+F1: 0.3384
+False Positive Rate (FPR): 0.3232
+Balanced Error (BER): 0.5256
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.2
+Accuracy: 0.6585
+F1: 0.5918
+False Positive Rate (FPR): 0.1925
+Balanced Error (BER): 0.3442
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.2
+Accuracy: 0.6660
+F1: 0.5734
+False Positive Rate (FPR): 0.1326
+Balanced Error (BER): 0.3377
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.2
+Accuracy: 0.5080
+F1: 1.0000
+False Positive Rate (FPR): 0.0020
+Balanced Error (BER): 0.5010
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.2
+Accuracy: 0.6453
+F1: 0.1029
+False Positive Rate (FPR): 0.0032
+Balanced Error (BER): 0.4743
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.2
+Accuracy: 0.2847
+F1: 0.3397
+False Positive Rate (FPR): 0.8394
+Balanced Error (BER): 0.6731
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.2
+Accuracy: 0.3557
+F1: 0.3546
+False Positive Rate (FPR): 0.7150
+Balanced Error (BER): 0.6203
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.2
+Accuracy: 0.6260
+F1: 1.0000
+False Positive Rate (FPR): 0.0016
+Balanced Error (BER): 0.5008
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.2
+Accuracy: 0.5313
+F1: 0.0277
+False Positive Rate (FPR): 0.0038
+Balanced Error (BER): 0.4949
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.2
+Accuracy: 0.1900
+F1: 0.2161
+False Positive Rate (FPR): 0.8513
+Balanced Error (BER): 0.8077
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.2
+Accuracy: 0.2713
+F1: 0.1085
+False Positive Rate (FPR): 0.5690
+Balanced Error (BER): 0.7377
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.2
+Accuracy: 0.5247
+F1: 0.0042
+False Positive Rate (FPR): 0.0057
+Balanced Error (BER): 0.5018
+
+Overall Performance for Source: mage, Disparity: 0.2
+Average Accuracy: 0.5776
+Average F1: 0.6259
+Average False Positive Rate (FPR): 0.1626
+Average Balanced Error (BER): 0.4271
+
+Overall Performance for Source: kaggle, Disparity: 0.2
+Average Accuracy: 0.4779
+Average F1: 0.4493
+Average False Positive Rate (FPR): 0.3898
+Average Balanced Error (BER): 0.5671
+
+Overall Performance for Source: semeval, Disparity: 0.2
+Average Accuracy: 0.3793
+Average F1: 0.0891
+Average False Positive Rate (FPR): 0.3574
+Average Balanced Error (BER): 0.6355
+
+Final Overall Performance for Entire Dataset, Disparity: 0.2
+Average Accuracy: 0.4783
+Average F1: 0.3881
+Average False Positive Rate (FPR): 0.3033
+Average Balanced Error (BER): 0.5433
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.15
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.15
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.15
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.15
+Accuracy: 0.5085
+F1: 1.0000
+False Positive Rate (FPR): 0.0010
+Balanced Error (BER): 0.5005
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.15
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.15
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.15
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.15
+Accuracy: 0.6267
+F1: 1.0000
+False Positive Rate (FPR): 0.0005
+Balanced Error (BER): 0.5003
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.15
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.15
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.15
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.15
+Accuracy: 0.5250
+F1: 0.0042
+False Positive Rate (FPR): 0.0051
+Balanced Error (BER): 0.5015
+
+Overall Performance for Source: mage, Disparity: 0.15
+Average Accuracy: 0.5089
+Average F1: 0.2500
+Average False Positive Rate (FPR): 0.0002
+Average Balanced Error (BER): 0.5001
+
+Overall Performance for Source: kaggle, Disparity: 0.15
+Average Accuracy: 0.6269
+Average F1: 0.2500
+Average False Positive Rate (FPR): 0.0001
+Average Balanced Error (BER): 0.5001
+
+Overall Performance for Source: semeval, Disparity: 0.15
+Average Accuracy: 0.5262
+Average F1: 0.0010
+Average False Positive Rate (FPR): 0.0013
+Average Balanced Error (BER): 0.5004
+
+Final Overall Performance for Entire Dataset, Disparity: 0.15
+Average Accuracy: 0.5540
+Average F1: 0.1670
+Average False Positive Rate (FPR): 0.0005
+Average Balanced Error (BER): 0.5002
+
+Performance for Source: mage, Detector: radar_probability, Disparity: 0.1
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: roberta_base_openai_detector_probability, Disparity: 0.1
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: roberta_large_openai_detector_probability, Disparity: 0.1
+Accuracy: 0.5090
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: mage, Detector: GPT4o-mini_probability, Disparity: 0.1
+Accuracy: 0.5085
+F1: 1.0000
+False Positive Rate (FPR): 0.0010
+Balanced Error (BER): 0.5005
+
+Performance for Source: kaggle, Detector: radar_probability, Disparity: 0.1
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: roberta_base_openai_detector_probability, Disparity: 0.1
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: roberta_large_openai_detector_probability, Disparity: 0.1
+Accuracy: 0.6270
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: kaggle, Detector: GPT4o-mini_probability, Disparity: 0.1
+Accuracy: 0.6267
+F1: 1.0000
+False Positive Rate (FPR): 0.0005
+Balanced Error (BER): 0.5003
+
+Performance for Source: semeval, Detector: radar_probability, Disparity: 0.1
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: roberta_base_openai_detector_probability, Disparity: 0.1
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: roberta_large_openai_detector_probability, Disparity: 0.1
+Accuracy: 0.5267
+F1: 0.0000
+False Positive Rate (FPR): 0.0000
+Balanced Error (BER): 0.5000
+
+Performance for Source: semeval, Detector: GPT4o-mini_probability, Disparity: 0.1
+Accuracy: 0.5250
+F1: 0.0042
+False Positive Rate (FPR): 0.0051
+Balanced Error (BER): 0.5015
+
+Overall Performance for Source: mage, Disparity: 0.1
+Average Accuracy: 0.5089
+Average F1: 0.2500
+Average False Positive Rate (FPR): 0.0002
+Average Balanced Error (BER): 0.5001
+
+Overall Performance for Source: kaggle, Disparity: 0.1
+Average Accuracy: 0.6269
+Average F1: 0.2500
+Average False Positive Rate (FPR): 0.0001
+Average Balanced Error (BER): 0.5001
+
+Overall Performance for Source: semeval, Disparity: 0.1
+Average Accuracy: 0.5262
+Average F1: 0.0010
+Average False Positive Rate (FPR): 0.0013
+Average Balanced Error (BER): 0.5004
+
+Final Overall Performance for Entire Dataset, Disparity: 0.1
+Average Accuracy: 0.5540
+Average F1: 0.1670
+Average False Positive Rate (FPR): 0.0005
+Average Balanced Error (BER): 0.5002

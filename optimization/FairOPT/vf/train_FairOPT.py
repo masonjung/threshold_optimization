@@ -10,7 +10,7 @@ start_time = time.time()
 #train_path = path+"\\train_features.csv"
 
 # Cyntia's path
-path = 'C://Users//Cynthia//Documents//MIT//datasets'
+path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
 train_path = path+'//train_features.csv'
 
 
