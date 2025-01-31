@@ -4,8 +4,6 @@ import seaborn as sns
 import itertools
 from scipy.stats import ks_2samp
 
-
-
 class FairThresholdAnalysis:
     def __init__(self, filepath, feature_columns, probability_columns, quantile_range=(0.25, 0.75)):
         self.df = pd.read_csv(filepath)
@@ -114,93 +112,36 @@ class FairThresholdAnalysis:
             color1, color2 = colors[idx * 2], colors[idx * 2 + 1]
 
             # Plot KDE
-            sns.kdeplot(group1_data, label=f'Group 1 features: {val1_lower}', fill=True, alpha=0.8, color=color1, ax=axes[idx // 2, idx % 2])
-            sns.kdeplot(group2_data, label=f'Group 2 features: {val2_lower}', fill=True, alpha=0.8, color=color2, linestyle='--', ax=axes[idx // 2, idx % 2])
+            sns.kdeplot(group1_data, label=f'Features: {val1_lower}', fill=True, alpha=0.8, color=color1, ax=axes[idx // 2, idx % 2])
+            sns.kdeplot(group2_data, label=f'Features: {val2_lower}', fill=True, alpha=0.8, color=color2, linestyle='--', ax=axes[idx // 2, idx % 2])
 
             # Add plot title with specific details about the probability column
             name_detector = "RoBERTa_large"
             title_labels = [
-                f'Biggest discrepancy ({name_detector})', 
-                f'Second biggest discrepancy ({name_detector})', 
-                f'Second smallest discrepancy ({name_detector})', 
-                f'Smallest discrepancy ({name_detector})'
+                f'Biggest discrepancy', 
+                f'Second biggest discrepancy', 
+                f'Second smallest discrepancy', 
+                f'Smallest discrepancy'
             ]
-            axes[idx // 2, idx % 2].set_title(f"{title_labels[idx]}", fontsize=16)
-            axes[idx // 2, idx % 2].set_xlabel('Probability of AI generated', fontsize=16)
+            axes[idx // 2, idx % 2].set_title(f"{title_labels[idx]}", fontsize=20)
+            axes[idx // 2, idx % 2].set_xlabel('Probability of AI generated', fontsize=20)
             axes[idx // 2, idx % 2].set_xlim(lower_quantile, upper_quantile)
 
             # Set y-axis label
-            axes[idx // 2, idx % 2].set_ylabel('Estimated density', fontsize=16)
+            axes[idx // 2, idx % 2].set_ylabel('Estimated density', fontsize=20)
+            axes[idx // 2, idx % 2].set_title(f"{title_labels[idx]}", fontsize=20)
+            axes[idx // 2, idx % 2].set_xlabel('Probability of AI generated', fontsize=20)
+            axes[idx // 2, idx % 2].set_xlim(lower_quantile, upper_quantile)
+
+            # Set y-axis label
+            axes[idx // 2, idx % 2].set_ylabel('Estimated density', fontsize=20)
 
             # Add legend
-            axes[idx // 2, idx % 2].legend(loc='upper left', fontsize=16)
+            axes[idx // 2, idx % 2].legend(loc='lower left', fontsize=20)
 
         plt.tight_layout()
         plt.show()
 
-
-    # def plot_individual_kde(self, quantile_range=(0.25, 0.75)):
-    #     top_2 = self.results[:2]
-    #     bottom_2 = self.results[-2:]
-    #     selected_results = top_2 + bottom_2
-
-    #     fig, axes = plt.subplots(2, 2, figsize=(15, 10), sharey=True)
-
-    #     colors = ['red', 'orangered', 'seagreen', 'green']  # Colors for high to low discrepancies
-
-    #     for idx, result in enumerate(selected_results):
-    #         prob_col = result['probability_column']
-    #         val1, val2 = result['combination']
-
-    #         df_subset1 = self.df[(self.df[self.feature_columns] == val1).all(axis=1)].copy()
-    #         df_subset2 = self.df[(self.df[self.feature_columns] == val2).all(axis=1)].copy()
-    #         df_subset1['Subgroup'] = 'Group 1'
-    #         df_subset2['Subgroup'] = 'Group 2'
-    #         df_combined = pd.concat([df_subset1, df_subset2])
-
-    #         lower_quantile, upper_quantile = quantile_range
-    #         df_combined_gray_zone = df_combined[
-    #             (df_combined[prob_col] >= lower_quantile) & 
-    #             (df_combined[prob_col] <= upper_quantile)
-    #         ]
-
-    #         df_combined_gray_zone[prob_col] = df_combined_gray_zone[prob_col].clip(0, 1)
-
-    #         group1_data = df_combined_gray_zone[df_combined_gray_zone['Subgroup'] == 'Group 1'][prob_col]
-    #         group2_data = df_combined_gray_zone[df_combined_gray_zone['Subgroup'] == 'Group 2'][prob_col]
-
-    #         if len(group1_data) < 5 or len(group2_data) < 5:
-    #             print(f"Not enough data points for meaningful plot in discrepancy {idx + 1}.")
-    #             continue
-
-    #         # Convert val1 and val2 to lowercase and join with commas
-    #         val1_lower = ', '.join(map(str.lower, val1)) if isinstance(val1, tuple) else str(val1).lower()
-    #         val2_lower = ', '.join(map(str.lower, val2)) if isinstance(val2, tuple) else str(val2).lower()
-
-    #         # Plot KDE
-    #         sns.kdeplot(group1_data, label=f'Group 1 features: {val1_lower}', fill=True, alpha=0.8, color=colors[idx], ax=axes[idx // 2, idx % 2])
-    #         sns.kdeplot(group2_data, label=f'Group 2 features: {val2_lower}', fill=True, alpha=0.8, color=colors[idx], linestyle='--', ax=axes[idx // 2, idx % 2])
-
-    #         # Add plot title with specific details about the probability column
-    #         name_detector = "RoBERTa_large"
-    #         title_labels = [
-    #             f'Biggest discrepancy ({name_detector})', 
-    #             f'Second biggest discrepancy ({name_detector})', 
-    #             f'Second smallest discrepancy ({name_detector})', 
-    #             f'Smallest discrepancy ({name_detector})'
-    #         ]
-    #         axes[idx // 2, idx % 2].set_title(f"{title_labels[idx]}", fontsize=12)
-    #         axes[idx // 2, idx % 2].set_xlabel('Probability Score', fontsize=12)
-    #         axes[idx // 2, idx % 2].set_xlim(lower_quantile, upper_quantile)
-
-    #         # Set y-axis label
-    #         axes[idx // 2, idx % 2].set_ylabel('Estimated density', fontsize=12)
-
-    #         # Add legend
-    #         axes[idx // 2, idx % 2].legend(fontsize=10)
-
-    #     plt.tight_layout()
-    #     plt.show()
 
 
     def analyze_and_plot(self, quantile_ranges=[(0.25, 0.75)]):
@@ -221,7 +162,7 @@ class FairThresholdAnalysis:
 
 # Usage example
 if __name__ == "__main__":
-    filepath = r"C:\Users\minse\Desktop\Programming\FairThresholdOptimization\datasets\train_features.csv" # test_t4_features.csv
+    filepath = [PATH]
     feature_columns = ['personality', "length_label" ] # add 'sentiment_label', "formality_label",
     probability_columns = [
         # 'roberta_base_openai_detector_probability',

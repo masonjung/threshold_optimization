@@ -7,9 +7,9 @@ from tqdm import tqdm
 tqdm.pandas()
 
 # path of the file
-path = '/Users/Cynthia/Documents/MIT/datasets/'
-load_file = 'Train_dataset_d3_ready.csv' #'test_d3_source.csv'
-save_file = 'train_features.csv' #test_features.csv'
+path = [PATH]
+load_file = [PATH] #'test_d3_source.csv'
+save_file = [PATH] #test_features.csv'
 
 # pre-processing the file
 df = pd.read_csv(path + load_file)

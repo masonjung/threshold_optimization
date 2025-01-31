@@ -3,10 +3,8 @@ from openai import OpenAI
 client = OpenAI()
 import pandas as pd
 
-
 # Import training dataset
-df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t3_features.csv")
-
+df = [PATH]
 # Sample a small fraction of the dataset
 df = df.sample(frac=1)
 print(df.shape)
@@ -53,5 +51,4 @@ df['GPT4o-mini_probability'] = df['essay'].apply(lambda x: get_ai_probability(x)
 print(df[['essay', 'GPT4o-mini_probability']])
 
 # Save the dataframe to a new CSV file
-df.to_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features_with_gpt4o.csv", index=False)
-
+df.to_csv([PATH])

@@ -4,7 +4,7 @@ from transformers import pipeline
 from huggingface_hub import login
 import torch
 
-token = "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"
+token = [PATH]
 login(token, add_to_git_credential=True)
 
 class SentimentAnalysis:

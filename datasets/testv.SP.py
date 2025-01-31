@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Load dataset
-dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv"
+dataset_detectors = [PATH]
 df = pd.read_csv(dataset_detectors)
 
 # Classifiers and thresholds
@@ -132,7 +132,7 @@ for source in df['source'].unique():
                         output_lines.append(f"    {metric}: {value:.4f}")
 
 # Save results to a file
-output_file = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\statistical_discrepancies_with_acc_fpr.txt"
+output_file = [PATH]
 with open(output_file, "w") as file:
     file.write("\n".join(output_lines))
 

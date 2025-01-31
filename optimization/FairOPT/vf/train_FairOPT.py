@@ -5,12 +5,12 @@ import acc_f1_baseline
 import time
 start_time = time.time()
 
-# Minseok's path
-#path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets"
+# [PATH]
+#path = [PATH]
 #train_path = path+"\\train_features.csv"
 
-# Cyntia's path
-path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
+# [PATH]
+path = [PATH]
 train_path = path+'//train_features.csv'
 
 

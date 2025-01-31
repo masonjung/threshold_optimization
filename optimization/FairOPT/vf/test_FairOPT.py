@@ -5,13 +5,13 @@ from sklearn.metrics import accuracy_score, f1_score
 import FairOPT
 
 
-# Minseok's path
-#path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets"
+# [PATH]
+#path = [PATH]
 #test_path = path+"\\test_t4_features.csv"
 
 
-# Cynthia's path
-path = 'C://Users//Cynthia//Documents//IpParis_C//MIT//datasets'
+# [PATH]
+path = [PATH]
 test_path = path+'//test_t4_features.csv'
 
 test_df = pd.read_csv(test_path)

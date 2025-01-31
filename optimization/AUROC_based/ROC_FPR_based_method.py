@@ -33,7 +33,7 @@ def calculate_optimal_threshold(file_path, true_label_column, pred_columns, fpr_
 
 
 # Run the optimization method 2
-file_path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Training_dataset\\Train_RAID_Mage_d3.csv"
+file_path = [PATH]
 true_label_column = 'AI_written'
 pred_columns = [
     # 'roberta_base_openai_detector_probability',

@@ -4,17 +4,16 @@ import pandas as pd
 
 # read datasets
 
-dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\test_d3.csv"
-
+dataset_detectors = [PATH]
 test_dataset_three_RoBERTa_detectors = pd.read_csv(dataset_detectors)
 
 test_dataset_three_RoBERTa_detectors.columns
 
 
-dataset_kaggle = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\AIv.Hum500_test_sampled.csv"
-dataset_mage = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\MAGE_test.csv"
-dataset_roft = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\ROFT_test.csv"
-dataset_semeval = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\subtaskA_train_monolingual_sampled.csv"
+dataset_kaggle = [PATH]
+dataset_mage = [PATH]
+dataset_roft = [PATH]
+dataset_semeval = [PATH]
 
 dataset1 = pd.read_csv(dataset_kaggle)
 dataset2 = pd.read_csv(dataset_mage)
@@ -60,7 +59,6 @@ print(test_dataset_source_three_RoBERTa_detectors[['essay', 'source']])
 test_dataset_source_three_RoBERTa_detectors["source"].value_counts()
 
 # Save the updated dataframe to a new CSV file
-test_dataset_source_three_RoBERTa_detectors.to_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\test_d3_source.csv", index=False)
-
+test_dataset_source_three_RoBERTa_detectors.to_csv([PATH])
 
 test_dataset_three_RoBERTa_detectors.columns

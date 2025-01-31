@@ -131,38 +131,6 @@ class ThresholdOptimizer:
 
         return gradient
 
-    # def early_stopping(self, acc_dict, f1_dict, confusion_matrix_df, min_stable_groups=10, change_tolerance=1e-6):
-    #     """
-    #     Checks whether to stop early based on minimal changes in accuracy, F1 score,
-    #     min_stable_group = list of change
-    #     change_tolerance = minimal change to stop
-    #     """
-    #     # Check if performance criteria and fairness are met
-    #     if self.check_performance_criteria(acc_dict, f1_dict) and self.check_fairness(confusion_matrix_df):
-    #         print("Performance and fairness criteria met.")
-    #         return True
-
-    #     # Check if changes in accuracy and F1 score are minimal for early stopping
-    #     acc_changes = [
-    #         abs(self.history[group]['accuracy'][-1] - self.history[group]['accuracy'][-2]) < change_tolerance
-    #         for group in self.group_indices.keys() if len(self.history[group]['accuracy']) > 1
-    #     ]
-    #     f1_changes = [
-    #         abs(self.history[group]['f1'][-1] - self.history[group]['f1'][-2]) < change_tolerance
-    #         for group in self.group_indices.keys() if len(self.history[group]['f1']) > 1
-    #     ]
-
-    #     stable_acc_groups = sum(acc_changes)
-    #     stable_f1_groups = sum(f1_changes)
-
-    #     # Trigger early stopping if enough groups are stable
-    #     if stable_acc_groups >= min_stable_groups and stable_f1_groups >= min_stable_groups:
-    #         print(f"Early stopping triggered: Minimal changes in ACC/F1 for {min_stable_groups} groups.")
-    #         return True
-    #     return False
-
-
-
     def early_stopping(
         self,
         acc_dict,
@@ -276,200 +244,10 @@ class ThresholdOptimizer:
 
         return self.thresholds, self.history
 
-
-    # def early_stopping(
-    #     self,
-    #     acc_dict,
-    #     f1_dict,
-    #     confusion_matrix_df,
-    #     iteration,
-    #     min_iterations=10*2,
-    #     min_stable_groups=2**2,
-    #     change_tolerance=1e-3,
-    #     patience=2**2
-    # ):
-    #     # Min iterations
-    #     if iteration < min_iterations:
-    #         return False
-
-    #     # Check changes in ACC, F1, and PPR
-    #     acc_changes = []
-    #     f1_changes  = []
-    #     ppr_changes = [] 
-
-    #     for group in self.group_indices.keys():
-    #         if len(self.history[group]['accuracy']) > 1:
-    #             acc_change = abs(
-    #                 self.history[group]['accuracy'][-1]
-    #                 - self.history[group]['accuracy'][-2]
-    #             )
-    #             acc_changes.append(acc_change < change_tolerance)
-
-    #         if len(self.history[group]['f1']) > 1:
-    #             f1_change = abs(
-    #                 self.history[group]['f1'][-1]
-    #                 - self.history[group]['f1'][-2]
-    #             )
-    #             f1_changes.append(f1_change < change_tolerance)
-            
-    #         if 'ppr' in self.history[group] and len(self.history[group]['ppr']) > 1:
-    #             ppr_change = abs(
-    #                 self.history[group]['ppr'][-1]
-    #                 - self.history[group]['ppr'][-2]
-    #             )
-    #             ppr_changes.append(ppr_change < change_tolerance)
-
-    #     stable_acc_groups = sum(acc_changes)
-    #     stable_f1_groups  = sum(f1_changes)
-    #     stable_ppr_groups = sum(ppr_changes) 
-        
-    #     no_improvement_count = 0
-    #     # all three metrics stable
-    #     if (stable_acc_groups >= min_stable_groups or stable_f1_groups >= min_stable_groups) or (stable_ppr_groups >= min_stable_groups):
-    #         no_improvement_count += 1
-    #     else:
-    #         no_improvement_count = 0
-
-    #     if no_improvement_count >= patience:
-    #         print(f"Early stopping triggered after {patience} stable epochs.")
-    #         return True
-    #     return False
-
-
-    # def optimize(self):
-    #     iteration = 0
-    #     previous_thresholds = self.thresholds.copy()
-
-    #     while iteration < self.max_iterations:
-    #         confusion_matrix_df = pd.DataFrame()
-    #         acc_dict, f1_dict = {}, {}
-
-    #         # Calculate metrics for each group
-    #         for group, indices in self.group_indices.items():
-    #             group_y_true = self.y_true[indices]
-    #             group_y_pred_proba = self.y_pred_proba[indices]
-    #             threshold = self.thresholds[group]
-
-    #             # Calculate current predictions
-    #             group_y_pred = group_y_pred_proba >= threshold
-
-    #             # Calculate accuracy and F1 score
-    #             acc = accuracy_score(group_y_true, group_y_pred)
-    #             f1 = f1_score(group_y_true, group_y_pred, zero_division=1)
-    #             acc_dict[group] = acc
-    #             f1_dict[group] = f1
-
-    #             # Record the metrics and update confusion matrix
-    #             self.history[group]['accuracy'].append(acc)
-    #             self.history[group]['f1'].append(f1)
-    #             self.history[group]['threshold'].append(threshold)
-    #             confusion_matrix_df = self.update_confusion_matrix(
-    #                 group, group_y_true, group_y_pred, confusion_matrix_df
-    #             )
-
-    #         # Adjust thresholds using the new gradient computation
-    #         for group in self.group_indices.keys():
-    #             indices = self.group_indices[group]
-    #             group_y_true = self.y_true[indices]
-    #             group_y_pred_proba = self.y_pred_proba[indices]
-    #             threshold = self.thresholds[group]
-
-    #             gradient = self.compute_gradient(
-    #                 group_y_true, group_y_pred_proba, threshold
-    #             )
-
-    #             # Update threshold
-    #             self.thresholds[group] = threshold - self.learning_rate * gradient
-    #             self.thresholds[group] = np.clip(self.thresholds[group], 0.1, 0.9)  # range
-
-    #         # Check convergence
-    #         max_threshold_change = max(
-    #             abs(self.thresholds[group] - previous_thresholds[group]) for group in self.thresholds
-    #         )
-    #         # Check for early stopping
-    #         if self.early_stopping(acc_dict, f1_dict, confusion_matrix_df, min_stable_groups=2**3, change_tolerance=1e-4, patience=2**2, iteration=iteration):
-    #             print(f"Converged after {iteration} iterations for minimal change.")
-    #             break
-    #         elif max_threshold_change < self.tolerance:
-    #             # convergence criteria - performance and fairness
-    #             if self.check_performance_criteria(acc_dict, f1_dict) and self.check_fairness(confusion_matrix_df):
-    #                 print(f"Converged after {iteration} iterations.")
-    #                 break
-
-    #         previous_thresholds = self.thresholds.copy()
-    #         iteration += 1
-
-    #     return self.thresholds, self.history
-
-
-
-
-    # def optimize(self):
-    #     iteration = 0
-    #     previous_thresholds = self.thresholds.copy()
-
-    #     while iteration < self.max_iterations:
-    #         confusion_matrix_df = pd.DataFrame()
-    #         acc_dict, f1_dict = {}, {}
-
-    #         # Calculate metrics for each group
-    #         for group, indices in self.group_indices.items():
-    #             group_y_true = self.y_true[indices]
-    #             group_y_pred_proba = self.y_pred_proba[indices]
-    #             threshold = self.thresholds[group]
-
-    #             # Calculate current predictions
-    #             group_y_pred = group_y_pred_proba >= threshold
-
-    #             # Calculate accuracy and F1 score
-    #             acc = accuracy_score(group_y_true, group_y_pred)
-    #             f1 = f1_score(group_y_true, group_y_pred, zero_division=1)
-    #             acc_dict[group] = acc
-    #             f1_dict[group] = f1
-
-    #             # Record the metrics and update confusion matrix
-    #             self.history[group]['accuracy'].append(acc)
-    #             self.history[group]['f1'].append(f1)
-    #             self.history[group]['threshold'].append(threshold)
-    #             confusion_matrix_df = self.update_confusion_matrix(
-    #                 group, group_y_true, group_y_pred, confusion_matrix_df
-    #             )
-
-    #         # Adjust thresholds using the new gradient computation
-    #         for group in self.group_indices.keys():
-    #             indices = self.group_indices[group]
-    #             group_y_true = self.y_true[indices]
-    #             group_y_pred_proba = self.y_pred_proba[indices]
-    #             threshold = self.thresholds[group]
-
-    #             gradient = self.compute_gradient(
-    #                 group_y_true, group_y_pred_proba, threshold
-    #             )
-
-    #             # Update threshold
-    #             self.thresholds[group] = threshold - self.learning_rate * gradient
-    #             self.thresholds[group] = np.clip(self.thresholds[group], 0.01, 0.99) # range
-            
-    #         # Check convergence with early stopping
-    #         max_threshold_change = max(
-    #             abs(self.thresholds[group] - previous_thresholds[group]) for group in self.thresholds
-    #         )
-    #         if max_threshold_change < self.tolerance:
-    #             # convergence criteria
-    #             if  self.check_performance_criteria(acc_dict, f1_dict) and self.check_fairness(confusion_matrix_df):
-    #                 print(f"Converged after {iteration} iterations.")
-    #                 break
-    #         previous_thresholds = self.thresholds.copy()
-    #         iteration += 1
-    #     return self.thresholds, self.history
-
-
-
 ######################## RUN
 
 # import df
-dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\train_features.csv")
-
+dataset = [PATH]
 #split by train and tesxt <- change this later
 df = dataset.sample(frac=1, random_state=42)
 
@@ -521,11 +299,11 @@ optimizer = ThresholdOptimizer(
     groups,
     initial_thresholds,
     learning_rate=10**-3,
-    max_iterations=10**3,
-    acceptable_disparity=0.01,  # Adjust based on your fairness criteria
-    min_acc_threshold=0.5,         # Set realistic minimum accuracy
-    min_f1_threshold=0.5,           # Set realistic minimum F1 score
-    tolerance=1e-3,  # Decrease tolerance for stricter convergence criteria
+    max_iterations=10**5,
+    acceptable_disparity=0.2,  # Adjust based on your fairness criteria
+    min_acc_threshold=0.25,         # Set realistic minimum accuracy
+    min_f1_threshold=0.25,           # Set realistic minimum F1 score
+    tolerance=1e-2,  # Decrease tolerance for stricter convergence criteria
     penalty=20  # Increase penalty to enforce stricter performance
 )
 
@@ -540,8 +318,7 @@ for group, threshold in thresholds.items():
 ##################################TEST
 
 # Load test dataset
-test_dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv")
-
+test_dataset = [PATH]
 # Split test dataset by 'source'
 unique_sources = test_dataset['source'].unique()
 
@@ -625,7 +402,7 @@ for source in unique_sources:
 
         feature_discrepancies = calculate_discrepancies(test_y_true, test_y_pred, features)
 
-        with open("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\results_FairOPT_fm1_early_static_0.25", "a") as f:
+        with open([PATH], "a") as f:
             f.write(f"\nPerformance for Source: {source}, Detector: {detector}\n")
             f.write(f"Accuracy: {test_accuracy:.4f}\n")
             f.write(f"False Positive Rate (FPR): {test_fpr:.4f}\n")

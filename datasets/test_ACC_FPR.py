@@ -1,8 +1,7 @@
 import pandas as pd
 
 # Read datasets
-dataset_detectors = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv"
-
+dataset_detectors = [PATH]
 test_dataset = pd.read_csv(dataset_detectors)
 
 test_dataset.columns

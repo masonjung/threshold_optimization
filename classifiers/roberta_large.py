@@ -17,7 +17,7 @@ from transformers import RobertaTokenizer, RobertaForSequenceClassification
 from huggingface_hub import login
 
 # Log in to Hugging Face with your token
-token = "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"
+token = [PATH]
 login(token)
 
 # Load the tokenizer and model
@@ -48,8 +48,7 @@ def roberta_large_openai_detector_probability(text):
 
 # Load your sample DataFrame
 # Assuming df_sample is already defined and has a 'text' column
-dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\test_dataset.csv")
-
+dataset = pd.read_csv([PATH])
 df = dataset.sample(frac=1, random_state=42)
 
 # Add a new column to store detection results from the Roberta model
@@ -59,7 +58,7 @@ df['roberta_large_openai_detector_probability'] = df['essay'].apply(roberta_larg
 df.columns
 
 # Save the updated DataFrame to CSV
-output_file_path = "C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\test_rl.csv"
+output_file_path = [PATH]
 df.to_csv(output_file_path, index=False)
 print(f"Saved the updated dataset with Roberta AI detection probabilities at: {output_file_path}")
 

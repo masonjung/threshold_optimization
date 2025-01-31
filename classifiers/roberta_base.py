@@ -19,7 +19,7 @@ from transformers import RobertaTokenizer, RobertaForSequenceClassification
 from huggingface_hub import login
 
 # Log in to Hugging Face with your token
-token = "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"
+token = [PATH]
 login(token)
 
 # Load the tokenizer and model
@@ -48,13 +48,11 @@ def roberta_base_openai_detector_probability(text):
 
 
 #test dataset
-dataset = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\test_ra_rl.csv")
-
+dataset = pd.read_csv([PATH])
 
 dataset['roberta_base_openai_detector_probability'] = dataset['essay'].apply(roberta_base_openai_detector_probability)
 
 dataset.columns
 
 # Save the dataset with the new column
-dataset.to_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\Test_dataset\\test_d3.csv", index=False)
-
+dataset.to_csv([PATH])

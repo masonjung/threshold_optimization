@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load the dataset
-df = pd.read_csv("C:\\Users\\minse\\Desktop\\Programming\\FairThresholdOptimization\\datasets\\test_t4_features.csv")
-
+df = [PATH]
 df.columns
 df.shape
 
@@ -15,6 +14,7 @@ probability_columns = [
     # 'roberta_large_openai_detector_probability',
     'radar_probability'
 ]
+
 df['combined_probability'] = df[probability_columns].mean(axis=1)
 
 # Focus on combined probability between 0 and 1

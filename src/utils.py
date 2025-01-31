@@ -5,16 +5,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 print("utils.py is imported")
 
 def calculate_metrics(y_true, y_pred):
-    """
-    Calculate evaluation metrics for binary classification.
-
-    Parameters:
-    y_true (array-like): True binary labels.
-    y_pred (array-like): Predicted binary labels.
-
-    Returns:
-    dict: Dictionary of calculated metrics.
-    """
     return {
         "accuracy": accuracy_score(y_true, y_pred),
         "precision": precision_score(y_true, y_pred),
@@ -23,16 +13,6 @@ def calculate_metrics(y_true, y_pred):
     }
 
 def confusion_matrix_metrics(y_true, y_pred):
-    """
-    Calculate confusion matrix and related metrics.
-
-    Parameters:
-    y_true (array-like): True binary labels.
-    y_pred (array-like): Predicted binary labels.
-
-    Returns:
-    dict: Dictionary with confusion matrix and derived metrics (TP, FP, TN, FN).
-    """
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
     return {
         "true_positive": tp,
@@ -42,16 +22,6 @@ def confusion_matrix_metrics(y_true, y_pred):
     }
 
 def apply_threshold(y_scores, threshold):
-    """
-    Apply a threshold to predicted probabilities to generate binary predictions.
-
-    Parameters:
-    y_scores (array-like): Predicted probabilities or confidence scores.
-    threshold (float): Threshold value to classify as positive.
-
-    Returns:
-    array-like: Binary predictions based on the threshold.
-    """
     return (np.array(y_scores) >= threshold).astype(int)
 
 def split_data_by_groups(y_true, y_scores, groups):
