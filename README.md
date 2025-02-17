@@ -1,6 +1,9 @@
 # ClassifierOptimizaion
 This is for the threshold optimization project
 
+![image](https://github.com/user-attachments/assets/8bbcd145-1386-4450-adca-25b4dd3ff5a1)
+
+
 Why We Need Threshold Optimization:
 
 In machine learning classification tasks, setting a static threshold is a common practice to convert probabilistic outputs into categorical decisions. However, static thresholds have inherent limitations. They often fail to account for variations in data distributions across different groups or classes, leading to suboptimal performance. While the Area Under the Receiver Operating Characteristic Curve (AUROC) is frequently used to assess classifier performance, relying solely on this metric can be insufficient for ensuring fairness. For example, imposing a strict False Positive Rate (FPR) constraint like FPR < 0.1 may significantly sacrifice the True Positive Rate (TPR), resulting in a model that is both unfair and less effective.
