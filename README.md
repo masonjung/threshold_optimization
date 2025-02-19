@@ -30,9 +30,8 @@ We find that using one universal probability threshold (often θ > 0.5) to class
 - **[Feb 19, 2025]** The results and codes are now public. Check out the [Paper](https://arxiv.org/pdf/2502.04528) on arXiv.
 
 
-## Distributional Variations
-
-
+## Observed Distributional Variations
+The probability distirbution is significantly different by characteristics of writing (e.g., length of the text, and writing style) and this leads notably different error rates across subgroups when the universal threshold is applied for the classification:
 
 
 <p align="center">
@@ -50,6 +49,35 @@ Top two highest and lowest distributional differences using Kolmogorov-Smirnoff 
 
 
 ## FairOPT
+FairOPT generates adaptive thresholds to each group and overcomes the limitation of the universal threshold. 
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/116d705b-c4f1-4a7c-889d-1b890f193714" width="1000">
+</p>
+
+Applying adaptive thresholds to different probability distributions by subgroup, as seen through cumulative density functions (CDFs). We partition texts by three length categories (short, medium, long) and five personality traits (extroversion, neuroticism, agreeableness, conscientiousness, openness), and use RADAR to infer AI-generated probabilities on the test dataset. Observe that a static classification threshold (0.5, in black) and a single optimized threshold (in gray at the right end side) does not account for subgroup-specific distributional variations.
+
+FairOPT works based on this algorithm:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ab13369e-bfe4-4b9f-ba78-6d8ab25b094e" width="500">
+</p>
+
+
+
+
+
+## Citation
+
+Please cite us as:
+
+```
+@article{jung2025group,
+  title={Group-Adaptive Threshold Optimization for Robust AI-Generated Text Detection},
+  author={Jung, Minseok and Panizo, Cynthia Fuertes and Dugan, Liam and Chen, Pin-Yu and Liang, Paul},
+  journal={arXiv preprint arXiv:2502.04528},
+  year={2025}
+}
+```
 
 
 
