@@ -1,20 +1,58 @@
-# ClassifierOptimizaion
-This is for the threshold optimization project
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/dfb57123-8d1f-435d-9164-96e17edd1d96" width="450">
+</p>
 
-![image](https://github.com/user-attachments/assets/dfb57123-8d1f-435d-9164-96e17edd1d96)
+<p align="center">
+   <a href="https://arxiv.org/pdf/2502.04528"><b>https://arxiv.org/pdf/2502.04528</b></a>
+</p>
+
+<p align="center">
+   <b>Robust Classification Across Multiple Subgroups.</b>
+</p>
+
+**Are you still using threshold of 0.5 for classification?** Why do you use 0.5 for your decision threshold, not 0.7, 0.25, or 0.95? Why did you choose to use it? We found that AI text classifier's probability distribution is different by characteristics of the given text and the performance can be enhanced by employing adaptive thresholds. In short, it is better to give different thresholds to different groups. Experiment was conducted using four AI text classifiers on three comprehensive datasets that includes multiple LLMs, their variates, and topics.
+
+**FairOPT** helps you to:
+* **1. Figure out optimal thresholds to each group**: Suppose you have five subgroups, you can generate five thresholds to apply to each rather than using one unified thresholds to all.
+* **2. Increase classification robustness**: There are significant error rates discrepancies between groups. FairOPT reduces the discrepancy.
+* **3. Provide rationales for the decision threshold selection**: You can provide reason for the threshold selection using this model.
+
+The experiemtn was conducted based on the AI text classifiers but our approach can be extended to all kinds of probability based classifiers (e.g. deepfake audio classifier, AI-generated image classifier, etc.).
+
+## Overview
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0133b828-7251-44ae-abed-1ed1a4312191" width="750">
+</p>
+
+We find that using one universal probability threshold (often θ > 0.5) to classify AI and human-generated text can fail to account for subgroup-specific distributional variations, such as text length or writing style, leading to higher errors for certain demographics. We propose FairOPT to learn multiple decision thresholds tailored to each subgroup, which leads to more robust AI-text detection.
+
+## Updates
+- **[Feb 19, 2025]** The results and codes are now public. Check out the [Paper](https://arxiv.org/pdf/2502.04528) on arXiv.
 
 
-Why We Need Threshold Optimization:
-
-In machine learning classification tasks, setting a static threshold is a common practice to convert probabilistic outputs into categorical decisions. However, static thresholds have inherent limitations. They often fail to account for variations in data distributions across different groups or classes, leading to suboptimal performance. While the Area Under the Receiver Operating Characteristic Curve (AUROC) is frequently used to assess classifier performance, relying solely on this metric can be insufficient for ensuring fairness. For example, imposing a strict False Positive Rate (FPR) constraint like FPR < 0.1 may significantly sacrifice the True Positive Rate (TPR), resulting in a model that is both unfair and less effective.
-
-Limitations of AUROC and FPR-Based Approaches:
-
-OpenAI's use of AUROC and FPR-based optimization highlights the foundational limitations of these methods. By focusing primarily on controlling the FPR, their evaluation led to an inaccurate assessment of the classifier's overall performance. This approach can inadvertently prioritize certain metrics at the expense of others, such as TPR, which is crucial for capturing true positives. The reliance on FPR-based optimization may thus result in models that do not perform optimally across all necessary dimensions, particularly in terms of fairness and effectiveness.
-
-Our Optimized Approach Using Fairness Metrics and F1 Score:
-
-This project proposes a refined threshold optimization method that integrates fairness metrics with the F1 score to achieve a more balanced and equitable model performance. By assigning different thresholds to different groups, we aim to optimize both fairness and accuracy without disproportionately sacrificing key metrics like TPR. Although our research focuses on text data, this approach is versatile and applicable to various domains, including image, audio, video, and multimodal classification tasks that rely on probabilistic outputs. We anticipate that this technology will be valuable across multiple deployment scenarios, enhancing both the fairness and effectiveness of machine learning models in diverse applications.
+## Distributional Variations
 
 
-Add some logos
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b831e207-f323-459f-80a9-785424422e21" width="500">
+</p>
+
+Histograms show how AI-generated probability distributions differ by text length (Short in red, Medium in green, Long in blue). If we use the threshold of 0.5 (black dash line), human-written medium-length text shows higher error rate than other lengths. Each kernel density estimation (KDE) curve reflects the probability scores assigned by RoBERTa-large on the training dataset.
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/08f327b1-3ec9-4cfe-8a52-de057c130776" width="500">
+</p>
+Top two highest and lowest distributional differences using Kolmogorov-Smirnoff (KS) test on RoBERTa-large detector probabilities. The visualization is based on KDE. The biggest discrepancy is observed with a KS statistic of 0.2078 (p < 0.01), while the smallest is 0.1001 (p < 0.01). These discrepancies indicate varying levels of divergence between groups based on the characteristics of the given text.
+
+
+
+## FairOPT
+
+
+
+
+
+
