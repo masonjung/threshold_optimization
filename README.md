@@ -1,7 +1,7 @@
 # ClassifierOptimizaion
 This is for the threshold optimization project
 
-![image](https://github.com/user-attachments/assets/8bbcd145-1386-4450-adca-25b4dd3ff5a1)
+![image](https://github.com/user-attachments/assets/dfb57123-8d1f-435d-9164-96e17edd1d96)
 
 
 Why We Need Threshold Optimization:
