@@ -63,8 +63,7 @@ FairOPT works based on this algorithm:
 </p>
 
 
-
-
+We developed novel theoretical frameworks and methodologies to enhance the robustness of AI-generated text detection systems. By extracting and using features for subgroups such as text length and stylistic traits, our approach addresses disparity in classification outcomes. This technology can play a crucial role in AI detection for identifying misinformation, safeguarding the integrity of publication and academic organizations, and countering potential cybersecurity threats. Since it is crucial for these AI-content detection methods to be robust and fair across many potential users, our method takes a major step in this direction by formulating the problem setting and developing a new algorithm. 
 
 ## Citation
 
