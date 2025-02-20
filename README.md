@@ -10,6 +10,17 @@
    <b>Robust Classification Across Multiple Subgroups.</b>
 </p>
 
+</p>
+<p align="center">
+  <a href="https://github.com/masonjung/threshold_optimization/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg"/></a>
+  <a href="https://arxiv.org/pdf/2502.04528"><img src="https://img.shields.io/badge/arXiv-2502.04528-b31b1b.svg"/></a>
+</p>
+<p align="center">
+  <a href="https://www.media.mit.edu/groups/multisensory-intelligence">
+    <img src="https://img.shields.io/badge/MIT-Multisensory%20Intelligence%20Group-ff9900.svg"/>
+  </a>
+</p>
+
 **Are you still using threshold of 0.5 for classification?** Why do you use 0.5 for your decision threshold, not 0.7, 0.25, or 0.95? Why did you choose to use it? We found that AI text classifier's probability distribution is different by characteristics of the given text and the performance can be enhanced by employing adaptive thresholds. In short, it is better to give different thresholds to different groups. Experiment was conducted using four AI text classifiers on three comprehensive datasets that includes multiple LLMs, their variates, and topics.
 
 **FairOPT** helps you to:
@@ -63,7 +74,7 @@ FairOPT works based on this algorithm:
 </p>
 
 
-We developed novel theoretical frameworks and methodologies to enhance the robustness of AI-generated text detection systems. By extracting and using features for subgroups such as text length and stylistic traits, our approach addresses disparity in classification outcomes. This technology can play a crucial role in AI detection for identifying misinformation, safeguarding the integrity of publication and academic organizations, and countering potential cybersecurity threats. Since it is crucial for these AI-content detection methods to be robust and fair across many potential users, our method takes a major step in this direction by formulating the problem setting and developing a new algorithm. 
+Our approach addresses disparity in classification outcomes. This technology can play a crucial role in AI detection for identifying misinformation, safeguarding the integrity of publication and academic organizations, and countering potential cybersecurity threats. Since it is crucial for these AI-content detection methods to be robust and fair across many potential users, our method takes a major step in this direction by formulating the problem setting and developing a new algorithm. 
 
 ## Citation
 
