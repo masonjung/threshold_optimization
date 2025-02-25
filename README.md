@@ -83,7 +83,12 @@ Please cite us as:
 ```
 @article{jung2025group,
   title={Group-Adaptive Threshold Optimization for Robust AI-Generated Text Detection},
-  author={Jung, Minseok and Panizo, Cynthia Fuertes and Dugan, Liam and Chen, Pin-Yu and Liang, Paul},
+  author={Jung, Minseok and
+          Fuertes Panizo, Cynthia and
+          Dugan, Liam and
+          May, Yi R. and
+          Chen, Pin-Yu and
+          Liang, Paul},
   journal={arXiv preprint arXiv:2502.04528},
   year={2025}
 }
